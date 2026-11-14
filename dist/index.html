@@ -1,0 +1,1262 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Q-Tunnel Lab — Kelompok 7</title>
+<meta name="description" content="Quantum Tunneling Interactive Lab: laboratorium virtual berbasis web untuk visualisasi transmisi partikel melalui penghalang potensial persegi.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@400;600&family=EB+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Courier+Prime&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<style>
+/* ===== Tema: gelap (default) ===== */
+:root,[data-theme="dark"]{
+  --bg:#070b16; --bg2:#0c1324; --card:#101a30; --card2:#14203a; --line:#1f2d4d; --line2:#2a3b62;
+  --text:#e6ecf8; --text2:#c7d1e6; --muted:#8c9bbb; --dim:#5d6c8e;
+  --q:#38d6ff; --q2:#7c5cff; --c:#ffb547; --r:#ff6b8b; --ok:#3ee0a0; --bad:#ff5c7a;
+  --barrier:rgba(124,92,255,.22); --radius:16px;
+  --shadow:0 10px 40px -12px rgba(0,0,0,.6);
+  --font:Inter,system-ui,sans-serif; --on-accent:#04101f; --topbar:rgba(7,11,22,.78);
+  --bg-img:radial-gradient(1200px 600px at 85% -10%,rgba(56,214,255,.10),transparent 60%),radial-gradient(900px 500px at -10% 10%,rgba(124,92,255,.12),transparent 60%);
+  --cv-grid:#1a2644; --cv-axis:#3a4c76; --cv-vlabel:#b8a6ff; --cv-ring:#ffffff;
+  --cv-bfill1:rgba(124,92,255,.35); --cv-bfill2:rgba(124,92,255,.08);
+}
+/* ===== Tema: terang ===== */
+[data-theme="light"]{
+  --bg:#f4f6fb; --bg2:#ffffff; --card:#ffffff; --card2:#eef2fa; --line:#dde3ef; --line2:#c8d2e6;
+  --text:#152038; --text2:#33415e; --muted:#5f6c88; --dim:#8a96b0;
+  --q:#0a8fc2; --q2:#5b3fd6; --c:#d47a00; --r:#d6325a; --ok:#11996a; --bad:#d6325a;
+  --barrier:rgba(91,63,214,.14); --shadow:0 8px 28px -14px rgba(30,50,100,.25);
+  --on-accent:#ffffff; --topbar:rgba(255,255,255,.85);
+  --bg-img:radial-gradient(1000px 500px at 90% -10%,rgba(10,143,194,.10),transparent 60%),radial-gradient(800px 400px at -10% 10%,rgba(91,63,214,.08),transparent 60%);
+  --cv-grid:#e6ebf4; --cv-axis:#b7c2d8; --cv-vlabel:#5b3fd6; --cv-ring:#ffffff;
+  --cv-bfill1:rgba(91,63,214,.25); --cv-bfill2:rgba(91,63,214,.05);
+}
+/* ===== Tema: biru ===== */
+[data-theme="blue"]{
+  --bg:#06265a; --bg2:#0a3170; --card:#0d3a80; --card2:#11458f; --line:#2357a8; --line2:#3a6fc2;
+  --text:#f0f6ff; --text2:#d3e3fb; --muted:#a3bfe6; --dim:#7597c8;
+  --q:#5ff0ff; --q2:#9ac4ff; --c:#ffd36b; --r:#ff8fa8; --ok:#6cf2bd; --bad:#ff8fa8;
+  --barrier:rgba(154,196,255,.22); --shadow:0 12px 36px -14px rgba(0,10,40,.7);
+  --on-accent:#06265a; --topbar:rgba(6,38,90,.85);
+  --bg-img:linear-gradient(160deg,#0b3c8c 0%,#06265a 55%,#041a40 100%);
+  --cv-grid:#1d4d97; --cv-axis:#4b7fcc; --cv-vlabel:#c4dcff; --cv-ring:#06265a;
+  --cv-bfill1:rgba(154,196,255,.35); --cv-bfill2:rgba(154,196,255,.06);
+}
+/* ===== Tema: klasik (gaya lama / kertas) ===== */
+[data-theme="classic"]{
+  --bg:#efe4c8; --bg2:#f7efd9; --card:#faf3df; --card2:#efe2bf; --line:#c9b48a; --line2:#a88d5d;
+  --text:#2b1d0e; --text2:#45331c; --muted:#6e5838; --dim:#9a8460;
+  --q:#1f4e79; --q2:#7a2e2e; --c:#9a5b00; --r:#a3242f; --ok:#2f6b2f; --bad:#a3242f;
+  --barrier:rgba(122,46,46,.15); --radius:3px; --shadow:2px 3px 0 rgba(90,65,30,.25);
+  --font:"EB Garamond",Georgia,"Times New Roman",serif; --on-accent:#faf3df; --topbar:#e6d8b5;
+  --bg-img:repeating-linear-gradient(0deg,rgba(120,90,40,.035) 0 1px,transparent 1px 28px);
+  --cv-grid:#e3d5b2; --cv-axis:#8f7650; --cv-vlabel:#7a2e2e; --cv-ring:#faf3df;
+  --cv-bfill1:rgba(122,46,46,.22); --cv-bfill2:rgba(122,46,46,.04);
+}
+[data-theme="classic"] .card{background:var(--card);border:1px solid var(--line2)}
+[data-theme="classic"] .btn.primary,[data-theme="classic"] .steps li::before,[data-theme="classic"] .progress i{background:var(--q2)}
+[data-theme="classic"] .hero h1 em,[data-theme="classic"] .score .big,[data-theme="classic"] .team-head h2{background:none;-webkit-text-fill-color:var(--q2);color:var(--q2);font-style:italic}
+[data-theme="classic"] .tabs button.active{background:var(--card);box-shadow:inset 0 -2px 0 var(--q2);border-radius:0}
+[data-theme="classic"] .mono,[data-theme="classic"] .ro b,[data-theme="classic"] .chip,[data-theme="classic"] output{font-family:"Courier Prime","Courier New",monospace!important}
+[data-theme="classic"] h1,[data-theme="classic"] h2,[data-theme="classic"] h3{letter-spacing:.3px}
+[data-theme="classic"] .topbar{border-bottom:3px double var(--line2)}
+[data-theme="light"] .engine,[data-theme="classic"] .engine{background:var(--card)}
+
+/* pemilih tema */
+.theme-switch{display:flex;gap:2px;padding:3px;border-radius:999px;border:1px solid var(--line);background:var(--bg2)}
+.theme-switch button{width:30px;height:28px;border:0;border-radius:999px;background:none;cursor:pointer;color:var(--muted);font-size:14px}
+.theme-switch button:hover{color:var(--text)}
+.theme-switch button.on{background:var(--q);color:var(--on-accent)}
+
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.55;
+  background-image:var(--bg-img);
+  background-attachment:fixed;min-height:100vh;transition:background-color .3s,color .3s}
+button,select,input{font:inherit;color:inherit}
+.hidden{display:none!important}
+.muted{color:var(--muted)} .small{font-size:12px}
+.mono{font-family:"JetBrains Mono",monospace}
+
+/* top bar */
+.topbar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:20px;padding:12px 28px;
+  background:var(--topbar);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.logo{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;color:var(--q);
+  background:linear-gradient(135deg,rgba(56,214,255,.18),rgba(124,92,255,.25));border:1px solid var(--line2)}
+.logo svg{width:30px;height:30px}
+.brand-name{font-weight:800;letter-spacing:.2px;font-size:17px}
+.brand-sub{font-size:11.5px;color:var(--muted)}
+.tabs{display:flex;gap:4px;margin-left:auto;overflow-x:auto;scrollbar-width:none}
+.tabs button{background:none;border:0;padding:8px 14px;border-radius:10px;color:var(--muted);cursor:pointer;font-weight:500;font-size:14px;white-space:nowrap}
+.tabs button:hover{color:var(--text);background:var(--card)}
+.tabs button.active{color:var(--text);background:linear-gradient(135deg,rgba(56,214,255,.16),rgba(124,92,255,.2));box-shadow:inset 0 0 0 1px var(--line2)}
+.engine{display:flex;align-items:center;gap:8px;font-size:12px;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--bg2);white-space:nowrap}
+.engine .dot{width:8px;height:8px;border-radius:50%;background:var(--dim)}
+.engine.on .dot{background:var(--ok);box-shadow:0 0 10px var(--ok)}
+.engine.off .dot{background:var(--c)}
+
+main{max-width:1400px;margin:0 auto;padding:28px}
+.page{display:none;animation:fade .35s ease}
+.page.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+.card{background:linear-gradient(180deg,var(--card),var(--bg2));border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+.pill{display:inline-block;font-size:12px;font-weight:600;color:var(--q);padding:6px 12px;border-radius:999px;background:rgba(56,214,255,.08);border:1px solid rgba(56,214,255,.25)}
+.chip{font-size:12px;padding:6px 10px;border-radius:8px;background:var(--bg2);border:1px solid var(--line);color:var(--muted);font-family:"JetBrains Mono",monospace}
+.btn{border:1px solid var(--line2);background:var(--card2);padding:10px 18px;border-radius:10px;cursor:pointer;font-weight:600;font-size:14px;transition:.15s}
+.btn:hover{border-color:var(--q);transform:translateY(-1px)}
+.btn.primary{background:linear-gradient(135deg,var(--q),var(--q2));border:0;color:var(--on-accent)}
+.btn.ghost{background:transparent}
+.btn.sm{padding:6px 12px;font-size:13px}
+.btn:disabled{opacity:.5;cursor:wait}
+
+/* hero */
+.hero{display:grid;grid-template-columns:1.1fr 1fr;gap:36px;align-items:center;padding:24px 0 40px}
+.hero h1{font-size:clamp(28px,3.4vw,44px);line-height:1.15;margin:16px 0;letter-spacing:-.5px}
+.hero h1 em{font-style:normal;background:linear-gradient(90deg,var(--q),var(--q2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{color:var(--muted);font-size:16.5px;max-width:640px}
+.hero-cta{display:flex;gap:12px;margin:24px 0}
+.hero-stats{display:flex;gap:32px;margin-top:8px}
+.hero-stats b{display:block;font-size:26px;color:var(--q)}
+.hero-stats span{font-size:12.5px;color:var(--muted)}
+.hero-visual{padding:12px}
+.hero-visual canvas{width:100%;height:320px;display:block}
+.hero-caption{font-size:12px;color:var(--muted);text-align:center;padding-top:6px;font-family:"JetBrains Mono",monospace}
+.sec-title{font-size:22px;margin:32px 0 16px}
+.features{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.feature h3{margin:10px 0 6px;font-size:16px}
+.feature p{margin:0;color:var(--muted);font-size:14px}
+.ficon{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;font-size:20px;color:var(--q);background:rgba(56,214,255,.1);border:1px solid rgba(56,214,255,.25)}
+.steps{counter-reset:s;list-style:none;padding:0;display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+.steps li{counter-increment:s;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;font-size:14px;color:var(--muted)}
+.steps li::before{content:counter(s);display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--q),var(--q2));color:var(--on-accent);font-weight:800;margin-bottom:8px}
+.steps b{color:var(--text)}
+
+/* theory */
+.grid-2{display:grid;grid-template-columns:1.3fr 1fr;gap:20px;margin-bottom:20px}
+.grid-2 aside{display:flex;flex-direction:column;gap:20px}
+.prose h2{font-size:19px;margin:18px 0 8px;color:var(--q)} .prose h2:first-child{margin-top:0}
+.prose h3{margin-top:0}
+.prose p,.prose li{color:var(--text2);font-size:14.5px}
+.eq{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:6px 14px;overflow-x:auto;margin:10px 0}
+.note{font-size:13.5px!important;border-left:3px solid var(--q2);padding-left:12px;color:var(--muted)!important}
+.tbl{width:100%;border-collapse:collapse;font-size:13.5px}
+.tbl th,.tbl td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:left}
+.tbl th{color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.4px}
+.tbl-wrap{overflow-x:auto}
+.kv{list-style:none;padding:0;margin:0}
+.kv li{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed var(--line)}
+
+/* sim */
+.sim-layout{display:grid;grid-template-columns:310px 1fr;gap:20px;align-items:start}
+.controls{position:sticky;top:90px}
+.controls h3{font-size:13px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin:0 0 14px}
+.controls h3.mt{margin-top:22px}
+.ctrl{margin-bottom:16px}
+.ctrl label{display:flex;justify-content:space-between;font-size:14px;margin-bottom:6px}
+.ctrl output{font-family:"JetBrains Mono",monospace;color:var(--q);font-size:13px}
+input[type=range]{width:100%;accent-color:var(--q);height:4px}
+select{width:100%;background:var(--bg);border:1px solid var(--line2);border-radius:10px;padding:8px 10px;margin-bottom:8px}
+.scenarios{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.scenarios button{background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:8px;font-size:12.5px;cursor:pointer;text-align:left;color:var(--muted)}
+.scenarios button:hover,.scenarios button.on{border-color:var(--q);color:var(--text);background:rgba(56,214,255,.08)}
+.scenario-note{margin-top:10px;font-size:13px;color:var(--text2);background:var(--bg);border:1px solid var(--line);border-left:3px solid var(--q2);border-radius:10px;padding:10px 12px}
+.toggles{display:flex;flex-direction:column;gap:6px;font-size:14px}
+.toggles input{accent-color:var(--q)}
+.sim-main{display:flex;flex-direction:column;gap:16px;min-width:0}
+.readouts{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
+.ro{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 14px}
+.ro span{display:block;font-size:11.5px;color:var(--muted)}
+.ro b{font-family:"JetBrains Mono",monospace;font-size:18px}
+.c-q{color:var(--q)} .c-r{color:var(--r)} .c-c{color:var(--c)}
+.dual{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.panel{padding:14px}
+.panel canvas{width:100%;height:280px;display:block}
+.panel canvas.chart{height:300px}
+.panel-head{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap}
+.panel-head .sub{font-size:12px;color:var(--muted)}
+.spacer{flex:1}
+.tag{font-size:12px;font-weight:700;padding:4px 10px;border-radius:7px;background:var(--bg);border:1px solid var(--line2)}
+.tag.q{color:var(--q);border-color:rgba(56,214,255,.4)}
+.tag.c{color:var(--c);border-color:rgba(255,181,71,.4)}
+#cvStream{height:180px}
+.bars{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.bar-row{display:grid;grid-template-columns:70px 1fr 70px 80px;gap:10px;align-items:center;font-size:13px}
+.bar-row b{font-family:"JetBrains Mono",monospace;text-align:right}
+.bar-row small{color:var(--muted);font-family:"JetBrains Mono",monospace}
+.bar{height:10px;background:var(--bg);border-radius:6px;overflow:hidden;border:1px solid var(--line)}
+.bar i{display:block;height:100%;width:0;transition:width .3s}
+.b-c{background:var(--c)} .b-q{background:linear-gradient(90deg,var(--q),var(--q2))} .b-t{background:var(--ok)}
+
+/* analysis */
+.analysis-head{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:20px;flex-wrap:wrap}
+.analysis-head h2{margin:0 0 4px}
+.analysis-head p{margin:0}
+.row-gap{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+#page-analysis .grid-2{grid-template-columns:1fr 1fr}
+.insight h3{margin-top:0}
+
+/* verify */
+#page-verify .grid-2{grid-template-columns:1fr 1.2fr}
+.verify-list{display:flex;flex-direction:column;gap:8px}
+.vitem{display:grid;grid-template-columns:28px 1fr;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg)}
+.vitem .ic{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:13px}
+.vitem.pass .ic{background:rgba(62,224,160,.15);color:var(--ok)}
+.vitem.fail .ic{background:rgba(255,92,122,.15);color:var(--bad)}
+.vitem b{font-size:14px}
+.vitem div small{display:block;color:var(--muted);font-family:"JetBrains Mono",monospace;font-size:12px}
+#pyPlot{width:100%;border-radius:10px;background:#fff}
+
+/* quiz */
+.quiz-wrap{max-width:760px;margin:0 auto}
+.quiz-top{display:flex;justify-content:space-between;align-items:center}
+.quiz-top h2{margin:0}
+.progress{height:6px;background:var(--bg);border-radius:4px;margin:14px 0 20px;overflow:hidden}
+.progress i{display:block;height:100%;background:linear-gradient(90deg,var(--q),var(--q2));transition:width .3s}
+.qtext{font-size:17px;font-weight:600;margin-bottom:16px}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{text-align:left;background:var(--bg);border:1px solid var(--line2);border-radius:12px;padding:12px 16px;cursor:pointer;font-size:15px}
+.opt:hover:not(:disabled){border-color:var(--q)}
+.opt.right{border-color:var(--ok);background:rgba(62,224,160,.1)}
+.opt.wrong{border-color:var(--bad);background:rgba(255,92,122,.1)}
+.explain{margin-top:14px;padding:12px 14px;border-radius:10px;background:var(--bg);border-left:3px solid var(--q2);font-size:14px;color:var(--text2)}
+.quiz-nav{display:flex;justify-content:flex-end;margin-top:16px}
+.score{text-align:center;padding:20px}
+.score .big{font-size:56px;font-weight:800;background:linear-gradient(90deg,var(--q),var(--q2));-webkit-background-clip:text;background-clip:text;color:transparent}
+
+/* team */
+.team-head{text-align:center;margin-bottom:24px}
+.team-head h2{font-size:30px;margin:12px 0 4px}
+.team{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:20px}
+.member{text-align:center;padding:28px 22px}
+.member h3{margin:14px 0 4px}
+.member .role{color:var(--q);font-size:13px;font-weight:600;margin-bottom:10px}
+.member p{color:var(--muted);font-size:14px;margin:0}
+.avatar{width:84px;height:84px;margin:0 auto;border-radius:50%;display:grid;place-items:center;font-size:26px;font-weight:800;color:var(--on-accent)}
+.a1{background:linear-gradient(135deg,#38d6ff,#7c5cff)} .a2{background:linear-gradient(135deg,#ffb547,#ff6b8b)} .a3{background:linear-gradient(135deg,#3ee0a0,#38d6ff)}
+.addie{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:12px 0}
+.addie div{text-align:center;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 4px}
+.addie b{display:block;font-size:22px;color:var(--q)}
+.addie span{font-size:11px;color:var(--muted)}
+
+.foot{text-align:center;color:var(--dim);font-size:12.5px;padding:30px 16px;border-top:1px solid var(--line);margin-top:30px}
+
+@media (max-width:1100px){
+  .readouts{grid-template-columns:repeat(3,1fr)}
+  .sim-layout{grid-template-columns:1fr}
+  .controls{position:static}
+  .steps{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:860px){
+  .topbar{flex-wrap:wrap;padding:10px 16px;gap:10px}
+  .tabs{order:3;width:100%;margin:0}
+  main{padding:16px}
+  .hero,.grid-2,#page-analysis .grid-2,#page-verify .grid-2,.dual,.team{grid-template-columns:1fr}
+  .features{grid-template-columns:1fr}
+  .readouts{grid-template-columns:repeat(2,1fr)}
+  .steps{grid-template-columns:1fr}
+  .bar-row{grid-template-columns:60px 1fr 60px}
+  .bar-row small{display:none}
+}
+.avatar{width:132px;height:132px;padding:4px;overflow:hidden}
+.avatar img{width:100%;height:100%;object-fit:cover;object-position:center 22%;border-radius:50%;display:block;background:var(--card2)}
+[data-theme="classic"] .avatar,[data-theme="classic"] .avatar img{border-radius:3px}
+[data-theme="classic"] .avatar img{filter:sepia(.35)}
+.avatar.a1,.avatar.a2,.avatar.a3{background:#d40d1c}
+.avatar img{background:#d40d1c}
+/* Kombinasi font: judul Plus Jakarta Sans, isi Inter */
+:root{--font-head:"Plus Jakarta Sans",Inter,system-ui,sans-serif}
+[data-theme="classic"]{--font-head:"EB Garamond",Georgia,serif}
+h1,h2,h3,.brand-name,.sec-title,.qtext,.tag,.pill,.member .role,.score .big{font-family:var(--font-head)}
+h1,h2{letter-spacing:-.4px} h1{font-weight:800}
+[data-theme="classic"] h1,[data-theme="classic"] h2{letter-spacing:.3px}
+
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="logo">
+      <svg viewBox="0 0 40 40" aria-hidden="true"><rect x="16" y="6" width="8" height="28" rx="2" fill="currentColor" opacity=".25"/><path d="M2 22 C6 10,10 10,14 22 S18 34,20 22 S24 16,26 22 S32 26,38 22" stroke="currentColor" stroke-width="2.6" fill="none" stroke-linecap="round"/></svg>
+    </div>
+    <div>
+      <div class="brand-name">Q-Tunnel Lab</div>
+      <div class="brand-sub">Quantum Tunneling Interactive Lab · Kelompok 7</div>
+    </div>
+  </div>
+  <nav class="tabs" id="tabs">
+    <button data-tab="home" class="active">Beranda</button>
+    <button data-tab="theory">Teori</button>
+    <button data-tab="sim">Simulasi</button>
+    <button data-tab="analysis">Analisis</button>
+    <button data-tab="verify">Verifikasi</button>
+    <button data-tab="quiz">Kuis</button>
+    <button data-tab="team">Tim</button>
+  </nav>
+  <div class="theme-switch" id="themeSwitch" role="group" aria-label="Mode tampilan">
+    <button data-theme="light" title="Mode Terang">☀</button>
+    <button data-theme="dark" title="Mode Gelap">☾</button>
+    <button data-theme="blue" title="Mode Biru">◆</button>
+    <button data-theme="classic" title="Mode Klasik (gaya lama)">❦</button>
+  </div>
+  <div class="engine" id="engineBadge" title="Status mesin perhitungan Python (Flask)">
+    <span class="dot"></span><span class="txt">Python: memeriksa…</span>
+  </div>
+</header>
+
+<main>
+
+<!-- ============ BERANDA ============ -->
+<section class="page active" id="page-home">
+  <div class="hero">
+    <div class="hero-text">
+      <span class="pill">Jalur J1 · Simulasi &amp; Media Pembelajaran Fisika Kuantum</span>
+      <h1>Pengembangan <em>Quantum Tunneling Interactive Lab</em> Berbasis Web untuk Visualisasi Transmisi Partikel</h1>
+      <p class="lead">Laboratorium virtual yang menyajikan prediksi <b>mekanika klasik</b> dan <b>mekanika kuantum</b> secara tersinkronisasi pada penghalang potensial persegi satu dimensi — lengkap dengan fungsi gelombang, koefisien transmisi–refleksi, eksplorasi limit klasik, dan verifikasi kebenaran fisika berbasis Python.</p>
+      <div class="hero-cta">
+        <button class="btn primary" data-goto="sim">Mulai Eksperimen →</button>
+        <button class="btn ghost" data-goto="theory">Pelajari Teori</button>
+      </div>
+      <div class="hero-stats">
+        <div><b>5</b><span>Fitur utama</span></div>
+        <div><b>3</b><span>Daerah energi</span></div>
+        <div><b>&lt;10⁻⁶</b><span>Galat analitik–numerik</span></div>
+      </div>
+    </div>
+    <div class="hero-visual card">
+      <canvas id="heroCanvas"></canvas>
+      <div class="hero-caption">ψ(x) elektron, E = 3 eV, V₀ = 5 eV, a = 0,4 nm · T ≈ 1,16 %</div>
+    </div>
+  </div>
+
+  <h2 class="sec-title">Fitur Laboratorium</h2>
+  <div class="features">
+    <div class="feature card"><div class="ficon">⚙</div><h3>Interactive Parameter Control</h3><p>Atur energi partikel E, tinggi penghalang V₀, lebar a, dan massa partikel secara langsung.</p></div>
+    <div class="feature card"><div class="ficon">◐</div><h3>Dual Physics Visualization</h3><p>Panel klasik dan kuantum berdampingan dengan parameter yang tersinkronisasi.</p></div>
+    <div class="feature card"><div class="ficon">⇄</div><h3>Transmission Comparison</h3><p>Bandingkan T klasik, T kuantum, dan selisih keduanya — termasuk refleksi saat E &gt; V₀.</p></div>
+    <div class="feature card"><div class="ficon">∞</div><h3>Classical Limit Explorer</h3><p>Amati bagaimana massa dan lebar penghalang membawa hasil kuantum mendekati klasik, lengkap dengan osilasi resonansi.</p></div>
+    <div class="feature card"><div class="ficon">✎</div><h3>Learning Scenarios</h3><p>Skenario terpandu: E &lt; V₀, E = V₀, E &gt; V₀, resonansi, penghalang tipis/tebal.</p></div>
+    <div class="feature card"><div class="ficon">✓</div><h3>Verifikasi Fisika</h3><p>Pembandingan solusi analitik dengan integrasi numerik Persamaan Schrödinger (JavaScript &amp; Python).</p></div>
+  </div>
+
+  <h2 class="sec-title">Alur Belajar (Prosedur)</h2>
+  <ol class="steps">
+    <li><b>Pahami teori</b> — baca ringkasan Persamaan Schrödinger dan koefisien transmisi.</li>
+    <li><b>Pilih skenario</b> — gunakan Learning Scenarios atau atur parameter sendiri.</li>
+    <li><b>Amati &amp; bandingkan</b> — lihat perbedaan prediksi klasik dan kuantum serta aliran partikel.</li>
+    <li><b>Analisis grafik</b> — telusuri T(E), T(a), dan limit klasik; ekspor data CSV.</li>
+    <li><b>Verifikasi</b> — jalankan uji kebenaran fisika, lalu uji pemahaman melalui kuis.</li>
+  </ol>
+</section>
+
+<!-- ============ TEORI ============ -->
+<section class="page" id="page-theory">
+  <div class="grid-2">
+    <article class="card prose">
+      <h2>Tujuan</h2>
+      <p>Mengamati fenomena penerowongan kuantum (<i>quantum tunneling</i>) dan menentukan koefisien transmisi \(T\) serta refleksi \(R\) partikel yang menumbuk penghalang potensial persegi, kemudian membandingkannya dengan prediksi mekanika klasik.</p>
+      <h2>Persamaan Schrödinger</h2>
+      <p>Partikel bermassa \(m\) dan energi \(E\) dalam satu dimensi memenuhi persamaan Schrödinger tak bergantung waktu:</p>
+      <div class="eq">$$-\frac{\hbar^2}{2m}\frac{d^2\psi}{dx^2}+V(x)\psi=E\psi \qquad (1)$$</div>
+      <p>dengan \(V(x)=V_0\) untuk \(0&lt;x&lt;a\) dan \(V(x)=0\) di luar daerah tersebut. Solusi tiga daerah:</p>
+      <div class="eq">$$\psi(x)=\begin{cases} e^{ikx}+r\,e^{-ikx}, & x&lt;0\\ C e^{iqx}+D e^{-iqx}, & 0\le x\le a\\ t\,e^{ikx}, & x&gt;a\end{cases}$$</div>
+      <p>dengan \(k=\sqrt{2mE}/\hbar\) dan \(q=\sqrt{2m(E-V_0)}/\hbar\). Konstanta ditentukan dari kontinuitas \(\psi\) dan \(d\psi/dx\) di \(x=0\) dan \(x=a\).</p>
+      <h2>Koefisien Transmisi</h2>
+      <p><b>Daerah \(0&lt;E&lt;V_0\)</b> (penerowongan):</p>
+      <div class="eq">$$T=\left[1+\frac{V_0^2\sinh^2(\kappa a)}{4E(V_0-E)}\right]^{-1},\quad \kappa=\frac{\sqrt{2m(V_0-E)}}{\hbar}\qquad(2)$$</div>
+      <p><b>Daerah \(E&gt;V_0\)</b> (gelombang berosilasi di dalam penghalang):</p>
+      <div class="eq">$$T=\left[1+\frac{V_0^2\sin^2(k'a)}{4E(E-V_0)}\right]^{-1},\quad k'=\frac{\sqrt{2m(E-V_0)}}{\hbar}\qquad(3)$$</div>
+      <p><b>Kasus batas \(E=V_0\)</b>:</p>
+      <div class="eq">$$T=\left[1+\frac{mV_0a^2}{2\hbar^2}\right]^{-1}\qquad(4)$$</div>
+      <p>Koefisien refleksi \(R=1-T\). Untuk penghalang tebal (\(\kappa a\gg1\)):</p>
+      <div class="eq">$$T\approx16\frac{E}{V_0}\left(1-\frac{E}{V_0}\right)e^{-2\kappa a}\qquad(5)$$</div>
+    </article>
+    <aside>
+      <div class="card prose">
+        <h2>Klasik vs Kuantum</h2>
+        <table class="tbl">
+          <thead><tr><th>Kondisi</th><th>Klasik</th><th>Kuantum</th></tr></thead>
+          <tbody>
+            <tr><td>\(E&lt;V_0\)</td><td>\(T=0\) — selalu memantul</td><td>\(T&gt;0\) — bisa menembus</td></tr>
+            <tr><td>\(E=V_0\)</td><td>batas (ambang)</td><td>\(T\) hingga, persamaan (4)</td></tr>
+            <tr><td>\(E&gt;V_0\)</td><td>\(T=1\) — selalu lolos</td><td>\(T\le1\) — masih ada refleksi</td></tr>
+          </tbody>
+        </table>
+        <p class="note">Resonansi \(T=1\) terjadi saat \(k'a=n\pi\) (\(n=1,2,3,\dots\)): penghalang menjadi "transparan" seperti interferensi pada lapisan tipis.</p>
+      </div>
+      <div class="card prose">
+        <h2>Konstanta yang Dipakai</h2>
+        <ul class="kv">
+          <li><span>\(\hbar^2/2m_e\)</span><b>0,0380998 eV·nm²</b></li>
+          <li><span>\(m_e\)</span><b>9,109 × 10⁻³¹ kg</b></li>
+          <li><span>\(m_\mu/m_e\)</span><b>206,77</b></li>
+          <li><span>\(m_p/m_e\)</span><b>1836,15</b></li>
+        </ul>
+        <p class="note">Contoh acuan proposal: elektron, \(V_0=5\) eV, \(a=0{,}4\) nm, \(E=3\) eV → \(\kappa a\approx2{,}90\) dan \(T\approx1{,}16\%\).</p>
+      </div>
+      <div class="card prose">
+        <h2>Aplikasi Nyata</h2>
+        <ul>
+          <li>Mikroskop penerowongan (STM)</li>
+          <li>Peluruhan alfa inti atom</li>
+          <li>Dioda terowongan &amp; memori flash</li>
+          <li>Fusi nuklir di inti Matahari</li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ SIMULASI ============ -->
+<section class="page" id="page-sim">
+  <div class="sim-layout">
+    <aside class="card controls">
+      <h3>Interactive Parameter Control</h3>
+      <div class="ctrl">
+        <label>Energi partikel <i>E</i><output id="oE"></output></label>
+        <input type="range" id="sE" min="0.05" max="15" step="0.01" value="3">
+      </div>
+      <div class="ctrl">
+        <label>Tinggi penghalang <i>V₀</i><output id="oV"></output></label>
+        <input type="range" id="sV" min="0.5" max="12" step="0.05" value="5">
+      </div>
+      <div class="ctrl">
+        <label>Lebar penghalang <i>a</i><output id="oA"></output></label>
+        <input type="range" id="sA" min="0.02" max="2" step="0.005" value="0.4">
+      </div>
+      <div class="ctrl">
+        <label>Massa partikel<output id="oM"></output></label>
+        <select id="selM">
+          <option value="1" selected>Elektron (mₑ)</option>
+          <option value="206.77">Muon (206,77 mₑ)</option>
+          <option value="1836.15">Proton (1836 mₑ)</option>
+          <option value="custom">Kustom…</option>
+        </select>
+        <input type="range" id="sM" min="0" max="3.5" step="0.01" value="0" class="hidden">
+      </div>
+
+      <h3 class="mt">Learning Scenarios</h3>
+      <div class="scenarios" id="scenarios"></div>
+      <div class="scenario-note" id="scenarioNote">Pilih skenario untuk panduan eksplorasi.</div>
+
+      <h3 class="mt">Tampilan</h3>
+      <div class="toggles">
+        <label><input type="checkbox" id="tRe" checked> Re ψ (animasi)</label>
+        <label><input type="checkbox" id="tProb" checked> |ψ|² densitas</label>
+        <label><input type="checkbox" id="tPlay" checked> Jalankan animasi</label>
+      </div>
+    </aside>
+
+    <div class="sim-main">
+      <div class="readouts">
+        <div class="ro"><span>Rezim</span><b id="rRegime">—</b></div>
+        <div class="ro"><span>T kuantum</span><b id="rTq" class="c-q">—</b></div>
+        <div class="ro"><span>R kuantum</span><b id="rRq" class="c-r">—</b></div>
+        <div class="ro"><span>T klasik</span><b id="rTc" class="c-c">—</b></div>
+        <div class="ro"><span>ΔT (Kuantum − Klasik)</span><b id="rDT">—</b></div>
+        <div class="ro"><span id="rKlabel">κa</span><b id="rKa">—</b></div>
+      </div>
+
+      <div class="dual">
+        <div class="card panel">
+          <div class="panel-head"><span class="tag c">Mekanika Klasik</span><span class="sub" id="clsText"></span></div>
+          <canvas id="cvClassical"></canvas>
+        </div>
+        <div class="card panel">
+          <div class="panel-head"><span class="tag q">Mekanika Kuantum</span><span class="sub">Fungsi gelombang ψ(x) dari Persamaan Schrödinger</span></div>
+          <canvas id="cvQuantum"></canvas>
+        </div>
+      </div>
+
+      <div class="card panel">
+        <div class="panel-head">
+          <span class="tag">Transmission Comparison · Aliran Partikel</span>
+          <span class="sub">Setiap titik adalah satu partikel; hasil empiris mendekati nilai teoretis</span>
+          <div class="spacer"></div>
+          <button class="btn sm" id="btnFire">Tembakkan 200</button>
+          <button class="btn sm ghost" id="btnReset">Reset</button>
+        </div>
+        <canvas id="cvStream"></canvas>
+        <div class="bars">
+          <div class="bar-row"><span>Klasik</span><div class="bar"><i id="bC" class="b-c"></i></div><b id="bCv">0 %</b><small id="cntC">0 / 0</small></div>
+          <div class="bar-row"><span>Kuantum</span><div class="bar"><i id="bQ" class="b-q"></i></div><b id="bQv">0 %</b><small id="cntQ">0 / 0</small></div>
+          <div class="bar-row"><span>Teori T</span><div class="bar"><i id="bT" class="b-t"></i></div><b id="bTv">0 %</b><small>analitik</small></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ANALISIS ============ -->
+<section class="page" id="page-analysis">
+  <div class="analysis-head card">
+    <div><h2>Analisis Grafik</h2><p class="muted">Grafik mengikuti parameter pada halaman Simulasi. Garis putus-putus = prediksi klasik.</p></div>
+    <div class="row-gap">
+      <span class="chip" id="paramChip"></span>
+      <button class="btn sm" id="btnCSV">Ekspor CSV T(E)</button>
+    </div>
+  </div>
+  <div class="grid-2">
+    <div class="card panel"><div class="panel-head"><span class="tag">T dan R terhadap Energi</span><span class="sub">T(E), R(E) — perhatikan resonansi E &gt; V₀</span></div><canvas id="cvTE" class="chart"></canvas></div>
+    <div class="card panel"><div class="panel-head"><span class="tag">T terhadap Lebar Penghalang</span><span class="sub">T(a) — skala logaritmik</span></div><canvas id="cvTA" class="chart"></canvas></div>
+    <div class="card panel"><div class="panel-head"><span class="tag">Classical Limit Explorer</span><span class="sub">T terhadap massa partikel m/mₑ (log)</span></div><canvas id="cvTM" class="chart"></canvas></div>
+    <div class="card panel"><div class="panel-head"><span class="tag">|T<sub>kuantum</sub> − T<sub>klasik</sub>|</span><span class="sub">Selisih kedua model sepanjang energi</span></div><canvas id="cvDiff" class="chart"></canvas></div>
+  </div>
+  <div class="card prose insight" id="insight"></div>
+</section>
+
+<!-- ============ VERIFIKASI ============ -->
+<section class="page" id="page-verify">
+  <div class="card analysis-head">
+    <div>
+      <h2>Pemeriksaan Kebenaran Fisika</h2>
+      <p class="muted">Solusi analitik (pers. 2–4) dibandingkan dengan integrasi numerik RK4 Persamaan Schrödinger (pers. 1). Kriteria sesuai Lampiran proposal.</p>
+    </div>
+    <div class="row-gap">
+      <button class="btn" id="btnVerifyJS">Jalankan (JavaScript)</button>
+      <button class="btn primary" id="btnVerifyPy">Jalankan (Python)</button>
+    </div>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <h3>Hasil Kriteria</h3>
+      <div id="verifyList" class="verify-list"><p class="muted">Belum dijalankan.</p></div>
+    </div>
+    <div class="card">
+      <h3>Tabel Analitik vs Numerik</h3>
+      <div class="tbl-wrap"><table class="tbl mono" id="verifyTable"><thead><tr><th>E (eV)</th><th>T analitik</th><th>T numerik</th><th>Galat relatif</th><th>T+R</th></tr></thead><tbody></tbody></table></div>
+      <p class="muted small" id="verifySrc"></p>
+    </div>
+  </div>
+  <div class="card" id="pyPlotCard" hidden>
+    <h3>Grafik Verifikasi (Matplotlib, dihasilkan Python)</h3>
+    <img id="pyPlot" alt="Grafik verifikasi dari Python">
+  </div>
+</section>
+
+<!-- ============ KUIS ============ -->
+<section class="page" id="page-quiz">
+  <div class="quiz-wrap">
+    <div class="card quiz">
+      <div class="quiz-top"><h2>Uji Pemahaman</h2><span class="chip" id="quizProg"></span></div>
+      <div class="progress"><i id="quizBar"></i></div>
+      <div id="quizBody"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TIM ============ -->
+<section class="page" id="page-team">
+  <div class="team-head">
+    <span class="pill">Kelompok 7 · Proyek Fisika Kuantum</span>
+    <h2>Tim Pengembang</h2>
+    <p class="muted">Pengembangan Quantum Tunneling Interactive Lab Berbasis Web untuk Visualisasi Transmisi Partikel</p>
+  </div>
+  <div class="team">
+    <div class="card member">
+      <div class="avatar a1"><img src="data:image/jpeg;base64,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" alt="Foto Ernauli Br. Haloho"></div>
+      <h3>Ernauli Br. Haloho</h3>
+      <div class="role">Koordinator &amp; Penulis Korespondensi</div>
+      <p>Mengatur jadwal, menyusun pendahuluan dan metode, menyiapkan instrumen validasi, serta berkomunikasi dengan validator dan jurnal.</p>
+    </div>
+    <div class="card member">
+      <div class="avatar a2"><img src="data:image/jpeg;base64,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" alt="Foto Heny Asvarinda"></div>
+      <h3>Heny Asvarinda</h3>
+      <div class="role">Penulis / Editor Utama</div>
+      <p>Kajian pustaka dan landasan teori, penulisan hasil dan pembahasan, penyuntingan bahasa, serta format sesuai template jurnal.</p>
+    </div>
+    <div class="card member">
+      <div class="avatar a3"><img src="data:image/jpeg;base64,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" alt="Foto Dila Badiro"></div>
+      <h3>Dila Badiro</h3>
+      <div class="role">Analis-Programmer</div>
+      <p>Derivasi analitik, kode Python, pengembangan aplikasi web, uji kebenaran fisika, serta dokumentasi kode dan grafik.</p>
+    </div>
+  </div>
+  <div class="grid-2">
+    <div class="card prose">
+      <h3>Metode Pengembangan · ADDIE</h3>
+      <div class="addie">
+        <div><b>A</b><span>Analysis</span></div><div><b>D</b><span>Design</span></div><div><b>D</b><span>Development</span></div><div><b>I</b><span>Implementation</span></div><div><b>E</b><span>Evaluation</span></div>
+      </div>
+      <p>Teknologi: HTML, CSS, JavaScript (Canvas) untuk antarmuka; Python (NumPy, Matplotlib, Flask) sebagai mesin acuan kebenaran perhitungan.</p>
+    </div>
+    <div class="card prose">
+      <h3>Jurnal Sasaran</h3>
+      <ul>
+        <li>Jurnal Penelitian &amp; Pengembangan Pendidikan Fisika (JPPPF)</li>
+        <li>Alternatif: Jurnal Pendidikan Fisika Indonesia (JPFI)</li>
+        <li>Alternatif: Physics Education (IOP Publishing)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">© 2026 Kelompok 7 — Ernauli Br. Haloho · Heny Asvarinda · Dila Badiro · Q-Tunnel Lab</footer>
+
+<script>
+/* Q-Tunnel Lab — mesin fisika (JavaScript)
+ * Satuan: energi eV, panjang nm, massa dalam kelipatan massa elektron.
+ * hbar^2 / (2 m_e) = 0.0380998 eV nm^2
+ */
+const Physics = (() => {
+  const H2M = 0.0380998; // eV nm^2
+
+  // ---------- bilangan kompleks ----------
+  const C = (re, im = 0) => ({ re, im });
+  const add = (a, b) => C(a.re + b.re, a.im + b.im);
+  const sub = (a, b) => C(a.re - b.re, a.im - b.im);
+  const mul = (a, b) => C(a.re * b.re - a.im * b.im, a.re * b.im + a.im * b.re);
+  const div = (a, b) => { const d = b.re * b.re + b.im * b.im; return C((a.re * b.re + a.im * b.im) / d, (a.im * b.re - a.re * b.im) / d); };
+  const cexp = (z) => { const e = Math.exp(z.re); return C(e * Math.cos(z.im), e * Math.sin(z.im)); };
+  const abs2 = (z) => z.re * z.re + z.im * z.im;
+  const scale = (z, s) => C(z.re * s, z.im * s);
+
+  const wavenumber = (E, m) => Math.sqrt(m * E / H2M);
+
+  /** Koefisien transmisi analitik (pers. 2, 3, 4) */
+  function transmission(E, V0, a, m = 1) {
+    if (E <= 0) return 0;
+    const rel = Math.abs(E - V0) / V0;
+    if (rel < 1e-9) return 1 / (1 + m * V0 * a * a / (4 * H2M)); // pers. 4  (m V0 a^2 / 2hbar^2)
+    if (E < V0) {
+      const ka = Math.sqrt(m * (V0 - E) / H2M) * a;
+      if (ka > 350) return 0;
+      const s = Math.sinh(ka);
+      return 1 / (1 + (V0 * V0 * s * s) / (4 * E * (V0 - E)));
+    }
+    const kpa = Math.sqrt(m * (E - V0) / H2M) * a;
+    const s = Math.sin(kpa);
+    return 1 / (1 + (V0 * V0 * s * s) / (4 * E * (E - V0)));
+  }
+
+  const classicalT = (E, V0) => (E > V0 ? 1 : E < V0 ? 0 : 0.5);
+
+  function regime(E, V0) {
+    if (Math.abs(E - V0) / V0 < 0.004) return 'E = V₀';
+    return E < V0 ? 'E < V₀' : 'E > V₀';
+  }
+
+  /** Amplitudo kompleks r, C, D, t dari syarat kontinuitas */
+  function amplitudes(E, V0, a, m = 1) {
+    if (Math.abs(E - V0) < 1e-7) E = V0 + 1e-7;
+    const k = wavenumber(E, m);
+    const q = E > V0 ? C(Math.sqrt(m * (E - V0) / H2M), 0) : C(0, Math.sqrt(m * (V0 - E) / H2M));
+    const kk = C(k, 0), I = C(0, 1);
+    const eika = cexp(C(0, k * a));
+    const kOverQ = div(kk, q);
+    const one = C(1);
+    // C e^{iqa} = t e^{ika}(1+k/q)/2 ; D e^{-iqa} = t e^{ika}(1-k/q)/2  (t=1 sementara)
+    const eiqa = cexp(mul(I, scale(q, a)));
+    const emiqa = cexp(mul(I, scale(q, -a)));
+    const C1 = mul(scale(mul(eika, add(one, kOverQ)), 0.5), emiqa);
+    const D1 = mul(scale(mul(eika, sub(one, kOverQ)), 0.5), eiqa);
+    const qOverK = div(q, kk);
+    const lhs = add(mul(C1, add(one, qOverK)), mul(D1, sub(one, qOverK))); // = 2/t
+    const t = div(C(2), lhs);
+    const Cc = mul(C1, t), Dc = mul(D1, t);
+    const r = sub(add(Cc, Dc), one);
+    return { k, q, r, t, C: Cc, D: Dc };
+  }
+
+  /** Fungsi gelombang ψ(x) (kompleks) */
+  function psiFactory(E, V0, a, m = 1) {
+    const A = amplitudes(E, V0, a, m);
+    const I = C(0, 1);
+    return (x) => {
+      if (x < 0) return add(cexp(C(0, A.k * x)), mul(A.r, cexp(C(0, -A.k * x))));
+      if (x <= a) return add(mul(A.C, cexp(mul(I, scale(A.q, x)))), mul(A.D, cexp(mul(I, scale(A.q, -x)))));
+      return mul(A.t, cexp(C(0, A.k * x)));
+    };
+  }
+
+  /** Integrasi numerik RK4 Persamaan Schrödinger (independen dari solusi analitik).
+   *  Mulai dari x=a dengan ψ = e^{ikx} (gelombang keluar), integrasi mundur ke x=0,
+   *  lalu uraikan ψ(0), ψ'(0) menjadi A e^{ikx} + B e^{-ikx}.  T = 1/|A|^2. */
+  function numericalT(E, V0, a, m = 1, N = 4000) {
+    const k = wavenumber(E, m);
+    const f = m * (V0 - E) / H2M; // ψ'' = f ψ  di dalam penghalang
+    let p = C(Math.cos(k * a), Math.sin(k * a));
+    let dp = C(-k * Math.sin(k * a), k * Math.cos(k * a));
+    const h = -a / N;
+    for (let i = 0; i < N; i++) {
+      // sistem: p' = dp, dp' = f p (f konstan)
+      const k1p = dp, k1d = scale(p, f);
+      const k2p = add(dp, scale(k1d, h / 2)), k2d = scale(add(p, scale(k1p, h / 2)), f);
+      const k3p = add(dp, scale(k2d, h / 2)), k3d = scale(add(p, scale(k2p, h / 2)), f);
+      const k4p = add(dp, scale(k3d, h)), k4d = scale(add(p, scale(k3p, h)), f);
+      p = add(p, scale(add(add(k1p, scale(k2p, 2)), add(scale(k3p, 2), k4p)), h / 6));
+      dp = add(dp, scale(add(add(k1d, scale(k2d, 2)), add(scale(k3d, 2), k4d)), h / 6));
+    }
+    // ψ(0) = A + B ; ψ'(0) = ik(A - B)  → A = (ψ + ψ'/(ik))/2
+    const A = scale(add(p, div(dp, C(0, k))), 0.5);
+    const B = scale(sub(p, div(dp, C(0, k))), 0.5);
+    const T = 1 / abs2(A);
+    const R = abs2(B) / abs2(A);
+    return { T, R };
+  }
+
+  return { H2M, transmission, classicalT, regime, amplitudes, psiFactory, numericalT, wavenumber, abs2 };
+})();
+
+</script>
+<script>
+/* Q-Tunnel Lab — antarmuka & visualisasi */
+(() => {
+  const P = Physics;
+  const $ = (id) => document.getElementById(id);
+  const isLocal = ['localhost', '127.0.0.1'].includes(location.hostname);
+  const API = window.QTL_API ?? (isLocal && location.port !== '5000' ? 'http://localhost:5000' : '');
+
+  const state = { E: 3, V0: 5, a: 0.4, m: 1, t: 0 };
+  const COL = {};
+  const CVMAP = { q: '--q', q2: '--q2', c: '--c', r: '--r', ok: '--ok', grid: '--cv-grid', axis: '--cv-axis', text: '--muted', barrier: '--barrier', barrierLine: '--q2', energy: '--c', vlabel: '--cv-vlabel', legend: '--text2', pointRing: '--cv-ring', bfill1: '--cv-bfill1', bfill2: '--cv-bfill2' };
+  function loadColors() { const cs = getComputedStyle(document.documentElement); for (const k in CVMAP) COL[k] = cs.getPropertyValue(CVMAP[k]).trim(); }
+  function setTheme(t) {
+    document.documentElement.dataset.theme = t;
+    document.querySelectorAll('#themeSwitch button').forEach((b) => b.classList.toggle('on', b.dataset.theme === t));
+    try { localStorage.setItem('qtl-theme', t); } catch (e) {}
+    loadColors(); drawAll(); if (document.querySelector('#page-analysis.active')) drawAnalysis();
+  }
+  document.querySelectorAll('#themeSwitch button').forEach((b) => b.addEventListener('click', () => setTheme(b.dataset.theme)));
+
+  // ================= util =================
+  const fmtPct = (v) => {
+    const p = v * 100;
+    if (p === 0) return '0 %';
+    if (p < 0.01) return p.toExponential(2) + ' %';
+    return p.toFixed(p < 10 ? 3 : 2) + ' %';
+  };
+  const fmt = (v, d = 3) => (Math.abs(v) < 1e-3 && v !== 0 ? v.toExponential(2) : v.toFixed(d));
+
+  function setupCanvas(cv) {
+    const dpr = window.devicePixelRatio || 1;
+    const w = cv.clientWidth, h = cv.clientHeight;
+    if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(h * dpr)) {
+      cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
+    }
+    const ctx = cv.getContext('2d');
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return { ctx, w, h };
+  }
+
+  // ================= navigasi =================
+  function go(tab) {
+    document.querySelectorAll('#tabs button').forEach((b) => b.classList.toggle('active', b.dataset.tab === tab));
+    document.querySelectorAll('.page').forEach((p) => p.classList.toggle('active', p.id === 'page-' + tab));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    requestAnimationFrame(() => { drawAll(); if (tab === 'analysis') drawAnalysis(); });
+    try { localStorage.setItem('qtl-tab', tab); } catch (e) {}
+  }
+  document.querySelectorAll('#tabs button').forEach((b) => b.addEventListener('click', () => go(b.dataset.tab)));
+  document.querySelectorAll('[data-goto]').forEach((b) => b.addEventListener('click', () => go(b.dataset.goto)));
+
+  // ================= kontrol =================
+  const sE = $('sE'), sV = $('sV'), sA = $('sA'), sM = $('sM'), selM = $('selM');
+  function readControls() {
+    state.E = +sE.value; state.V0 = +sV.value; state.a = +sA.value;
+    state.m = selM.value === 'custom' ? Math.pow(10, +sM.value) : +selM.value;
+    update();
+  }
+  [sE, sV, sA, sM].forEach((s) => s.addEventListener('input', () => { clearScenario(); readControls(); }));
+  selM.addEventListener('change', () => { sM.classList.toggle('hidden', selM.value !== 'custom'); clearScenario(); readControls(); });
+
+  function setParams(p) {
+    if (p.E != null) sE.value = p.E;
+    if (p.V0 != null) sV.value = p.V0;
+    if (p.a != null) sA.value = p.a;
+    if (p.m != null) {
+      const opt = [...selM.options].find((o) => +o.value === p.m);
+      if (opt) { selM.value = opt.value; sM.classList.add('hidden'); }
+      else { selM.value = 'custom'; sM.value = Math.log10(p.m); sM.classList.remove('hidden'); }
+    }
+    readControls();
+  }
+
+  // ================= skenario =================
+  const resonanceE = (V0, a, m, n = 1) => V0 + H2Mn(n, a) / m;
+  function H2Mn(n, a) { return P.H2M * Math.pow(n * Math.PI / a, 2); }
+  const SCEN = [
+    { id: 'tun', name: 'E < V₀ · Tunneling', p: { E: 3, V0: 5, a: 0.4, m: 1 }, note: 'Kasus acuan proposal. Klasik: partikel <b>selalu memantul</b> (T = 0). Kuantum: fungsi gelombang meluruh eksponensial di dalam penghalang namun tidak nol, sehingga <b>T ≈ 1,16 %</b>. Perhatikan aliran partikel di bawah.' },
+    { id: 'eq', name: 'E = V₀ · Batas', p: { E: 5, V0: 5, a: 0.4, m: 1 }, note: 'Kasus batas: di dalam penghalang ψ berubah linier. T mengikuti pers. (4) dan bersambung mulus dengan pers. (2) dan (3).' },
+    { id: 'above', name: 'E > V₀ · Refleksi', p: { E: 7, V0: 5, a: 0.4, m: 1 }, note: 'Klasik memprediksi <b>transmisi penuh</b> (T = 1). Kuantum: sebagian gelombang <b>tetap terpantul</b> karena perubahan bilangan gelombang di tepi penghalang.' },
+    { id: 'res', name: 'Resonansi T = 1', p: null, note: 'Energi dipilih sehingga <b>k′a = π</b>. Gelombang di dalam penghalang membentuk gelombang berdiri, interferensi pantulan saling meniadakan → <b>T = 1</b> secara kuantum.' },
+    { id: 'thin', name: 'Penghalang tipis', p: { E: 3, V0: 5, a: 0.05, m: 1 }, note: 'Untuk a → 0, penghalang hampir tak terasa dan <b>T → 1</b>. Coba geser lebar a perlahan dan lihat T turun.' },
+    { id: 'thick', name: 'Penghalang tebal', p: { E: 3, V0: 5, a: 1.2, m: 1 }, note: 'κa ≫ 1: T meluruh eksponensial, mengikuti pendekatan pers. (5) <b>T ≈ 16(E/V₀)(1−E/V₀)e^(−2κa)</b>. Hasil mendekati klasik (T → 0).' },
+    { id: 'proton', name: 'Proton (limit klasik)', p: { E: 3, V0: 5, a: 0.4, m: 1836.15 }, note: 'Massa besar → κ besar → T praktis nol. Inilah mengapa benda makroskopis tidak teramati menembus dinding: <b>limit klasik</b>.' },
+    { id: 'muon', name: 'Muon', p: { E: 3, V0: 5, a: 0.4, m: 206.77 }, note: 'Muon ~207 kali massa elektron. Bandingkan T-nya dengan elektron pada penghalang yang sama.' },
+  ];
+  const scWrap = $('scenarios');
+  SCEN.forEach((s) => {
+    const b = document.createElement('button');
+    b.textContent = s.name; b.dataset.id = s.id;
+    b.addEventListener('click', () => {
+      let p = s.p;
+      if (s.id === 'res') p = { E: +(resonanceE(5, 0.4, 1)).toFixed(2), V0: 5, a: 0.4, m: 1 };
+      setParams(p);
+      scWrap.querySelectorAll('button').forEach((x) => x.classList.toggle('on', x === b));
+      $('scenarioNote').innerHTML = s.note;
+      resetStream();
+    });
+    scWrap.appendChild(b);
+  });
+  function clearScenario() { scWrap.querySelectorAll('button').forEach((x) => x.classList.remove('on')); }
+
+  // ================= update readouts =================
+  let cache = {};
+  function update() {
+    const { E, V0, a, m } = state;
+    const T = P.transmission(E, V0, a, m), Tc = P.classicalT(E, V0);
+    cache = { T, Tc, psi: P.psiFactory(E, V0, a, m), amp: P.amplitudes(E, V0, a, m) };
+    $('oE').textContent = E.toFixed(2) + ' eV';
+    $('oV').textContent = V0.toFixed(2) + ' eV';
+    $('oA').textContent = a.toFixed(3) + ' nm';
+    $('oM').textContent = m.toFixed(m < 10 ? 2 : 0) + ' mₑ';
+    $('rRegime').textContent = P.regime(E, V0);
+    $('rTq').textContent = fmtPct(T);
+    $('rRq').textContent = fmtPct(1 - T);
+    $('rTc').textContent = Tc === 0.5 ? 'ambang' : fmtPct(Tc);
+    const dT = T - (Tc === 0.5 ? T : Tc);
+    $('rDT').textContent = (dT >= 0 ? '+' : '') + (dT * 100).toFixed(3) + ' %';
+    if (E < V0) { $('rKlabel').textContent = 'κa'; $('rKa').textContent = (Math.sqrt(m * (V0 - E) / P.H2M) * a).toFixed(3); }
+    else { $('rKlabel').textContent = "k′a / π"; $('rKa').textContent = (Math.sqrt(m * Math.max(E - V0, 0) / P.H2M) * a / Math.PI).toFixed(3); }
+    $('clsText').textContent = E < V0 ? 'E < V₀ → partikel terpantul seluruhnya' : E > V0 ? 'E > V₀ → partikel lolos seluruhnya' : 'E = V₀ → tepat di ambang';
+    $('bTv').textContent = fmtPct(T); $('bT').style.width = (T * 100) + '%';
+    $('paramChip').textContent = `E=${E.toFixed(2)} eV · V₀=${V0.toFixed(2)} eV · a=${a.toFixed(3)} nm · m=${m.toFixed(m < 10 ? 2 : 0)} mₑ`;
+    if (document.querySelector('#page-analysis.active')) drawAnalysis();
+    if (!state.playing) drawAll();
+  }
+
+  // ================= gambar: potensial + gelombang =================
+  function domain() { const L = Math.max(0.8, 1.6 * state.a, 6 / Math.max(P.wavenumber(state.E, state.m), 1e-3)); return [-Math.min(L, 2.5), state.a + Math.min(L, 2.5)]; }
+
+  function drawPotential(ctx, w, h, X, Y, Vmax) {
+    const { V0, a, E } = state;
+    // grid
+    ctx.strokeStyle = COL.grid; ctx.lineWidth = 1;
+    for (let i = 1; i < 6; i++) { const y = (h * i) / 6; ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
+    // barrier
+    const x0 = X(0), x1 = X(a), yb = Y(V0), yg = Y(0);
+    const grd = ctx.createLinearGradient(0, yb, 0, yg);
+    grd.addColorStop(0, COL.bfill1); grd.addColorStop(1, COL.bfill2);
+    ctx.fillStyle = grd; ctx.fillRect(x0, yb, x1 - x0, yg - yb);
+    ctx.strokeStyle = COL.barrierLine; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(0, yg); ctx.lineTo(x0, yg); ctx.lineTo(x0, yb); ctx.lineTo(x1, yb); ctx.lineTo(x1, yg); ctx.lineTo(w, yg); ctx.stroke();
+    // energy line
+    ctx.setLineDash([6, 5]); ctx.strokeStyle = COL.energy; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(0, Y(E)); ctx.lineTo(w, Y(E)); ctx.stroke(); ctx.setLineDash([]);
+    ctx.font = '600 11px Inter'; ctx.fillStyle = COL.energy; ctx.fillText('E = ' + E.toFixed(2) + ' eV', 8, Y(E) - 6);
+    ctx.fillStyle = COL.vlabel; ctx.fillText('V₀ = ' + V0.toFixed(2) + ' eV', Math.min(x1 + 6, w - 90), yb - 6);
+    ctx.fillStyle = COL.text; ctx.font = '11px JetBrains Mono';
+    ctx.fillText('x = 0', x0 - 16, yg + 14); ctx.fillText('a', x1 - 3, yg + 14);
+  }
+
+  function drawQuantum(cv, opts = {}) {
+    const { ctx, w, h } = setupCanvas(cv);
+    ctx.clearRect(0, 0, w, h);
+    const [xa, xb] = domain();
+    const Vmax = Math.max(state.V0, state.E) * 1.35;
+    const padB = 22;
+    const X = (x) => ((x - xa) / (xb - xa)) * w;
+    const Y = (v) => h - padB - (v / Vmax) * (h - padB - 10);
+    drawPotential(ctx, w, h, X, Y, Vmax);
+    const psi = cache.psi, base = Y(state.E);
+    // auto-scale amplitude
+    const N = Math.max(300, Math.floor(w));
+    let maxA = 0; const pts = [];
+    for (let i = 0; i <= N; i++) { const x = xa + ((xb - xa) * i) / N; const z = psi(x); pts.push([x, z]); maxA = Math.max(maxA, P.abs2(z)); }
+    const amp = Math.min(base - 14, (h - padB) * 0.38) / Math.max(Math.sqrt(maxA), 1e-9);
+    const ph = state.t;
+    const cr = Math.cos(ph), ci = -Math.sin(ph); // e^{-iωt}
+    const showProb = opts.prob ?? $('tProb').checked, showRe = opts.re ?? $('tRe').checked;
+    if (showProb) {
+      const sc = amp / Math.max(Math.sqrt(maxA), 1e-9);
+      ctx.beginPath(); ctx.moveTo(X(xa), base);
+      pts.forEach(([x, z]) => ctx.lineTo(X(x), base - P.abs2(z) * sc * 0.9));
+      ctx.lineTo(X(xb), base); ctx.closePath();
+      const g = ctx.createLinearGradient(0, base - amp, 0, base);
+      g.addColorStop(0, 'rgba(124,92,255,.55)'); g.addColorStop(1, 'rgba(124,92,255,.05)');
+      ctx.fillStyle = g; ctx.fill();
+      ctx.strokeStyle = 'rgba(180,160,255,.9)'; ctx.lineWidth = 1.5; ctx.stroke();
+    }
+    if (showRe) {
+      ctx.beginPath();
+      pts.forEach(([x, z], i) => { const re = z.re * cr - z.im * ci; const y = base - re * amp; i ? ctx.lineTo(X(x), y) : ctx.moveTo(X(x), y); });
+      ctx.strokeStyle = COL.q; ctx.lineWidth = 2.2; ctx.shadowColor = COL.q; ctx.shadowBlur = 8; ctx.stroke(); ctx.shadowBlur = 0;
+    }
+    // legend
+    ctx.font = '11px Inter';
+    let lx = w - 150; const ly = 16;
+    if (showRe) { ctx.fillStyle = COL.q; ctx.fillRect(lx, ly - 7, 14, 3); ctx.fillStyle = COL.text; ctx.fillText('Re ψ(x,t)', lx + 20, ly - 2); }
+    if (showProb) { ctx.fillStyle = COL.vlabel; ctx.fillRect(lx, ly + 8, 14, 3); ctx.fillStyle = COL.text; ctx.fillText('|ψ(x)|²', lx + 20, ly + 13); }
+    if (!opts.hero) {
+      ctx.font = '600 12px JetBrains Mono'; ctx.fillStyle = COL.q;
+      ctx.fillText('T = ' + fmtPct(cache.T), Math.min(X(state.a) + 10, w - 120), h - padB - 30);
+      ctx.fillStyle = COL.r; ctx.fillText('R = ' + fmtPct(1 - cache.T), 10, h - padB - 30);
+    }
+  }
+
+  // klasik: bola menggelinding
+  const balls = [];
+  function drawClassical(cv) {
+    const { ctx, w, h } = setupCanvas(cv);
+    ctx.clearRect(0, 0, w, h);
+    const [xa, xb] = domain();
+    const Vmax = Math.max(state.V0, state.E) * 1.35;
+    const padB = 22;
+    const X = (x) => ((x - xa) / (xb - xa)) * w;
+    const Y = (v) => h - padB - (v / Vmax) * (h - padB - 10);
+    drawPotential(ctx, w, h, X, Y, Vmax);
+    // trajectory hint
+    const yE = Y(state.E);
+    const pass = state.E > state.V0;
+    ctx.strokeStyle = 'rgba(255,181,71,.35)'; ctx.lineWidth = 2;
+    ctx.beginPath();
+    if (pass) { ctx.moveTo(10, yE + 22); ctx.lineTo(w - 20, yE + 22); }
+    else { ctx.moveTo(10, yE + 22); ctx.lineTo(X(0) - 12, yE + 22); }
+    ctx.stroke();
+    // arrow
+    ctx.fillStyle = 'rgba(255,181,71,.6)';
+    const ax = pass ? w - 20 : X(0) - 12;
+    ctx.beginPath(); ctx.moveTo(ax, yE + 22); ctx.lineTo(ax - 8, yE + 17); ctx.lineTo(ax - 8, yE + 27); ctx.fill();
+    // moving ball (one), position by time
+    const span = X(0) - 20;
+    const period = 4;
+    const ph = (state.t / (2 * Math.PI) / period) % 1;
+    let bx;
+    if (pass) {
+      bx = 10 + ph * (w - 30);
+    } else {
+      bx = ph < 0.5 ? 10 + (ph / 0.5) * span : 10 + ((1 - ph) / 0.5) * span;
+    }
+    // inside barrier E>V0: slower (KE smaller) — visual hint only
+    const g = ctx.createRadialGradient(bx - 3, yE - 3, 1, bx, yE, 10);
+    g.addColorStop(0, '#fff3d6'); g.addColorStop(1, COL.c);
+    ctx.fillStyle = g; ctx.shadowColor = COL.c; ctx.shadowBlur = 14;
+    ctx.beginPath(); ctx.arc(bx, yE, 8, 0, Math.PI * 2); ctx.fill(); ctx.shadowBlur = 0;
+    ctx.font = '600 12px JetBrains Mono'; ctx.fillStyle = COL.c;
+    const Tc = P.classicalT(state.E, state.V0);
+    ctx.fillText('T = ' + (Tc === 0.5 ? 'ambang' : Tc * 100 + ' %'), Math.min(X(state.a) + 10, w - 120), h - padB - 30);
+  }
+
+  // ================= aliran partikel (Monte Carlo) =================
+  let parts = [];
+  const counts = { cT: 0, cN: 0, qT: 0, qN: 0 };
+  function fire(n) {
+    for (let i = 0; i < n; i++) {
+      const delay = Math.random() * 3;
+      const T = cache.T, Tc = P.classicalT(state.E, state.V0);
+      parts.push({ lane: 0, x: -delay, y: Math.random(), pass: Math.random() < (Tc === 0.5 ? 0.5 : Tc), done: false });
+      parts.push({ lane: 1, x: -delay, y: Math.random(), pass: Math.random() < T, done: false });
+    }
+  }
+  function resetStream() { parts = []; Object.keys(counts).forEach((k) => (counts[k] = 0)); updateBars(); }
+  function updateBars() {
+    const c = counts.cN ? counts.cT / counts.cN : 0, q = counts.qN ? counts.qT / counts.qN : 0;
+    $('bC').style.width = c * 100 + '%'; $('bCv').textContent = (c * 100).toFixed(1) + ' %'; $('cntC').textContent = counts.cT + ' / ' + counts.cN;
+    $('bQ').style.width = q * 100 + '%'; $('bQv').textContent = (q * 100).toFixed(1) + ' %'; $('cntQ').textContent = counts.qT + ' / ' + counts.qN;
+  }
+  $('btnFire').addEventListener('click', () => fire(200));
+  $('btnReset').addEventListener('click', resetStream);
+
+  function drawStream(cv, dt) {
+    const { ctx, w, h } = setupCanvas(cv);
+    ctx.clearRect(0, 0, w, h);
+    const bx0 = w * 0.48, bx1 = w * 0.52;
+    const laneH = h / 2;
+    ['Klasik', 'Kuantum'].forEach((name, l) => {
+      const y0 = l * laneH;
+      ctx.fillStyle = l ? 'rgba(56,214,255,.04)' : 'rgba(255,181,71,.04)';
+      ctx.fillRect(0, y0 + 4, w, laneH - 8);
+      ctx.fillStyle = COL.barrier; ctx.fillRect(bx0, y0 + 4, bx1 - bx0, laneH - 8);
+      ctx.strokeStyle = COL.barrierLine; ctx.strokeRect(bx0, y0 + 4, bx1 - bx0, laneH - 8);
+      ctx.fillStyle = l ? COL.q : COL.c; ctx.font = '600 11px Inter'; ctx.fillText(name, 8, y0 + 18);
+    });
+    const speed = 0.35; // fraksi lebar per detik
+    parts.forEach((p) => {
+      if (p.done) return;
+      p.x += speed * dt * (p.dir || 1);
+      if (!p.hit && p.x >= 0.48) {
+        p.hit = true;
+        if (!p.pass) { p.dir = -1; p.x = 0.48; }
+        else p.dir = 1;
+      }
+      if (p.x > 1.02 || (p.dir === -1 && p.x < -0.02)) {
+        p.done = true;
+        if (p.lane === 0) { counts.cN++; if (p.pass) counts.cT++; } else { counts.qN++; if (p.pass) counts.qT++; }
+      }
+      if (p.x < 0) return;
+      const y = p.lane * laneH + 10 + p.y * (laneH - 20);
+      const col = p.lane ? (p.hit ? (p.pass ? COL.q : COL.r) : COL.q) : (p.hit ? (p.pass ? COL.c : COL.r) : COL.c);
+      ctx.fillStyle = col; ctx.beginPath(); ctx.arc(p.x * w, y, 2.6, 0, Math.PI * 2); ctx.fill();
+    });
+    if (parts.length && parts.every((p) => p.done)) parts = [];
+    updateBars();
+  }
+
+  // ================= loop animasi =================
+  let last = performance.now();
+  function loop(now) {
+    const dt = Math.min((now - last) / 1000, 0.05); last = now;
+    state.playing = $('tPlay').checked;
+    if (state.playing) state.t += dt * 3;
+    drawAll(dt);
+    requestAnimationFrame(loop);
+  }
+  function drawAll(dt = 0) {
+    if (document.querySelector('#page-sim.active')) {
+      drawQuantum($('cvQuantum')); drawClassical($('cvClassical')); drawStream($('cvStream'), dt);
+    }
+    if (document.querySelector('#page-home.active')) drawHero();
+  }
+  const heroCache = { psi: P.psiFactory(3, 5, 0.4, 1) };
+  function drawHero() {
+    const save = { ...state }, sc = cache;
+    Object.assign(state, { E: 3, V0: 5, a: 0.4, m: 1 });
+    cache = { ...sc, psi: heroCache.psi, T: P.transmission(3, 5, 0.4, 1) };
+    drawQuantum($('heroCanvas'), { prob: true, re: true, hero: true });
+    Object.assign(state, save, { t: state.t }); cache = sc;
+  }
+
+  // ================= grafik analisis =================
+  function lineChart(cv, cfg) {
+    const { ctx, w, h } = setupCanvas(cv);
+    ctx.clearRect(0, 0, w, h);
+    const m = { l: 56, r: 16, t: 14, b: 40 };
+    const pw = w - m.l - m.r, ph = h - m.t - m.b;
+    const [x0, x1] = cfg.x, [y0, y1] = cfg.y;
+    const tx = cfg.logx ? (v) => Math.log10(v) : (v) => v;
+    const ty = cfg.logy ? (v) => Math.log10(Math.max(v, 1e-300)) : (v) => v;
+    const X = (v) => m.l + ((tx(v) - tx(x0)) / (tx(x1) - tx(x0))) * pw;
+    const Y = (v) => m.t + ph - ((Math.max(ty(v), ty(y0)) - ty(y0)) / (ty(y1) - ty(y0))) * ph;
+    ctx.font = '11px JetBrains Mono'; ctx.fillStyle = COL.text; ctx.strokeStyle = COL.grid; ctx.lineWidth = 1;
+    // ticks y
+    const yt = cfg.logy ? range(Math.ceil(ty(y0)), Math.floor(ty(y1)), cfg.ystep || 2).map((e) => Math.pow(10, e)) : ticks(y0, y1, 5);
+    yt.forEach((v) => { const y = Y(v); ctx.beginPath(); ctx.moveTo(m.l, y); ctx.lineTo(m.l + pw, y); ctx.stroke(); ctx.textAlign = 'right'; ctx.fillText(cfg.logy ? '1e' + Math.round(Math.log10(v)) : +v.toFixed(2), m.l - 6, y + 4); });
+    const xt = cfg.logx ? range(Math.ceil(tx(x0)), Math.floor(tx(x1)), 1).map((e) => Math.pow(10, e)) : ticks(x0, x1, 6);
+    xt.forEach((v) => { const x = X(v); ctx.beginPath(); ctx.moveTo(x, m.t); ctx.lineTo(x, m.t + ph); ctx.stroke(); ctx.textAlign = 'center'; ctx.fillText(cfg.logx ? '10^' + Math.round(Math.log10(v)) : +v.toFixed(2), x, m.t + ph + 16); });
+    ctx.strokeStyle = COL.axis; ctx.strokeRect(m.l, m.t, pw, ph);
+    ctx.textAlign = 'center'; ctx.fillStyle = COL.text; ctx.font = '12px Inter';
+    ctx.fillText(cfg.xlabel, m.l + pw / 2, h - 6);
+    ctx.save(); ctx.translate(14, m.t + ph / 2); ctx.rotate(-Math.PI / 2); ctx.fillText(cfg.ylabel, 0, 0); ctx.restore();
+    // vertical markers
+    (cfg.vlines || []).forEach((vl) => {
+      if (vl.x < x0 || vl.x > x1) return;
+      ctx.setLineDash([3, 4]); ctx.strokeStyle = vl.color; ctx.beginPath(); ctx.moveTo(X(vl.x), m.t); ctx.lineTo(X(vl.x), m.t + ph); ctx.stroke(); ctx.setLineDash([]);
+      ctx.fillStyle = vl.color; ctx.font = '600 11px Inter'; ctx.textAlign = 'left'; ctx.fillText(vl.label, X(vl.x) + 4, m.t + 12);
+    });
+    ctx.save(); ctx.beginPath(); ctx.rect(m.l, m.t, pw, ph); ctx.clip();
+    cfg.series.forEach((s) => {
+      ctx.beginPath(); ctx.strokeStyle = s.color; ctx.lineWidth = s.width || 2; ctx.setLineDash(s.dash || []);
+      s.data.forEach(([x, y], i) => (i ? ctx.lineTo(X(x), Y(y)) : ctx.moveTo(X(x), Y(y))));
+      ctx.stroke(); ctx.setLineDash([]);
+    });
+    (cfg.points || []).forEach((p) => { ctx.fillStyle = p.color; ctx.beginPath(); ctx.arc(X(p.x), Y(p.y), 5, 0, 7); ctx.fill(); ctx.strokeStyle = COL.pointRing; ctx.lineWidth = 1.5; ctx.stroke(); });
+    ctx.restore();
+    // legend
+    let lx = m.l + 10; ctx.font = '11px Inter'; ctx.textAlign = 'left';
+    cfg.series.filter((s) => s.label).forEach((s) => {
+      ctx.strokeStyle = s.color; ctx.lineWidth = 2.5; ctx.setLineDash(s.dash || []); ctx.beginPath(); ctx.moveTo(lx, m.t + ph - 12); ctx.lineTo(lx + 18, m.t + ph - 12); ctx.stroke(); ctx.setLineDash([]);
+      ctx.fillStyle = COL.legend; ctx.fillText(s.label, lx + 22, m.t + ph - 8); lx += ctx.measureText(s.label).width + 40;
+    });
+  }
+  function ticks(a, b, n) { const step = nice((b - a) / n); const out = []; for (let v = Math.ceil(a / step) * step; v <= b + 1e-9; v += step) out.push(+v.toFixed(10)); return out; }
+  function nice(x) { const e = Math.pow(10, Math.floor(Math.log10(x))); const f = x / e; return (f < 1.5 ? 1 : f < 3 ? 2 : f < 7 ? 5 : 10) * e; }
+  function range(a, b, s) { const o = []; for (let i = a; i <= b; i += s) o.push(i); return o; }
+
+  function seriesTE() {
+    const { V0, a, m } = state; const Emax = Math.max(3 * V0, state.E * 1.2); const out = [];
+    for (let i = 1; i <= 600; i++) { const E = (Emax * i) / 600; out.push([E, P.transmission(E, V0, a, m)]); }
+    return { Emax, out };
+  }
+  function drawAnalysis() {
+    const { E, V0, a, m } = state; const T = cache.T;
+    const { Emax, out } = seriesTE();
+    lineChart($('cvTE'), {
+      x: [0, Emax], y: [0, 1.05], xlabel: 'Energi E (eV)', ylabel: 'Koefisien',
+      series: [
+        { data: out, color: COL.q, label: 'T kuantum' },
+        { data: out.map(([x, y]) => [x, 1 - y]), color: COL.r, label: 'R kuantum', width: 1.5 },
+        { data: [[0, 0], [V0, 0], [V0, 1], [Emax, 1]], color: COL.c, dash: [6, 5], label: 'T klasik' },
+      ],
+      vlines: [{ x: V0, color: COL.vlabel, label: 'V₀' }, ...[1, 2, 3].map((n) => ({ x: V0 + H2Mn(n, a) / m, color: 'rgba(62,224,160,.7)', label: 'n=' + n }))],
+      points: [{ x: E, y: T, color: COL.q }],
+    });
+    // T(a)
+    const amax = Math.max(2, a * 1.5); const ta = []; let minT = 1;
+    for (let i = 1; i <= 400; i++) { const aa = (amax * i) / 400; const t = P.transmission(E, V0, aa, m); ta.push([aa, t]); if (t > 0) minT = Math.min(minT, t); }
+    const ylo = Math.pow(10, Math.max(-30, Math.floor(Math.log10(Math.max(minT, 1e-30)))));
+    lineChart($('cvTA'), {
+      x: [0, amax], y: [ylo, 2], logy: true, ystep: Math.max(1, Math.round(-Math.log10(ylo) / 6)), xlabel: 'Lebar penghalang a (nm)', ylabel: 'T (log)',
+      series: [
+        { data: ta, color: COL.q, label: 'T kuantum (eksak)' },
+        ...(E < V0 ? [{ data: ta.map(([aa]) => { const k = Math.sqrt(m * (V0 - E) / P.H2M); return [aa, 16 * (E / V0) * (1 - E / V0) * Math.exp(-2 * k * aa)]; }), color: COL.ok, dash: [4, 4], label: 'Aproksimasi pers. (5)', width: 1.5 }] : []),
+      ],
+      points: [{ x: a, y: Math.max(T, ylo), color: COL.q }],
+    });
+    // T(m)
+    const tm = [], tmMin = [];
+    let lo = 1;
+    for (let i = 0; i <= 400; i++) { const mm = Math.pow(10, -1 + (5 * i) / 400); const t = P.transmission(E, V0, a, mm); tm.push([mm, t]); if (t > 0) lo = Math.min(lo, t); }
+    const ylo2 = Math.pow(10, Math.max(-40, Math.floor(Math.log10(Math.max(lo, 1e-40)))));
+    lineChart($('cvTM'), {
+      x: [0.1, 1e4], y: [ylo2, 2], logx: true, logy: true, ystep: Math.max(1, Math.round(-Math.log10(ylo2) / 6)), xlabel: 'Massa partikel m / mₑ', ylabel: 'T (log)',
+      series: [{ data: tm, color: COL.q, label: 'T kuantum' }, { data: [[0.1, Math.max(P.classicalT(E, V0), ylo2)], [1e4, Math.max(P.classicalT(E, V0), ylo2)]], color: COL.c, dash: [6, 5], label: 'T klasik' }],
+      vlines: [{ x: 1, color: 'rgba(56,214,255,.6)', label: 'e⁻' }, { x: 206.77, color: 'rgba(56,214,255,.6)', label: 'μ' }, { x: 1836.15, color: 'rgba(56,214,255,.6)', label: 'p' }],
+      points: [{ x: m, y: Math.max(T, ylo2), color: COL.q }],
+    });
+    lineChart($('cvDiff'), {
+      x: [0, Emax], y: [0, 1.05], xlabel: 'Energi E (eV)', ylabel: '|ΔT|',
+      series: [{ data: out.map(([x, y]) => [x, Math.abs(y - P.classicalT(x, V0))]), color: COL.q2, label: '|T_kuantum − T_klasik|' }],
+      vlines: [{ x: V0, color: COL.vlabel, label: 'V₀' }],
+    });
+    // insight
+    const kpa = Math.sqrt(m * Math.max(E - V0, 0) / P.H2M) * a;
+    let txt;
+    if (E < V0) {
+      const ka = Math.sqrt(m * (V0 - E) / P.H2M) * a;
+      const approx = 16 * (E / V0) * (1 - E / V0) * Math.exp(-2 * ka);
+      txt = `Rezim <b>penerowongan</b>: κa = ${ka.toFixed(3)}. Teori kuantum memberi T = <b>${fmtPct(T)}</b>, sedangkan klasik T = 0. ` +
+        (ka > 1 ? `Karena κa &gt; 1, pendekatan pers. (5) memberi ${fmtPct(approx)} (galat ${(Math.abs(approx - T) / T * 100).toFixed(1)} %).` : 'κa &lt; 1 sehingga pendekatan penghalang tebal belum berlaku.');
+    } else {
+      txt = `Rezim <b>di atas penghalang</b>: k′a/π = ${(kpa / Math.PI).toFixed(3)}. Klasik memprediksi T = 100 %, kuantum memberi T = <b>${fmtPct(T)}</b> — refleksi ${fmtPct(1 - T)} murni efek gelombang. ` +
+        `Resonansi T = 1 terdekat ada pada E = ${(V0 + H2Mn(Math.max(1, Math.round(kpa / Math.PI)), a) / m).toFixed(3)} eV.`;
+    }
+    $('insight').innerHTML = '<h3>Interpretasi Otomatis</h3><p>' + txt + '</p><p class="note">Limit klasik tidak tercapai secara monoton: untuk E &gt; V₀ kurva T(E) dan T(m) berosilasi akibat resonansi, sehingga perbedaan klasik–kuantum mengecil hanya secara rata-rata.</p>';
+  }
+
+  $('btnCSV').addEventListener('click', () => {
+    const { V0, a, m } = state; const { out } = seriesTE();
+    const rows = ['E_eV,T_kuantum,R_kuantum,T_klasik'].concat(out.map(([E, T]) => [E.toFixed(5), T.toExponential(8), (1 - T).toExponential(8), P.classicalT(E, V0)].join(',')));
+    const blob = new Blob([`# V0=${V0} eV, a=${a} nm, m=${m} m_e\n` + rows.join('\n')], { type: 'text/csv' });
+    const l = document.createElement('a'); l.href = URL.createObjectURL(blob); l.download = 'qtunnel_TE.csv'; l.click();
+  });
+
+  // ================= verifikasi =================
+  function renderVerify(res, src) {
+    const list = $('verifyList'); list.innerHTML = '';
+    res.checks.forEach((c) => {
+      const d = document.createElement('div'); d.className = 'vitem ' + (c.pass ? 'pass' : 'fail');
+      d.innerHTML = `<span class="ic">${c.pass ? '✓' : '✗'}</span><div><b>${c.name}</b><small>${c.detail}</small></div>`;
+      list.appendChild(d);
+    });
+    const tb = $('verifyTable').querySelector('tbody'); tb.innerHTML = '';
+    res.table.forEach((r) => {
+      tb.insertAdjacentHTML('beforeend', `<tr><td>${(+r.E).toFixed(3)}</td><td>${(+r.Ta).toExponential(6)}</td><td>${(+r.Tn).toExponential(6)}</td><td>${(+r.err).toExponential(2)}</td><td>${(+r.sum).toFixed(9)}</td></tr>`);
+    });
+    $('verifySrc').textContent = src;
+  }
+  function verifyJS() {
+    const { V0, a, m } = state;
+    const Es = [0.5, 1, 2, 3, 4, 4.9, V0, 5.1, 6, 7, 8, 10].map((e) => (e === V0 ? V0 : e * V0 / 5));
+    const table = Es.map((E) => { const Ta = P.transmission(E, V0, a, m); const n = P.numericalT(E === V0 ? V0 * (1 + 1e-9) : E, V0, a, m); return { E, Ta, Tn: n.T, err: Math.abs(n.T - Ta) / Math.max(Ta, 1e-300), sum: n.T + n.R }; });
+    const maxErr = Math.max(...table.map((r) => r.err));
+    const maxCons = Math.max(...table.map((r) => Math.abs(r.sum - 1)));
+    const Tlo = P.transmission(V0 * (1 - 1e-6), V0, a, m), Thi = P.transmission(V0 * (1 + 1e-6), V0, a, m), Teq = P.transmission(V0, V0, a, m);
+    const Tthin = P.transmission(0.6 * V0, V0, 1e-5, m);
+    const Eth = 0.6 * V0, kth = Math.sqrt(m * (V0 - Eth) / P.H2M), ath = 8 / kth;
+    const Tex = P.transmission(Eth, V0, ath, m), Tap = 16 * 0.6 * 0.4 * Math.exp(-2 * kth * ath);
+    const Eres = V0 + H2Mn(1, a) / m, Tres = P.transmission(Eres, V0, a, m);
+    const Tp = P.transmission(0.6 * V0, V0, a, 1836.15), Te = P.transmission(0.6 * V0, V0, a, 1);
+    const ref = P.transmission(3, 5, 0.4, 1);
+    const checks = [
+      { name: 'Kekekalan probabilitas T + R = 1', pass: maxCons < 1e-6, detail: 'max |T+R−1| = ' + maxCons.toExponential(2) },
+      { name: 'Kesesuaian analitik–numerik (< 10⁻⁶)', pass: maxErr < 1e-6, detail: 'galat relatif maks = ' + maxErr.toExponential(2) },
+      { name: 'Kontinuitas di E = V₀', pass: Math.abs(Tlo - Teq) / Teq < 1e-4 && Math.abs(Thi - Teq) / Teq < 1e-4, detail: `T(V₀⁻)=${Tlo.toFixed(8)} · T(V₀)=${Teq.toFixed(8)} · T(V₀⁺)=${Thi.toFixed(8)}` },
+      { name: 'Penghalang sangat tipis: a → 0 ⇒ T → 1', pass: Tthin > 0.999, detail: 'a = 10⁻⁵ nm → T = ' + Tthin.toFixed(8) },
+      { name: 'Penghalang tebal sesuai pers. (5)', pass: Math.abs(Tap - Tex) / Tex < 1e-3, detail: `κa = 8 → eksak ${Tex.toExponential(4)} · aproks ${Tap.toExponential(4)}` },
+      { name: 'Resonansi T = 1 pada k′a = π', pass: Math.abs(Tres - 1) < 1e-9, detail: `E = ${Eres.toFixed(4)} eV → T = ${Tres.toFixed(12)}` },
+      { name: 'Massa besar → mendekati klasik', pass: Tp < Te && Tp < 1e-10, detail: `elektron T=${Te.toExponential(2)} · proton T=${Tp.toExponential(2)}` },
+      { name: 'Contoh proposal (e⁻, V₀=5, a=0,4, E=3) ≈ 1,16 %', pass: Math.abs(ref * 100 - 1.16) < 0.01, detail: 'T = ' + (ref * 100).toFixed(4) + ' %' },
+    ];
+    renderVerify({ checks, table }, `Sumber: mesin JavaScript (RK4, N = 4000 langkah) · V₀=${V0} eV, a=${a} nm, m=${m.toFixed(2)} mₑ`);
+  }
+  $('btnVerifyJS').addEventListener('click', verifyJS);
+  $('btnVerifyPy').addEventListener('click', async () => {
+    const b = $('btnVerifyPy'); b.disabled = true; b.textContent = 'Menghitung…';
+    try {
+      const { V0, a, m } = state;
+      const r = await fetch(`${API}/api/verify?V0=${V0}&a=${a}&m=${m}`);
+      if (!r.ok) throw new Error(r.status);
+      const j = await r.json();
+      renderVerify(j, `Sumber: mesin Python (NumPy ${j.numpy || ''}, ${j.method}) · V₀=${V0} eV, a=${a} nm, m=${m.toFixed(2)} mₑ`);
+      if (j.plot) { $('pyPlot').src = 'data:image/png;base64,' + j.plot; $('pyPlotCard').hidden = false; }
+    } catch (e) {
+      verifyJS();
+      $('verifySrc').textContent += ' — Server Python tidak aktif. Jalankan: python server/app.py';
+    }
+    b.disabled = false; b.textContent = 'Jalankan (Python)';
+  });
+
+  // status mesin Python
+  async function ping() {
+    const el = $('engineBadge');
+    try {
+      const r = await fetch(API + '/api/health', { cache: 'no-store' });
+      const j = await r.json();
+      el.className = 'engine on'; el.querySelector('.txt').textContent = 'Python: online · ' + j.engine;
+    } catch (e) { el.className = 'engine off'; el.querySelector('.txt').textContent = 'Python: offline · mode JS'; }
+  }
+
+  // ================= kuis =================
+  const QUIZ = [
+    { q: 'Menurut mekanika klasik, berapa peluang partikel dengan E < V₀ melewati penghalang?', o: ['0', 'Antara 0 dan 1', '1', 'Bergantung pada lebar penghalang'], a: 0, e: 'Secara klasik energi kinetik di dalam penghalang akan negatif, sehingga partikel pasti terpantul: T = 0.' },
+    { q: 'Di dalam penghalang (E < V₀), bentuk fungsi gelombang adalah…', o: ['Sinusoidal dengan amplitudo tetap', 'Meluruh/tumbuh eksponensial', 'Nol', 'Linier'], a: 1, e: 'Solusinya kombinasi e^{κx} dan e^{−κx}, dengan κ = √(2m(V₀−E))/ħ.' },
+    { q: 'Jika lebar penghalang a diperbesar (κa ≫ 1), maka T…', o: ['Naik linier', 'Tetap', 'Turun kira-kira ∝ e^(−2κa)', 'Berosilasi menuju 1'], a: 2, e: 'Pendekatan penghalang tebal: T ≈ 16(E/V₀)(1−E/V₀)e^(−2κa).' },
+    { q: 'Untuk E > V₀, mekanika kuantum memprediksi…', o: ['T = 1 selalu', 'T < 1 umumnya, dengan resonansi T = 1', 'T = 0', 'R = 1'], a: 1, e: 'Masih ada refleksi akibat sifat gelombang; T = 1 hanya pada resonansi k′a = nπ.' },
+    { q: 'Mengapa proton jauh lebih sulit menerowong dibanding elektron pada penghalang sama?', o: ['Muatan proton positif', 'Massa besar membuat κ besar', 'Proton tidak memiliki fungsi gelombang', 'Proton bergerak lebih cepat'], a: 1, e: 'κ ∝ √m, sehingga e^(−2κa) menjadi sangat kecil — mendekati limit klasik.' },
+    { q: 'Syarat apa yang dipakai untuk menghubungkan solusi di tiga daerah?', o: ['Kekekalan momentum', 'Kontinuitas ψ dan dψ/dx', 'ψ = 0 di tepi penghalang', 'E = V₀'], a: 1, e: 'Karena potensial berhingga, ψ dan turunannya harus kontinu di x = 0 dan x = a.' },
+    { q: 'Hubungan yang selalu berlaku antara T dan R adalah…', o: ['T = R', 'T · R = 1', 'T + R = 1', 'T − R = 1'], a: 2, e: 'Kekekalan probabilitas (arus): seluruh partikel datang pasti diteruskan atau dipantulkan.' },
+    { q: 'Elektron, V₀ = 5 eV, a = 0,4 nm, E = 3 eV. Nilai T kira-kira…', o: ['0 %', '1,16 %', '40 %', '100 %'], a: 1, e: 'κa ≈ 2,90 → T ≈ 1,16 % (contoh acuan pada proposal). Coba di halaman Simulasi!' },
+  ];
+  let qi = 0, score = 0, answered = false;
+  function renderQuiz() {
+    const body = $('quizBody');
+    $('quizBar').style.width = (qi / QUIZ.length) * 100 + '%';
+    if (qi >= QUIZ.length) {
+      $('quizProg').textContent = 'Selesai';
+      const pct = Math.round((score / QUIZ.length) * 100);
+      body.innerHTML = `<div class="score"><div class="big">${pct}</div><p>Benar ${score} dari ${QUIZ.length} soal. ${pct >= 75 ? 'Pemahaman sangat baik!' : 'Coba eksplorasi skenario di halaman Simulasi lalu ulangi.'}</p><button class="btn primary" id="qRestart">Ulangi Kuis</button></div>`;
+      $('qRestart').onclick = () => { qi = 0; score = 0; renderQuiz(); };
+      return;
+    }
+    const Q = QUIZ[qi]; answered = false;
+    $('quizProg').textContent = `Soal ${qi + 1} / ${QUIZ.length} · Skor ${score}`;
+    body.innerHTML = `<div class="qtext">${Q.q}</div><div class="opts">${Q.o.map((o, i) => `<button class="opt" data-i="${i}">${String.fromCharCode(65 + i)}. ${o}</button>`).join('')}</div><div id="qExp"></div><div class="quiz-nav"><button class="btn primary hidden" id="qNext">Lanjut →</button></div>`;
+    body.querySelectorAll('.opt').forEach((b) => b.addEventListener('click', () => {
+      if (answered) return; answered = true;
+      const i = +b.dataset.i;
+      body.querySelectorAll('.opt').forEach((x) => { x.disabled = true; if (+x.dataset.i === Q.a) x.classList.add('right'); });
+      if (i === Q.a) score++; else b.classList.add('wrong');
+      $('qExp').innerHTML = `<div class="explain"><b>${i === Q.a ? 'Benar.' : 'Kurang tepat.'}</b> ${Q.e}</div>`;
+      $('qNext').classList.remove('hidden');
+      $('qNext').onclick = () => { qi++; renderQuiz(); };
+    }));
+  }
+
+  // ================= init =================
+  window.addEventListener('resize', () => { drawAll(); if (document.querySelector('#page-analysis.active')) drawAnalysis(); });
+  window.addEventListener('DOMContentLoaded', () => {
+    if (window.renderMathInElement) renderMathInElement(document.body, { delimiters: [{ left: '$$', right: '$$', display: true }, { left: '\\(', right: '\\)', display: false }] });
+  });
+  let th = 'dark'; try { th = localStorage.getItem('qtl-theme') || 'dark'; } catch (e) {}
+  document.documentElement.dataset.theme = th; loadColors();
+  document.querySelectorAll('#themeSwitch button').forEach((b) => b.classList.toggle('on', b.dataset.theme === th));
+  readControls();
+  renderQuiz();
+  ping(); setInterval(ping, 15000);
+  let startTab = 'home'; try { startTab = localStorage.getItem('qtl-tab') || 'home'; } catch (e) {}
+  go(startTab);
+  requestAnimationFrame(loop);
+  window.QTL = { state, setParams };
+})();
+
+</script>
+</body>
+</html>

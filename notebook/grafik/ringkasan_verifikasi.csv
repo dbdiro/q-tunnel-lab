@@ -1,0 +1,10 @@
+Kriteria,Status,Detail
+Kekekalan probabilitas T + R = 1,LULUS ✓,max |T+R−1| = 6.00e-15
+Kesesuaian analitik–numerik < 1e-6,LULUS ✓,galat relatif maks = 1.14e-13
+Kesesuaian dengan matriks transfer,LULUS ✓,galat relatif maks = 9.29e-16
+Kontinuitas di E = V0,LULUS ✓,0.16001599 | 0.16001609 | 0.16001620
+Penghalang tipis a→0 ⇒ T→1,LULUS ✓,a = 1e-6 nm → T = 0.9999999999
+Penghalang tebal sesuai pers. (5),LULUS ✓,"κa = 8: eksak 4.3213e-07, aproks 4.3214e-07"
+Resonansi T = 1 saat k'a = nπ,LULUS ✓,"T(n=1,2,3) = 1.000000000000, 1.000000000000, 1.000000000000"
+Massa besar → mendekati klasik,LULUS ✓,"elektron 1.161e-02, proton 5.236e-108"
+"Nilai contoh proposal T ≈ 1,16 %",LULUS ✓,"T = 1.1605 %, κa = 2.898"

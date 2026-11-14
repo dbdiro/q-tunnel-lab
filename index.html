@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Q-Tunnel Lab — Kelompok 7</title>
+<meta name="description" content="Quantum Tunneling Interactive Lab: laboratorium virtual berbasis web untuk visualisasi transmisi partikel melalui penghalang potensial persegi.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@400;600&family=EB+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Courier+Prime&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="logo">
+      <svg viewBox="0 0 40 40" aria-hidden="true"><rect x="16" y="6" width="8" height="28" rx="2" fill="currentColor" opacity=".25"/><path d="M2 22 C6 10,10 10,14 22 S18 34,20 22 S24 16,26 22 S32 26,38 22" stroke="currentColor" stroke-width="2.6" fill="none" stroke-linecap="round"/></svg>
+    </div>
+    <div>
+      <div class="brand-name">Q-Tunnel Lab</div>
+      <div class="brand-sub">Quantum Tunneling Interactive Lab · Kelompok 7</div>
+    </div>
+  </div>
+  <nav class="tabs" id="tabs">
+    <button data-tab="home" class="active">Beranda</button>
+    <button data-tab="theory">Teori</button>
+    <button data-tab="sim">Simulasi</button>
+    <button data-tab="analysis">Analisis</button>
+    <button data-tab="verify">Verifikasi</button>
+    <button data-tab="quiz">Kuis</button>
+    <button data-tab="team">Tim</button>
+  </nav>
+  <div class="theme-switch" id="themeSwitch" role="group" aria-label="Mode tampilan">
+    <button data-theme="light" title="Mode Terang">☀</button>
+    <button data-theme="dark" title="Mode Gelap">☾</button>
+    <button data-theme="blue" title="Mode Biru">◆</button>
+    <button data-theme="classic" title="Mode Klasik (gaya lama)">❦</button>
+  </div>
+  <div class="engine" id="engineBadge" title="Status mesin perhitungan Python (Flask)">
+    <span class="dot"></span><span class="txt">Python: memeriksa…</span>
+  </div>
+</header>
+
+<main>
+
+<!-- ============ BERANDA ============ -->
+<section class="page active" id="page-home">
+  <div class="hero">
+    <div class="hero-text">
+      <span class="pill">Jalur J1 · Simulasi &amp; Media Pembelajaran Fisika Kuantum</span>
+      <h1>Pengembangan <em>Quantum Tunneling Interactive Lab</em> Berbasis Web untuk Visualisasi Transmisi Partikel</h1>
+      <p class="lead">Laboratorium virtual yang menyajikan prediksi <b>mekanika klasik</b> dan <b>mekanika kuantum</b> secara tersinkronisasi pada penghalang potensial persegi satu dimensi — lengkap dengan fungsi gelombang, koefisien transmisi–refleksi, eksplorasi limit klasik, dan verifikasi kebenaran fisika berbasis Python.</p>
+      <div class="hero-cta">
+        <button class="btn primary" data-goto="sim">Mulai Eksperimen →</button>
+        <button class="btn ghost" data-goto="theory">Pelajari Teori</button>
+      </div>
+      <div class="hero-stats">
+        <div><b>5</b><span>Fitur utama</span></div>
+        <div><b>3</b><span>Daerah energi</span></div>
+        <div><b>&lt;10⁻⁶</b><span>Galat analitik–numerik</span></div>
+      </div>
+    </div>
+    <div class="hero-visual card">
+      <canvas id="heroCanvas"></canvas>
+      <div class="hero-caption">ψ(x) elektron, E = 3 eV, V₀ = 5 eV, a = 0,4 nm · T ≈ 1,16 %</div>
+    </div>
+  </div>
+
+  <h2 class="sec-title">Fitur Laboratorium</h2>
+  <div class="features">
+    <div class="feature card"><div class="ficon">⚙</div><h3>Interactive Parameter Control</h3><p>Atur energi partikel E, tinggi penghalang V₀, lebar a, dan massa partikel secara langsung.</p></div>
+    <div class="feature card"><div class="ficon">◐</div><h3>Dual Physics Visualization</h3><p>Panel klasik dan kuantum berdampingan dengan parameter yang tersinkronisasi.</p></div>
+    <div class="feature card"><div class="ficon">⇄</div><h3>Transmission Comparison</h3><p>Bandingkan T klasik, T kuantum, dan selisih keduanya — termasuk refleksi saat E &gt; V₀.</p></div>
+    <div class="feature card"><div class="ficon">∞</div><h3>Classical Limit Explorer</h3><p>Amati bagaimana massa dan lebar penghalang membawa hasil kuantum mendekati klasik, lengkap dengan osilasi resonansi.</p></div>
+    <div class="feature card"><div class="ficon">✎</div><h3>Learning Scenarios</h3><p>Skenario terpandu: E &lt; V₀, E = V₀, E &gt; V₀, resonansi, penghalang tipis/tebal.</p></div>
+    <div class="feature card"><div class="ficon">✓</div><h3>Verifikasi Fisika</h3><p>Pembandingan solusi analitik dengan integrasi numerik Persamaan Schrödinger (JavaScript &amp; Python).</p></div>
+  </div>
+
+  <h2 class="sec-title">Alur Belajar (Prosedur)</h2>
+  <ol class="steps">
+    <li><b>Pahami teori</b> — baca ringkasan Persamaan Schrödinger dan koefisien transmisi.</li>
+    <li><b>Pilih skenario</b> — gunakan Learning Scenarios atau atur parameter sendiri.</li>
+    <li><b>Amati &amp; bandingkan</b> — lihat perbedaan prediksi klasik dan kuantum serta aliran partikel.</li>
+    <li><b>Analisis grafik</b> — telusuri T(E), T(a), dan limit klasik; ekspor data CSV.</li>
+    <li><b>Verifikasi</b> — jalankan uji kebenaran fisika, lalu uji pemahaman melalui kuis.</li>
+  </ol>
+</section>
+
+<!-- ============ TEORI ============ -->
+<section class="page" id="page-theory">
+  <div class="grid-2">
+    <article class="card prose">
+      <h2>Tujuan</h2>
+      <p>Mengamati fenomena penerowongan kuantum (<i>quantum tunneling</i>) dan menentukan koefisien transmisi \(T\) serta refleksi \(R\) partikel yang menumbuk penghalang potensial persegi, kemudian membandingkannya dengan prediksi mekanika klasik.</p>
+      <h2>Persamaan Schrödinger</h2>
+      <p>Partikel bermassa \(m\) dan energi \(E\) dalam satu dimensi memenuhi persamaan Schrödinger tak bergantung waktu:</p>
+      <div class="eq">$$-\frac{\hbar^2}{2m}\frac{d^2\psi}{dx^2}+V(x)\psi=E\psi \qquad (1)$$</div>
+      <p>dengan \(V(x)=V_0\) untuk \(0&lt;x&lt;a\) dan \(V(x)=0\) di luar daerah tersebut. Solusi tiga daerah:</p>
+      <div class="eq">$$\psi(x)=\begin{cases} e^{ikx}+r\,e^{-ikx}, & x&lt;0\\ C e^{iqx}+D e^{-iqx}, & 0\le x\le a\\ t\,e^{ikx}, & x&gt;a\end{cases}$$</div>
+      <p>dengan \(k=\sqrt{2mE}/\hbar\) dan \(q=\sqrt{2m(E-V_0)}/\hbar\). Konstanta ditentukan dari kontinuitas \(\psi\) dan \(d\psi/dx\) di \(x=0\) dan \(x=a\).</p>
+      <h2>Koefisien Transmisi</h2>
+      <p><b>Daerah \(0&lt;E&lt;V_0\)</b> (penerowongan):</p>
+      <div class="eq">$$T=\left[1+\frac{V_0^2\sinh^2(\kappa a)}{4E(V_0-E)}\right]^{-1},\quad \kappa=\frac{\sqrt{2m(V_0-E)}}{\hbar}\qquad(2)$$</div>
+      <p><b>Daerah \(E&gt;V_0\)</b> (gelombang berosilasi di dalam penghalang):</p>
+      <div class="eq">$$T=\left[1+\frac{V_0^2\sin^2(k'a)}{4E(E-V_0)}\right]^{-1},\quad k'=\frac{\sqrt{2m(E-V_0)}}{\hbar}\qquad(3)$$</div>
+      <p><b>Kasus batas \(E=V_0\)</b>:</p>
+      <div class="eq">$$T=\left[1+\frac{mV_0a^2}{2\hbar^2}\right]^{-1}\qquad(4)$$</div>
+      <p>Koefisien refleksi \(R=1-T\). Untuk penghalang tebal (\(\kappa a\gg1\)):</p>
+      <div class="eq">$$T\approx16\frac{E}{V_0}\left(1-\frac{E}{V_0}\right)e^{-2\kappa a}\qquad(5)$$</div>
+    </article>
+    <aside>
+      <div class="card prose">
+        <h2>Klasik vs Kuantum</h2>
+        <table class="tbl">
+          <thead><tr><th>Kondisi</th><th>Klasik</th><th>Kuantum</th></tr></thead>
+          <tbody>
+            <tr><td>\(E&lt;V_0\)</td><td>\(T=0\) — selalu memantul</td><td>\(T&gt;0\) — bisa menembus</td></tr>
+            <tr><td>\(E=V_0\)</td><td>batas (ambang)</td><td>\(T\) hingga, persamaan (4)</td></tr>
+            <tr><td>\(E&gt;V_0\)</td><td>\(T=1\) — selalu lolos</td><td>\(T\le1\) — masih ada refleksi</td></tr>
+          </tbody>
+        </table>
+        <p class="note">Resonansi \(T=1\) terjadi saat \(k'a=n\pi\) (\(n=1,2,3,\dots\)): penghalang menjadi "transparan" seperti interferensi pada lapisan tipis.</p>
+      </div>
+      <div class="card prose">
+        <h2>Konstanta yang Dipakai</h2>
+        <ul class="kv">
+          <li><span>\(\hbar^2/2m_e\)</span><b>0,0380998 eV·nm²</b></li>
+          <li><span>\(m_e\)</span><b>9,109 × 10⁻³¹ kg</b></li>
+          <li><span>\(m_\mu/m_e\)</span><b>206,77</b></li>
+          <li><span>\(m_p/m_e\)</span><b>1836,15</b></li>
+        </ul>
+        <p class="note">Contoh acuan proposal: elektron, \(V_0=5\) eV, \(a=0{,}4\) nm, \(E=3\) eV → \(\kappa a\approx2{,}90\) dan \(T\approx1{,}16\%\).</p>
+      </div>
+      <div class="card prose">
+        <h2>Aplikasi Nyata</h2>
+        <ul>
+          <li>Mikroskop penerowongan (STM)</li>
+          <li>Peluruhan alfa inti atom</li>
+          <li>Dioda terowongan &amp; memori flash</li>
+          <li>Fusi nuklir di inti Matahari</li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ SIMULASI ============ -->
+<section class="page" id="page-sim">
+  <div class="sim-layout">
+    <aside class="card controls">
+      <h3>Interactive Parameter Control</h3>
+      <div class="ctrl">
+        <label>Energi partikel <i>E</i><output id="oE"></output></label>
+        <input type="range" id="sE" min="0.05" max="15" step="0.01" value="3">
+      </div>
+      <div class="ctrl">
+        <label>Tinggi penghalang <i>V₀</i><output id="oV"></output></label>
+        <input type="range" id="sV" min="0.5" max="12" step="0.05" value="5">
+      </div>
+      <div class="ctrl">
+        <label>Lebar penghalang <i>a</i><output id="oA"></output></label>
+        <input type="range" id="sA" min="0.02" max="2" step="0.005" value="0.4">
+      </div>
+      <div class="ctrl">
+        <label>Massa partikel<output id="oM"></output></label>
+        <select id="selM">
+          <option value="1" selected>Elektron (mₑ)</option>
+          <option value="206.77">Muon (206,77 mₑ)</option>
+          <option value="1836.15">Proton (1836 mₑ)</option>
+          <option value="custom">Kustom…</option>
+        </select>
+        <input type="range" id="sM" min="0" max="3.5" step="0.01" value="0" class="hidden">
+      </div>
+
+      <h3 class="mt">Learning Scenarios</h3>
+      <div class="scenarios" id="scenarios"></div>
+      <div class="scenario-note" id="scenarioNote">Pilih skenario untuk panduan eksplorasi.</div>
+
+      <h3 class="mt">Tampilan</h3>
+      <div class="toggles">
+        <label><input type="checkbox" id="tRe" checked> Re ψ (animasi)</label>
+        <label><input type="checkbox" id="tProb" checked> |ψ|² densitas</label>
+        <label><input type="checkbox" id="tPlay" checked> Jalankan animasi</label>
+      </div>
+    </aside>
+
+    <div class="sim-main">
+      <div class="readouts">
+        <div class="ro"><span>Rezim</span><b id="rRegime">—</b></div>
+        <div class="ro"><span>T kuantum</span><b id="rTq" class="c-q">—</b></div>
+        <div class="ro"><span>R kuantum</span><b id="rRq" class="c-r">—</b></div>
+        <div class="ro"><span>T klasik</span><b id="rTc" class="c-c">—</b></div>
+        <div class="ro"><span>ΔT (Kuantum − Klasik)</span><b id="rDT">—</b></div>
+        <div class="ro"><span id="rKlabel">κa</span><b id="rKa">—</b></div>
+      </div>
+
+      <div class="dual">
+        <div class="card panel">
+          <div class="panel-head"><span class="tag c">Mekanika Klasik</span><span class="sub" id="clsText"></span></div>
+          <canvas id="cvClassical"></canvas>
+        </div>
+        <div class="card panel">
+          <div class="panel-head"><span class="tag q">Mekanika Kuantum</span><span class="sub">Fungsi gelombang ψ(x) dari Persamaan Schrödinger</span></div>
+          <canvas id="cvQuantum"></canvas>
+        </div>
+      </div>
+
+      <div class="card panel">
+        <div class="panel-head">
+          <span class="tag">Transmission Comparison · Aliran Partikel</span>
+          <span class="sub">Setiap titik adalah satu partikel; hasil empiris mendekati nilai teoretis</span>
+          <div class="spacer"></div>
+          <button class="btn sm" id="btnFire">Tembakkan 200</button>
+          <button class="btn sm ghost" id="btnReset">Reset</button>
+        </div>
+        <canvas id="cvStream"></canvas>
+        <div class="bars">
+          <div class="bar-row"><span>Klasik</span><div class="bar"><i id="bC" class="b-c"></i></div><b id="bCv">0 %</b><small id="cntC">0 / 0</small></div>
+          <div class="bar-row"><span>Kuantum</span><div class="bar"><i id="bQ" class="b-q"></i></div><b id="bQv">0 %</b><small id="cntQ">0 / 0</small></div>
+          <div class="bar-row"><span>Teori T</span><div class="bar"><i id="bT" class="b-t"></i></div><b id="bTv">0 %</b><small>analitik</small></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ANALISIS ============ -->
+<section class="page" id="page-analysis">
+  <div class="analysis-head card">
+    <div><h2>Analisis Grafik</h2><p class="muted">Grafik mengikuti parameter pada halaman Simulasi. Garis putus-putus = prediksi klasik.</p></div>
+    <div class="row-gap">
+      <span class="chip" id="paramChip"></span>
+      <button class="btn sm" id="btnCSV">Ekspor CSV T(E)</button>
+    </div>
+  </div>
+  <div class="grid-2">
+    <div class="card panel"><div class="panel-head"><span class="tag">T dan R terhadap Energi</span><span class="sub">T(E), R(E) — perhatikan resonansi E &gt; V₀</span></div><canvas id="cvTE" class="chart"></canvas></div>
+    <div class="card panel"><div class="panel-head"><span class="tag">T terhadap Lebar Penghalang</span><span class="sub">T(a) — skala logaritmik</span></div><canvas id="cvTA" class="chart"></canvas></div>
+    <div class="card panel"><div class="panel-head"><span class="tag">Classical Limit Explorer</span><span class="sub">T terhadap massa partikel m/mₑ (log)</span></div><canvas id="cvTM" class="chart"></canvas></div>
+    <div class="card panel"><div class="panel-head"><span class="tag">|T<sub>kuantum</sub> − T<sub>klasik</sub>|</span><span class="sub">Selisih kedua model sepanjang energi</span></div><canvas id="cvDiff" class="chart"></canvas></div>
+  </div>
+  <div class="card prose insight" id="insight"></div>
+</section>
+
+<!-- ============ VERIFIKASI ============ -->
+<section class="page" id="page-verify">
+  <div class="card analysis-head">
+    <div>
+      <h2>Pemeriksaan Kebenaran Fisika</h2>
+      <p class="muted">Solusi analitik (pers. 2–4) dibandingkan dengan integrasi numerik RK4 Persamaan Schrödinger (pers. 1). Kriteria sesuai Lampiran proposal.</p>
+    </div>
+    <div class="row-gap">
+      <button class="btn" id="btnVerifyJS">Jalankan (JavaScript)</button>
+      <button class="btn primary" id="btnVerifyPy">Jalankan (Python)</button>
+    </div>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <h3>Hasil Kriteria</h3>
+      <div id="verifyList" class="verify-list"><p class="muted">Belum dijalankan.</p></div>
+    </div>
+    <div class="card">
+      <h3>Tabel Analitik vs Numerik</h3>
+      <div class="tbl-wrap"><table class="tbl mono" id="verifyTable"><thead><tr><th>E (eV)</th><th>T analitik</th><th>T numerik</th><th>Galat relatif</th><th>T+R</th></tr></thead><tbody></tbody></table></div>
+      <p class="muted small" id="verifySrc"></p>
+    </div>
+  </div>
+  <div class="card" id="pyPlotCard" hidden>
+    <h3>Grafik Verifikasi (Matplotlib, dihasilkan Python)</h3>
+    <img id="pyPlot" alt="Grafik verifikasi dari Python">
+  </div>
+</section>
+
+<!-- ============ KUIS ============ -->
+<section class="page" id="page-quiz">
+  <div class="quiz-wrap">
+    <div class="card quiz">
+      <div class="quiz-top"><h2>Uji Pemahaman</h2><span class="chip" id="quizProg"></span></div>
+      <div class="progress"><i id="quizBar"></i></div>
+      <div id="quizBody"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TIM ============ -->
+<section class="page" id="page-team">
+  <div class="team-head">
+    <span class="pill">Kelompok 7 · Proyek Fisika Kuantum</span>
+    <h2>Tim Pengembang</h2>
+    <p class="muted">Pengembangan Quantum Tunneling Interactive Lab Berbasis Web untuk Visualisasi Transmisi Partikel</p>
+  </div>
+  <div class="team">
+    <div class="card member">
+      <div class="avatar a1"><img src="assets/team/ernauli.jpg" alt="Foto Ernauli Br. Haloho"></div>
+      <h3>Ernauli Br. Haloho</h3>
+      <div class="role">Koordinator &amp; Penulis Korespondensi</div>
+      <p>Mengatur jadwal, menyusun pendahuluan dan metode, menyiapkan instrumen validasi, serta berkomunikasi dengan validator dan jurnal.</p>
+    </div>
+    <div class="card member">
+      <div class="avatar a2"><img src="assets/team/heny.jpg" alt="Foto Heny Asvarinda"></div>
+      <h3>Heny Asvarinda</h3>
+      <div class="role">Penulis / Editor Utama</div>
+      <p>Kajian pustaka dan landasan teori, penulisan hasil dan pembahasan, penyuntingan bahasa, serta format sesuai template jurnal.</p>
+    </div>
+    <div class="card member">
+      <div class="avatar a3"><img src="assets/team/dila.jpg" alt="Foto Dila Badiro"></div>
+      <h3>Dila Badiro</h3>
+      <div class="role">Analis-Programmer</div>
+      <p>Derivasi analitik, kode Python, pengembangan aplikasi web, uji kebenaran fisika, serta dokumentasi kode dan grafik.</p>
+    </div>
+  </div>
+  <div class="grid-2">
+    <div class="card prose">
+      <h3>Metode Pengembangan · ADDIE</h3>
+      <div class="addie">
+        <div><b>A</b><span>Analysis</span></div><div><b>D</b><span>Design</span></div><div><b>D</b><span>Development</span></div><div><b>I</b><span>Implementation</span></div><div><b>E</b><span>Evaluation</span></div>
+      </div>
+      <p>Teknologi: HTML, CSS, JavaScript (Canvas) untuk antarmuka; Python (NumPy, Matplotlib, Flask) sebagai mesin acuan kebenaran perhitungan.</p>
+    </div>
+    <div class="card prose">
+      <h3>Jurnal Sasaran</h3>
+      <ul>
+        <li>Jurnal Penelitian &amp; Pengembangan Pendidikan Fisika (JPPPF)</li>
+        <li>Alternatif: Jurnal Pendidikan Fisika Indonesia (JPFI)</li>
+        <li>Alternatif: Physics Education (IOP Publishing)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">© 2026 Kelompok 7 — Ernauli Br. Haloho · Heny Asvarinda · Dila Badiro · Q-Tunnel Lab</footer>
+
+<script src="assets/physics.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>
