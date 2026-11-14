@@ -1,0 +1,4 @@
+# Statistik bahasa GitHub: notebook = dokumentasi, dist = hasil build
+*.ipynb linguist-documentation
+notebook/** linguist-documentation
+dist/** linguist-generated
