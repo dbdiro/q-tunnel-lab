@@ -372,3 +372,4 @@ dialog#changelog::backdrop{background:rgba(0,0,0,.55);backdrop-filter:blur(2px)}
 }
 .ro b.long{font-size:14px}
 .task-body[hidden],.btn[hidden]{display:none}
+#engineBadge{cursor:pointer}

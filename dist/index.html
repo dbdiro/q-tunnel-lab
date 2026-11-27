@@ -385,6 +385,7 @@ dialog#changelog::backdrop{background:rgba(0,0,0,.55);backdrop-filter:blur(2px)}
 }
 .ro b.long{font-size:14px}
 .task-body[hidden],.btn[hidden]{display:none}
+#engineBadge{cursor:pointer}
 
 </style>
 </head>
@@ -418,7 +419,7 @@ dialog#changelog::backdrop{background:rgba(0,0,0,.55);backdrop-filter:blur(2px)}
     <button data-theme="blue" title="Mode Biru" aria-label="Mode biru">◆</button>
     <button data-theme="classic" title="Mode Klasik (gaya lama)" aria-label="Mode klasik">❦</button>
   </div>
-  <div class="engine idle" id="engineBadge" title="Mesin Python: berjalan langsung di browser (Pyodide) saat verifikasi Python dijalankan">
+  <div class="engine idle" id="engineBadge" title="Mesin Python (NumPy) berjalan langsung di browser lewat Pyodide. Klik untuk memuat.">
     <span class="dot"></span><span class="txt">Python · siap dimuat</span>
   </div>
 </header>
@@ -1735,7 +1736,16 @@ json.dumps(res, default=float)`);
   document.documentElement.dataset.theme = th; loadColors();
   document.querySelectorAll('#themeSwitch button').forEach((b) => b.classList.toggle('on', b.dataset.theme === th));
   readControls();
-  pingFlask();
+  // Muat Python otomatis di latar belakang (kecuali mode hemat data); badge juga bisa diklik.
+  $('engineBadge').setAttribute('role', 'button'); $('engineBadge').tabIndex = 0;
+  const startPy = () => { if (!flaskOK && !pyodide) getPyodide().catch((e) => console.error(e)); };
+  $('engineBadge').addEventListener('click', startPy);
+  $('engineBadge').addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); startPy(); } });
+  pingFlask().then(() => {
+    const save = navigator.connection && navigator.connection.saveData;
+    if (!save) setTimeout(startPy, 2500);
+    else badge('idle', 'Python · klik untuk memuat');
+  });
   let startTab = 'home'; try { startTab = localStorage.getItem('qtl-tab') || 'home'; } catch (e) {}
   go(startTab);
   requestAnimationFrame(loop);

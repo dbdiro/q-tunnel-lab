@@ -581,7 +581,16 @@ json.dumps(res, default=float)`);
   document.documentElement.dataset.theme = th; loadColors();
   document.querySelectorAll('#themeSwitch button').forEach((b) => b.classList.toggle('on', b.dataset.theme === th));
   readControls();
-  pingFlask();
+  // Muat Python otomatis di latar belakang (kecuali mode hemat data); badge juga bisa diklik.
+  $('engineBadge').setAttribute('role', 'button'); $('engineBadge').tabIndex = 0;
+  const startPy = () => { if (!flaskOK && !pyodide) getPyodide().catch((e) => console.error(e)); };
+  $('engineBadge').addEventListener('click', startPy);
+  $('engineBadge').addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); startPy(); } });
+  pingFlask().then(() => {
+    const save = navigator.connection && navigator.connection.saveData;
+    if (!save) setTimeout(startPy, 2500);
+    else badge('idle', 'Python · klik untuk memuat');
+  });
   let startTab = 'home'; try { startTab = localStorage.getItem('qtl-tab') || 'home'; } catch (e) {}
   go(startTab);
   requestAnimationFrame(loop);
