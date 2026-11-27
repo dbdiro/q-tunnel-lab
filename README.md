@@ -18,13 +18,15 @@ Proyek Fisika Kuantum · Kelompok 7 · Jalur J1 (Simulasi & Media)
 Laboratorium virtual berbasis web yang menyajikan prediksi **mekanika klasik** dan **mekanika kuantum** secara tersinkronisasi untuk penghalang potensial persegi satu dimensi. Perhitungannya diverifikasi dengan Python (NumPy).
 
 ### Fitur
-- **Interactive Parameter Control**: energi E, tinggi V₀, lebar a, dan massa partikel
-- **Dual Physics Visualization**: panel klasik dan kuantum (Re ψ, |ψ|²) berdampingan
-- **Transmission Comparison**: T klasik, T kuantum, ΔT, dan simulasi aliran partikel Monte Carlo
-- **Classical Limit Explorer**: T terhadap massa dan lebar penghalang, termasuk osilasi resonansi
-- **Learning Scenarios**: 8 skenario terpandu
+- **Pengatur Parameter Interaktif**: energi E, tinggi V₀, lebar a, dan massa partikel
+- **Visualisasi Klasik–Kuantum**: panel klasik dan kuantum (Re ψ, |ψ|²) berdampingan
+- **Perbandingan Transmisi**: T klasik, T kuantum, ΔT, dan simulasi aliran partikel Monte Carlo
+- **Penjelajah Limit Klasik**: T terhadap massa dan lebar penghalang, termasuk osilasi resonansi
+- **Skenario Belajar**: 8 skenario terpandu
 - **Verifikasi fisika**: analitik vs numerik (RK4 dan matriks transfer), di JavaScript maupun Python
-- Kuis, ekspor CSV, dan 4 mode tampilan (terang, gelap, biru, klasik)
+- Tujuan pembelajaran (CPMK), rujukan, dan penjelasan penerapan nyata
+- Kuis 12 soal (latihan, pretes, postes) dan tugas terstruktur, hasil dapat diunduh CSV
+- Verifikasi Python langsung di browser (Pyodide), 4 mode tampilan (terang, gelap, biru, klasik)
 
 ## Landasan Fisika
 Untuk 0 < E < V₀:  T = [1 + V₀² sinh²(κa) / (4E(V₀−E))]⁻¹, dengan κ = √(2m(V₀−E))/ħ
@@ -35,11 +37,12 @@ Contoh acuan: elektron, V₀ = 5 eV, a = 0,4 nm, E = 3 eV menghasilkan κa ≈ 2
 
 ## Struktur Repository
 ```
-index.html              Halaman utama (Beranda, Teori, Simulasi, Analisis, Verifikasi, Kuis, Tim)
+index.html              Halaman utama (Beranda, Teori, Simulasi, Analisis, Verifikasi, Tugas, Kuis, Tim)
 assets/
   style.css             Tampilan & 4 tema
   physics.js            Mesin fisika JavaScript (analitik, ψ kompleks, RK4)
-  app.js                Visualisasi canvas, skenario, grafik, kuis
+  app.js                Visualisasi canvas, skenario, grafik, verifikasi, mesin Python (Pyodide)
+  learn.js              Kuis, tugas terstruktur, catatan pembaruan
   team/                 Foto anggota
 server/
   physics.py            Mesin fisika Python (acuan kebenaran)
@@ -47,7 +50,7 @@ server/
 notebook/
   Verifikasi_QTunnel_Pekan12.ipynb   Notebook verifikasi (luaran Pekan 12)
   grafik/               Grafik PNG & tabel CSV hasil notebook
-dist/index.html         Versi satu file, siap upload ke hosting
+dist/index.html         Versi satu file, siap upload ke hosting (buat ulang: python tools/build_dist.py)
 JALANKAN_PYTHON.bat     Menyalakan server Python di Windows
 ```
 

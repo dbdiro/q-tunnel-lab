@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Q-Tunnel Lab — Kelompok 7</title>
-<meta name="description" content="Quantum Tunneling Interactive Lab: laboratorium virtual berbasis web untuk visualisasi transmisi partikel melalui penghalang potensial persegi.">
+<meta name="description" content="Q-Tunnel Lab: laboratorium virtual berbasis web untuk visualisasi transmisi partikel melalui penghalang potensial persegi.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@400;600&family=EB+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Courier+Prime&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
@@ -13,6 +13,7 @@
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
+<a class="skip" href="#main">Lewati ke konten</a>
 
 <header class="topbar">
   <div class="brand">
@@ -21,30 +22,32 @@
     </div>
     <div>
       <div class="brand-name">Q-Tunnel Lab</div>
-      <div class="brand-sub">Quantum Tunneling Interactive Lab · Kelompok 7</div>
+      <div class="brand-sub">Laboratorium Virtual Penerowongan Kuantum · Kelompok 7</div>
     </div>
   </div>
-  <nav class="tabs" id="tabs">
+  <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="tabs" aria-label="Buka menu">☰ Menu</button>
+  <nav class="tabs" id="tabs" aria-label="Menu utama">
     <button data-tab="home" class="active">Beranda</button>
     <button data-tab="theory">Teori</button>
     <button data-tab="sim">Simulasi</button>
     <button data-tab="analysis">Analisis</button>
     <button data-tab="verify">Verifikasi</button>
+    <button data-tab="task">Tugas</button>
     <button data-tab="quiz">Kuis</button>
     <button data-tab="team">Tim</button>
   </nav>
   <div class="theme-switch" id="themeSwitch" role="group" aria-label="Mode tampilan">
-    <button data-theme="light" title="Mode Terang">☀</button>
-    <button data-theme="dark" title="Mode Gelap">☾</button>
-    <button data-theme="blue" title="Mode Biru">◆</button>
-    <button data-theme="classic" title="Mode Klasik (gaya lama)">❦</button>
+    <button data-theme="light" title="Mode Terang" aria-label="Mode terang">☀</button>
+    <button data-theme="dark" title="Mode Gelap" aria-label="Mode gelap">☾</button>
+    <button data-theme="blue" title="Mode Biru" aria-label="Mode biru">◆</button>
+    <button data-theme="classic" title="Mode Klasik (gaya lama)" aria-label="Mode klasik">❦</button>
   </div>
-  <div class="engine" id="engineBadge" title="Status mesin perhitungan Python (Flask)">
-    <span class="dot"></span><span class="txt">Python: memeriksa…</span>
+  <div class="engine idle" id="engineBadge" title="Mesin Python: berjalan langsung di browser (Pyodide) saat verifikasi Python dijalankan">
+    <span class="dot"></span><span class="txt">Python · siap dimuat</span>
   </div>
 </header>
 
-<main>
+<main id="main">
 
 <!-- ============ BERANDA ============ -->
 <section class="page active" id="page-home">
@@ -52,64 +55,95 @@
     <div class="hero-text">
       <span class="pill">Jalur J1 · Simulasi &amp; Media Pembelajaran Fisika Kuantum</span>
       <h1>Pengembangan <em>Quantum Tunneling Interactive Lab</em> Berbasis Web untuk Visualisasi Transmisi Partikel</h1>
-      <p class="lead">Laboratorium virtual yang menyajikan prediksi <b>mekanika klasik</b> dan <b>mekanika kuantum</b> secara tersinkronisasi pada penghalang potensial persegi satu dimensi — lengkap dengan fungsi gelombang, koefisien transmisi–refleksi, eksplorasi limit klasik, dan verifikasi kebenaran fisika berbasis Python.</p>
+      <p class="lead">Laboratorium virtual yang menyajikan prediksi <b>mekanika klasik</b> dan <b>mekanika kuantum</b> secara tersinkronisasi pada penghalang potensial persegi satu dimensi, lengkap dengan fungsi gelombang, koefisien transmisi dan refleksi, penjelajahan limit klasik, serta verifikasi kebenaran fisika dengan JavaScript dan Python.</p>
       <div class="hero-cta">
         <button class="btn primary" data-goto="sim">Mulai Eksperimen →</button>
-        <button class="btn ghost" data-goto="theory">Pelajari Teori</button>
+        <button class="btn ghost" data-goto="theory">Tujuan &amp; Teori</button>
       </div>
       <div class="hero-stats">
-        <div><b>5</b><span>Fitur utama</span></div>
+        <div><b>6</b><span>Fitur utama</span></div>
         <div><b>3</b><span>Daerah energi</span></div>
         <div><b>&lt;10⁻⁶</b><span>Galat analitik–numerik</span></div>
       </div>
     </div>
     <div class="hero-visual card">
-      <canvas id="heroCanvas"></canvas>
+      <canvas id="heroCanvas" role="img" aria-label="Fungsi gelombang elektron menembus penghalang potensial"></canvas>
       <div class="hero-caption">ψ(x) elektron, E = 3 eV, V₀ = 5 eV, a = 0,4 nm · T ≈ 1,16 %</div>
     </div>
   </div>
 
   <h2 class="sec-title">Fitur Laboratorium</h2>
   <div class="features">
-    <div class="feature card"><div class="ficon">⚙</div><h3>Interactive Parameter Control</h3><p>Atur energi partikel E, tinggi penghalang V₀, lebar a, dan massa partikel secara langsung.</p></div>
-    <div class="feature card"><div class="ficon">◐</div><h3>Dual Physics Visualization</h3><p>Panel klasik dan kuantum berdampingan dengan parameter yang tersinkronisasi.</p></div>
-    <div class="feature card"><div class="ficon">⇄</div><h3>Transmission Comparison</h3><p>Bandingkan T klasik, T kuantum, dan selisih keduanya — termasuk refleksi saat E &gt; V₀.</p></div>
-    <div class="feature card"><div class="ficon">∞</div><h3>Classical Limit Explorer</h3><p>Amati bagaimana massa dan lebar penghalang membawa hasil kuantum mendekati klasik, lengkap dengan osilasi resonansi.</p></div>
-    <div class="feature card"><div class="ficon">✎</div><h3>Learning Scenarios</h3><p>Skenario terpandu: E &lt; V₀, E = V₀, E &gt; V₀, resonansi, penghalang tipis/tebal.</p></div>
-    <div class="feature card"><div class="ficon">✓</div><h3>Verifikasi Fisika</h3><p>Pembandingan solusi analitik dengan integrasi numerik Persamaan Schrödinger (JavaScript &amp; Python).</p></div>
+    <div class="feature card"><div class="ficon">⚙</div><h3>Pengatur Parameter Interaktif</h3><p>Atur energi partikel E, tinggi penghalang V₀, lebar a, dan massa partikel secara langsung.</p></div>
+    <div class="feature card"><div class="ficon">◐</div><h3>Visualisasi Klasik–Kuantum</h3><p>Panel mekanika klasik dan kuantum berdampingan dengan parameter yang tersinkronisasi.</p></div>
+    <div class="feature card"><div class="ficon">⇄</div><h3>Perbandingan Transmisi</h3><p>Bandingkan T klasik, T kuantum, dan selisihnya, termasuk refleksi saat E &gt; V₀.</p></div>
+    <div class="feature card"><div class="ficon">∞</div><h3>Penjelajah Limit Klasik</h3><p>Amati bagaimana massa dan lebar penghalang membawa hasil kuantum mendekati klasik, lengkap dengan osilasi resonansi.</p></div>
+    <div class="feature card"><div class="ficon">✎</div><h3>Skenario Belajar</h3><p>Skenario terpandu: E &lt; V₀, E = V₀, E &gt; V₀, resonansi, penghalang tipis dan tebal.</p></div>
+    <div class="feature card"><div class="ficon">✓</div><h3>Verifikasi Fisika</h3><p>Solusi analitik dibandingkan dengan integrasi numerik Persamaan Schrödinger, di JavaScript dan Python.</p></div>
   </div>
 
-  <h2 class="sec-title">Alur Belajar (Prosedur)</h2>
+  <h2 class="sec-title">Alur Belajar</h2>
   <ol class="steps">
-    <li><b>Pahami teori</b> — baca ringkasan Persamaan Schrödinger dan koefisien transmisi.</li>
-    <li><b>Pilih skenario</b> — gunakan Learning Scenarios atau atur parameter sendiri.</li>
-    <li><b>Amati &amp; bandingkan</b> — lihat perbedaan prediksi klasik dan kuantum serta aliran partikel.</li>
-    <li><b>Analisis grafik</b> — telusuri T(E), T(a), dan limit klasik; ekspor data CSV.</li>
-    <li><b>Verifikasi</b> — jalankan uji kebenaran fisika, lalu uji pemahaman melalui kuis.</li>
+    <li><b>Kerjakan pretes</b> (menu Kuis), lalu baca tujuan pembelajaran dan teori.</li>
+    <li><b>Pilih skenario</b> di halaman Simulasi, atau atur parameter sendiri.</li>
+    <li><b>Amati dan bandingkan</b> prediksi klasik, kuantum, dan aliran partikel.</li>
+    <li><b>Analisis grafik</b> T(E), T(a), dan limit klasik; kerjakan menu Tugas.</li>
+    <li><b>Verifikasi</b> kebenaran fisika, lalu kerjakan <b>postes</b>.</li>
   </ol>
 </section>
 
 <!-- ============ TEORI ============ -->
 <section class="page" id="page-theory">
+  <div class="card prose goals">
+    <h2>Tujuan Pembelajaran</h2>
+    <div class="goals-grid">
+      <div>
+        <h4>Capaian Pembelajaran Mata Kuliah (CPMK)</h4>
+        <p>Mahasiswa mampu menerapkan Persamaan Schrödinger tak bergantung waktu pada sistem potensial satu dimensi untuk menjelaskan gejala kuantum, termasuk penerowongan melalui penghalang potensial, serta membandingkannya dengan prediksi mekanika klasik.</p>
+        <h4>Prasyarat</h4>
+        <ul>
+          <li>Bilangan kompleks dan fungsi eksponensial/hiperbolik</li>
+          <li>Persamaan diferensial orde dua dengan koefisien konstan</li>
+          <li>Konsep fungsi gelombang dan tafsiran |ψ|² sebagai rapat peluang</li>
+        </ul>
+        <p class="muted small">Perkiraan waktu belajar: 2 × 50 menit (termasuk pretes, tugas, dan postes).</p>
+      </div>
+      <div>
+        <h4>Indikator Ketercapaian</h4>
+        <p>Setelah menggunakan Q-Tunnel Lab, mahasiswa dapat:</p>
+        <ol>
+          <li>menuliskan solusi Persamaan Schrödinger pada tiga daerah penghalang persegi untuk E &lt; V₀ dan E &gt; V₀;</li>
+          <li>menjelaskan syarat kontinuitas ψ dan dψ/dx serta kekekalan peluang T + R = 1;</li>
+          <li>menghitung T untuk parameter tertentu dan memeriksanya dengan simulasi;</li>
+          <li>menganalisis pengaruh E, V₀, a, dan m terhadap T, termasuk resonansi pada E &gt; V₀;</li>
+          <li>membedakan prediksi mekanika klasik dan kuantum serta menjelaskan limit klasik;</li>
+          <li>mengaitkan penerowongan dengan penerapannya (STM, peluruhan alfa, memori flash, fusi).</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
   <div class="grid-2">
     <article class="card prose">
-      <h2>Tujuan</h2>
-      <p>Mengamati fenomena penerowongan kuantum (<i>quantum tunneling</i>) dan menentukan koefisien transmisi \(T\) serta refleksi \(R\) partikel yang menumbuk penghalang potensial persegi, kemudian membandingkannya dengan prediksi mekanika klasik.</p>
       <h2>Persamaan Schrödinger</h2>
       <p>Partikel bermassa \(m\) dan energi \(E\) dalam satu dimensi memenuhi persamaan Schrödinger tak bergantung waktu:</p>
       <div class="eq">$$-\frac{\hbar^2}{2m}\frac{d^2\psi}{dx^2}+V(x)\psi=E\psi \qquad (1)$$</div>
-      <p>dengan \(V(x)=V_0\) untuk \(0&lt;x&lt;a\) dan \(V(x)=0\) di luar daerah tersebut. Solusi tiga daerah:</p>
-      <div class="eq">$$\psi(x)=\begin{cases} e^{ikx}+r\,e^{-ikx}, & x&lt;0\\ C e^{iqx}+D e^{-iqx}, & 0\le x\le a\\ t\,e^{ikx}, & x&gt;a\end{cases}$$</div>
-      <p>dengan \(k=\sqrt{2mE}/\hbar\) dan \(q=\sqrt{2m(E-V_0)}/\hbar\). Konstanta ditentukan dari kontinuitas \(\psi\) dan \(d\psi/dx\) di \(x=0\) dan \(x=a\).</p>
+      <p>dengan \(V(x)=V_0\) untuk \(0&lt;x&lt;a\) dan \(V(x)=0\) di luar daerah tersebut. Di luar penghalang \(k=\sqrt{2mE}/\hbar\).</p>
+      <p><b>Untuk \(E&gt;V_0\)</b>, gelombang di dalam penghalang berosilasi dengan \(k'=\sqrt{2m(E-V_0)}/\hbar\):</p>
+      <div class="eq">$$\psi(x)=\begin{cases} e^{ikx}+r\,e^{-ikx}, & x&lt;0\\ C e^{ik'x}+D e^{-ik'x}, & 0\le x\le a\\ t\,e^{ikx}, & x&gt;a\end{cases}$$</div>
+      <p><b>Untuk \(E&lt;V_0\)</b>, \(k'\) menjadi imajiner (\(k'=i\kappa\)) sehingga di dalam penghalang ψ meluruh/tumbuh eksponensial dengan \(\kappa=\sqrt{2m(V_0-E)}/\hbar\):</p>
+      <div class="eq">$$\psi(x)=C e^{\kappa x}+D e^{-\kappa x},\qquad 0\le x\le a$$</div>
+      <p>Konstanta \(r, C, D, t\) ditentukan dari kontinuitas \(\psi\) dan \(d\psi/dx\) di \(x=0\) dan \(x=a\). Koefisien transmisi \(T=|t|^2\) dan refleksi \(R=|r|^2\).</p>
       <h2>Koefisien Transmisi</h2>
       <p><b>Daerah \(0&lt;E&lt;V_0\)</b> (penerowongan):</p>
-      <div class="eq">$$T=\left[1+\frac{V_0^2\sinh^2(\kappa a)}{4E(V_0-E)}\right]^{-1},\quad \kappa=\frac{\sqrt{2m(V_0-E)}}{\hbar}\qquad(2)$$</div>
-      <p><b>Daerah \(E&gt;V_0\)</b> (gelombang berosilasi di dalam penghalang):</p>
-      <div class="eq">$$T=\left[1+\frac{V_0^2\sin^2(k'a)}{4E(E-V_0)}\right]^{-1},\quad k'=\frac{\sqrt{2m(E-V_0)}}{\hbar}\qquad(3)$$</div>
+      <div class="eq">$$T=\left[1+\frac{V_0^2\sinh^2(\kappa a)}{4E(V_0-E)}\right]^{-1}\qquad(2)$$</div>
+      <p><b>Daerah \(E&gt;V_0\)</b>:</p>
+      <div class="eq">$$T=\left[1+\frac{V_0^2\sin^2(k'a)}{4E(E-V_0)}\right]^{-1}\qquad(3)$$</div>
       <p><b>Kasus batas \(E=V_0\)</b>:</p>
       <div class="eq">$$T=\left[1+\frac{mV_0a^2}{2\hbar^2}\right]^{-1}\qquad(4)$$</div>
-      <p>Koefisien refleksi \(R=1-T\). Untuk penghalang tebal (\(\kappa a\gg1\)):</p>
+      <p>Koefisien refleksi \(R=1-T\). Untuk penghalang tebal (\(\kappa a\gg1\)) berlaku pendekatan:</p>
       <div class="eq">$$T\approx16\frac{E}{V_0}\left(1-\frac{E}{V_0}\right)e^{-2\kappa a}\qquad(5)$$</div>
+      <p class="note"><b>Batas keberlakuan pers. (5).</b> Galat relatifnya turun sebanding \(e^{-2\kappa a}\). Untuk \(E/V_0=0{,}6\): sekitar 27 % pada \(\kappa a=1\), 3,4 % pada \(\kappa a=2\), 0,5 % pada \(\kappa a=3\), dan 2×10⁻⁷ pada \(\kappa a=8\) (lihat halaman Verifikasi). Gunakan pers. (5) bila \(\kappa a\gtrsim3\) agar galatnya di bawah 1 %.</p>
     </article>
     <aside>
       <div class="card prose">
@@ -117,12 +151,13 @@
         <table class="tbl">
           <thead><tr><th>Kondisi</th><th>Klasik</th><th>Kuantum</th></tr></thead>
           <tbody>
-            <tr><td>\(E&lt;V_0\)</td><td>\(T=0\) — selalu memantul</td><td>\(T&gt;0\) — bisa menembus</td></tr>
-            <tr><td>\(E=V_0\)</td><td>batas (ambang)</td><td>\(T\) hingga, persamaan (4)</td></tr>
-            <tr><td>\(E&gt;V_0\)</td><td>\(T=1\) — selalu lolos</td><td>\(T\le1\) — masih ada refleksi</td></tr>
+            <tr><td>\(E&lt;V_0\)</td><td>\(T=0\): selalu memantul</td><td>\(T&gt;0\): dapat menembus</td></tr>
+            <tr><td>\(E=V_0\)</td><td>ambang</td><td>\(T\) berhingga, pers. (4)</td></tr>
+            <tr><td>\(E&gt;V_0\)</td><td>\(T=1\): selalu lolos</td><td>\(T\le1\): masih ada refleksi</td></tr>
           </tbody>
         </table>
-        <p class="note">Resonansi \(T=1\) terjadi saat \(k'a=n\pi\) (\(n=1,2,3,\dots\)): penghalang menjadi "transparan" seperti interferensi pada lapisan tipis.</p>
+        <p class="note">Resonansi \(T=1\) terjadi saat \(k'a=n\pi\) (\(n=1,2,3,\dots\)): pantulan di kedua tepi penghalang saling meniadakan, mirip interferensi pada lapisan tipis.</p>
+        <p class="note">Partikel yang menembus <b>tidak kehilangan energi</b>: energinya tetap E di kedua sisi; yang berkurang adalah amplitudo (peluang).</p>
       </div>
       <div class="card prose">
         <h2>Konstanta yang Dipakai</h2>
@@ -132,18 +167,49 @@
           <li><span>\(m_\mu/m_e\)</span><b>206,77</b></li>
           <li><span>\(m_p/m_e\)</span><b>1836,15</b></li>
         </ul>
-        <p class="note">Contoh acuan proposal: elektron, \(V_0=5\) eV, \(a=0{,}4\) nm, \(E=3\) eV → \(\kappa a\approx2{,}90\) dan \(T\approx1{,}16\%\).</p>
-      </div>
-      <div class="card prose">
-        <h2>Aplikasi Nyata</h2>
-        <ul>
-          <li>Mikroskop penerowongan (STM)</li>
-          <li>Peluruhan alfa inti atom</li>
-          <li>Dioda terowongan &amp; memori flash</li>
-          <li>Fusi nuklir di inti Matahari</li>
-        </ul>
+        <p class="note">Contoh acuan: elektron, \(V_0=5\) eV, \(a=0{,}4\) nm, \(E=3\) eV → \(\kappa a\approx2{,}90\) dan \(T\approx1{,}16\%\).</p>
       </div>
     </aside>
+  </div>
+
+  <div class="card prose">
+    <h2>Penerapan Nyata Penerowongan Kuantum</h2>
+    <p class="muted">Pada semua contoh, T sangat peka terhadap κ dan lebar penghalang karena T ∝ e<sup>−2κa</sup>.</p>
+    <div class="apps">
+      <div class="app">
+        <h4>Mikroskop Penerowongan (STM)</h4>
+        <p>Jarum logam didekatkan ke permukaan sampel hingga celah vakum sekitar 0,5 nm. Elektron menembus celah itu walaupun energinya lebih rendah daripada fungsi kerja (~4,5 eV), sehingga κ ≈ 11 nm⁻¹. Karena T ∝ e<sup>−2κa</sup>, perubahan celah 0,1 nm saja mengubah arus sekitar 9 kali, yang membuat STM mampu “melihat” atom satu per satu.</p>
+        <button class="btn sm" data-preset='{"E":1,"V0":5.5,"a":0.5,"m":1}'>Coba di simulasi</button>
+      </div>
+      <div class="app">
+        <h4>Peluruhan Alfa</h4>
+        <p>Partikel alfa (≈ 7300 mₑ) terkurung oleh penghalang Coulomb inti setinggi ~25–30 MeV, padahal energinya hanya 4–9 MeV. Secara klasik ia tidak dapat keluar; secara kuantum ia menerowong (teori Gamow, 1928). Karena T bergantung eksponensial pada κa, selisih energi beberapa MeV menghasilkan waktu paruh dari mikrodetik sampai miliaran tahun.</p>
+        <p class="muted small">Skala MeV–femtometer berada di luar rentang slider; gunakan skenario proton untuk melihat efek massa besar.</p>
+      </div>
+      <div class="app">
+        <h4>Memori Flash dan Dioda Terowongan</h4>
+        <p>Pada memori flash, elektron dipaksa menembus lapisan oksida silikon (penghalang ~3 eV) untuk mengisi atau mengosongkan “gerbang mengambang”. Lapisan oksida dibuat cukup tebal (beberapa nm) agar T sangat kecil saat data disimpan, sehingga data bertahan bertahun-tahun. Dioda terowongan (Esaki, 1958) memakai sambungan p–n yang sangat tipis sehingga elektron menerowong langsung.</p>
+        <button class="btn sm" data-preset='{"E":1,"V0":4,"a":1.5,"m":1}'>Coba di simulasi</button>
+      </div>
+      <div class="app">
+        <h4>Fusi Nuklir di Matahari</h4>
+        <p>Di inti Matahari (~15 juta K), energi termal proton hanya ~1 keV, jauh di bawah penghalang Coulomb (~1 MeV). Tanpa penerowongan, fusi hidrogen tidak akan terjadi. Massa proton yang besar membuat κ besar, sehingga penerowongan hanya mungkin karena penghalangnya sangat tipis pada skala inti.</p>
+        <button class="btn sm" data-preset='{"E":3,"V0":5,"a":0.02,"m":1836.15}'>Coba di simulasi (proton, penghalang tipis)</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card prose refs">
+    <h2>Rujukan</h2>
+    <ol>
+      <li>Griffiths, D. J., &amp; Schroeter, D. F. (2018). <i>Introduction to Quantum Mechanics</i> (3rd ed.). Cambridge University Press.</li>
+      <li>Serway, R. A., Moses, C. J., &amp; Moyer, C. A. (2005). <i>Modern Physics</i> (3rd ed.). Thomson Brooks/Cole.</li>
+      <li>Krane, K. S. (2012). <i>Modern Physics</i> (3rd ed.). John Wiley &amp; Sons.</li>
+      <li>Binnig, G., Rohrer, H., Gerber, Ch., &amp; Weibel, E. (1982). Surface studies by scanning tunneling microscopy. <i>Physical Review Letters, 49</i>(1), 57–61.</li>
+      <li>Gamow, G. (1928). Zur Quantentheorie des Atomkernes. <i>Zeitschrift für Physik, 51</i>, 204–212.</li>
+      <li>Esaki, L. (1958). New phenomenon in narrow germanium p–n junctions. <i>Physical Review, 109</i>(2), 603–604.</li>
+      <li>McKagan, S. B., Perkins, K. K., &amp; Wieman, C. E. (2008). A deeper look at student learning of quantum mechanics: The case of tunneling. <i>Physical Review Special Topics – Physics Education Research, 4</i>(2), 020103.</li>
+    </ol>
   </div>
 </section>
 
@@ -151,72 +217,73 @@
 <section class="page" id="page-sim">
   <div class="sim-layout">
     <aside class="card controls">
-      <h3>Interactive Parameter Control</h3>
+      <h3>Pengatur Parameter Interaktif</h3>
       <div class="ctrl">
-        <label>Energi partikel <i>E</i><output id="oE"></output></label>
+        <label for="sE">Energi partikel <i>E</i> <span class="tip" tabindex="0" data-tip="Energi kinetik partikel datang. Bandingkan dengan V₀: E < V₀ = penerowongan, E > V₀ = di atas penghalang.">?</span><output id="oE"></output></label>
         <input type="range" id="sE" min="0.05" max="15" step="0.01" value="3">
       </div>
       <div class="ctrl">
-        <label>Tinggi penghalang <i>V₀</i><output id="oV"></output></label>
+        <label for="sV">Tinggi penghalang <i>V₀</i> <span class="tip" tabindex="0" data-tip="Energi potensial di dalam penghalang (0 < x < a). Makin tinggi V₀, makin besar κ dan makin kecil T.">?</span><output id="oV"></output></label>
         <input type="range" id="sV" min="0.5" max="12" step="0.05" value="5">
       </div>
       <div class="ctrl">
-        <label>Lebar penghalang <i>a</i><output id="oA"></output></label>
+        <label for="sA">Lebar penghalang <i>a</i> <span class="tip" tabindex="0" data-tip="Tebal penghalang. Untuk E < V₀, T turun kira-kira sebanding e^(−2κa).">?</span><output id="oA"></output></label>
         <input type="range" id="sA" min="0.02" max="2" step="0.005" value="0.4">
       </div>
       <div class="ctrl">
-        <label>Massa partikel<output id="oM"></output></label>
+        <label for="selM">Massa partikel <span class="tip" tabindex="0" data-tip="Massa dalam kelipatan massa elektron. κ ∝ √m, jadi partikel berat sulit menerowong (limit klasik).">?</span><output id="oM"></output></label>
         <select id="selM">
           <option value="1" selected>Elektron (mₑ)</option>
           <option value="206.77">Muon (206,77 mₑ)</option>
           <option value="1836.15">Proton (1836 mₑ)</option>
           <option value="custom">Kustom…</option>
         </select>
-        <input type="range" id="sM" min="0" max="3.5" step="0.01" value="0" class="hidden">
+        <input type="range" id="sM" min="0" max="3.5" step="0.01" value="0" class="hidden" aria-label="Massa kustom (skala log)">
       </div>
 
-      <h3 class="mt">Learning Scenarios</h3>
+      <h3 class="mt">Skenario Belajar <span class="tip" tabindex="0" data-tip="Pilih skenario untuk mengatur parameter otomatis dan membaca panduan pengamatannya.">?</span></h3>
       <div class="scenarios" id="scenarios"></div>
-      <div class="scenario-note" id="scenarioNote">Pilih skenario untuk panduan eksplorasi.</div>
+      <div class="scenario-note" id="scenarioNote" aria-live="polite">Pilih skenario untuk panduan eksplorasi.</div>
 
       <h3 class="mt">Tampilan</h3>
       <div class="toggles">
         <label><input type="checkbox" id="tRe" checked> Re ψ (animasi)</label>
-        <label><input type="checkbox" id="tProb" checked> |ψ|² densitas</label>
+        <label><input type="checkbox" id="tProb" checked> |ψ|² rapat peluang</label>
         <label><input type="checkbox" id="tPlay" checked> Jalankan animasi</label>
       </div>
     </aside>
 
     <div class="sim-main">
-      <div class="readouts">
+      <div class="readouts" aria-live="polite">
         <div class="ro"><span>Rezim</span><b id="rRegime">—</b></div>
-        <div class="ro"><span>T kuantum</span><b id="rTq" class="c-q">—</b></div>
+        <div class="ro"><span>T kuantum <span class="tip" tabindex="0" data-tip="Peluang partikel diteruskan, dari pers. (2)–(4). Nilai sangat kecil ditulis dalam pangkat sepuluh.">?</span></span><b id="rTq" class="c-q">—</b></div>
         <div class="ro"><span>R kuantum</span><b id="rRq" class="c-r">—</b></div>
         <div class="ro"><span>T klasik</span><b id="rTc" class="c-c">—</b></div>
-        <div class="ro"><span>ΔT (Kuantum − Klasik)</span><b id="rDT">—</b></div>
+        <div class="ro"><span>ΔT (kuantum − klasik)</span><b id="rDT">—</b></div>
         <div class="ro"><span id="rKlabel">κa</span><b id="rKa">—</b></div>
       </div>
+      <div class="tiny-note" id="tinyNote" hidden></div>
 
       <div class="dual">
         <div class="card panel">
           <div class="panel-head"><span class="tag c">Mekanika Klasik</span><span class="sub" id="clsText"></span></div>
-          <canvas id="cvClassical"></canvas>
+          <canvas id="cvClassical" role="img" aria-label="Animasi partikel klasik terhadap penghalang"></canvas>
         </div>
         <div class="card panel">
           <div class="panel-head"><span class="tag q">Mekanika Kuantum</span><span class="sub">Fungsi gelombang ψ(x) dari Persamaan Schrödinger</span></div>
-          <canvas id="cvQuantum"></canvas>
+          <canvas id="cvQuantum" role="img" aria-label="Fungsi gelombang kuantum dan rapat peluang"></canvas>
         </div>
       </div>
 
       <div class="card panel">
         <div class="panel-head">
-          <span class="tag">Transmission Comparison · Aliran Partikel</span>
+          <span class="tag">Perbandingan Transmisi · Aliran Partikel</span>
           <span class="sub">Setiap titik adalah satu partikel; hasil empiris mendekati nilai teoretis</span>
           <div class="spacer"></div>
           <button class="btn sm" id="btnFire">Tembakkan 200</button>
           <button class="btn sm ghost" id="btnReset">Reset</button>
         </div>
-        <canvas id="cvStream"></canvas>
+        <canvas id="cvStream" role="img" aria-label="Simulasi aliran partikel klasik dan kuantum"></canvas>
         <div class="bars">
           <div class="bar-row"><span>Klasik</span><div class="bar"><i id="bC" class="b-c"></i></div><b id="bCv">0 %</b><small id="cntC">0 / 0</small></div>
           <div class="bar-row"><span>Kuantum</span><div class="bar"><i id="bQ" class="b-q"></i></div><b id="bQv">0 %</b><small id="cntQ">0 / 0</small></div>
@@ -237,10 +304,10 @@
     </div>
   </div>
   <div class="grid-2">
-    <div class="card panel"><div class="panel-head"><span class="tag">T dan R terhadap Energi</span><span class="sub">T(E), R(E) — perhatikan resonansi E &gt; V₀</span></div><canvas id="cvTE" class="chart"></canvas></div>
-    <div class="card panel"><div class="panel-head"><span class="tag">T terhadap Lebar Penghalang</span><span class="sub">T(a) — skala logaritmik</span></div><canvas id="cvTA" class="chart"></canvas></div>
-    <div class="card panel"><div class="panel-head"><span class="tag">Classical Limit Explorer</span><span class="sub">T terhadap massa partikel m/mₑ (log)</span></div><canvas id="cvTM" class="chart"></canvas></div>
-    <div class="card panel"><div class="panel-head"><span class="tag">|T<sub>kuantum</sub> − T<sub>klasik</sub>|</span><span class="sub">Selisih kedua model sepanjang energi</span></div><canvas id="cvDiff" class="chart"></canvas></div>
+    <div class="card panel"><div class="panel-head"><span class="tag">T dan R terhadap Energi</span><span class="sub">T(E), R(E): perhatikan resonansi E &gt; V₀</span></div><canvas id="cvTE" class="chart" role="img" aria-label="Grafik T dan R terhadap energi"></canvas></div>
+    <div class="card panel"><div class="panel-head"><span class="tag">T terhadap Lebar Penghalang</span><span class="sub">T(a), skala logaritmik</span></div><canvas id="cvTA" class="chart" role="img" aria-label="Grafik T terhadap lebar penghalang"></canvas></div>
+    <div class="card panel"><div class="panel-head"><span class="tag">Penjelajah Limit Klasik</span><span class="sub">T terhadap massa partikel m/mₑ (log)</span></div><canvas id="cvTM" class="chart" role="img" aria-label="Grafik T terhadap massa partikel"></canvas></div>
+    <div class="card panel"><div class="panel-head"><span class="tag">|T<sub>kuantum</sub> − T<sub>klasik</sub>|</span><span class="sub">Selisih kedua model sepanjang energi</span></div><canvas id="cvDiff" class="chart" role="img" aria-label="Grafik selisih T kuantum dan klasik"></canvas></div>
   </div>
   <div class="card prose insight" id="insight"></div>
 </section>
@@ -250,17 +317,31 @@
   <div class="card analysis-head">
     <div>
       <h2>Pemeriksaan Kebenaran Fisika</h2>
-      <p class="muted">Solusi analitik (pers. 2–4) dibandingkan dengan integrasi numerik RK4 Persamaan Schrödinger (pers. 1). Kriteria sesuai Lampiran proposal.</p>
+      <p class="muted">Solusi analitik (pers. 2–4) dibandingkan dengan integrasi numerik Runge–Kutta orde 4 (RK4) Persamaan Schrödinger (pers. 1), memakai parameter V₀, a, dan m dari halaman Simulasi. Uji JavaScript berjalan otomatis; tekan <b>Jalankan (Python)</b> untuk menjalankan uji yang sama dengan NumPy langsung di browser.</p>
+      <details class="criteria">
+        <summary>Kriteria yang diperiksa</summary>
+        <ol>
+          <li>Kekekalan peluang: |T + R − 1| &lt; 10⁻⁶ untuk semua energi uji.</li>
+          <li>Galat relatif analitik vs numerik &lt; 10⁻⁶.</li>
+          <li>Kontinuitas T di E = V₀ (pers. 2 dan 3 menuju pers. 4).</li>
+          <li>Penghalang sangat tipis (a → 0) memberi T → 1.</li>
+          <li>Penghalang tebal (κa = 8) cocok dengan pendekatan pers. (5).</li>
+          <li>Resonansi T = 1 saat k′a = π.</li>
+          <li>Massa besar (proton) memberi T mendekati prediksi klasik.</li>
+          <li>Contoh acuan elektron (V₀ = 5 eV, a = 0,4 nm, E = 3 eV) memberi T ≈ 1,16 %.</li>
+          <li>T yang sangat kecil tidak dibulatkan menjadi nol.</li>
+        </ol>
+      </details>
     </div>
     <div class="row-gap">
-      <button class="btn" id="btnVerifyJS">Jalankan (JavaScript)</button>
+      <button class="btn" id="btnVerifyJS">Jalankan ulang (JavaScript)</button>
       <button class="btn primary" id="btnVerifyPy">Jalankan (Python)</button>
     </div>
   </div>
   <div class="grid-2">
     <div class="card">
       <h3>Hasil Kriteria</h3>
-      <div id="verifyList" class="verify-list"><p class="muted">Belum dijalankan.</p></div>
+      <div id="verifyList" class="verify-list" aria-live="polite"><p class="muted">Menjalankan uji…</p></div>
     </div>
     <div class="card">
       <h3>Tabel Analitik vs Numerik</h3>
@@ -270,7 +351,27 @@
   </div>
   <div class="card" id="pyPlotCard" hidden>
     <h3>Grafik Verifikasi (Matplotlib, dihasilkan Python)</h3>
-    <img id="pyPlot" alt="Grafik verifikasi dari Python">
+    <img id="pyPlot" alt="Grafik verifikasi dari Python: T(E) analitik dan numerik, serta T terhadap lebar penghalang">
+  </div>
+</section>
+
+<!-- ============ TUGAS ============ -->
+<section class="page" id="page-task">
+  <div class="quiz-wrap wide">
+    <div class="card">
+      <div class="quiz-top"><h2>Tugas Terstruktur</h2><span class="chip" id="taskProg"></span></div>
+      <p class="muted">Kerjakan setiap tugas memakai halaman Simulasi atau Analisis. Waktu dihitung sejak tombol <b>Mulai</b> ditekan sampai jawaban dikirim. Hasil tersimpan di peramban ini dan dapat diunduh sebagai CSV untuk uji kepraktisan.</p>
+      <div class="resp-row">
+        <label for="respCode">Kode responden</label>
+        <input id="respCode" class="inp" placeholder="contoh: R07" maxlength="20" autocomplete="off">
+        <span class="muted small" id="deviceInfo"></span>
+      </div>
+      <div id="taskList" class="task-list"></div>
+      <div class="row-gap mt">
+        <button class="btn primary" id="btnTaskCSV">Unduh hasil (CSV)</button>
+        <button class="btn ghost" id="btnTaskClear">Hapus data di peramban ini</button>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -281,6 +382,10 @@
       <div class="quiz-top"><h2>Uji Pemahaman</h2><span class="chip" id="quizProg"></span></div>
       <div class="progress"><i id="quizBar"></i></div>
       <div id="quizBody"></div>
+    </div>
+    <div class="card mt">
+      <div class="quiz-top"><h3>Riwayat Skor di Peramban Ini</h3><button class="btn sm" id="btnQuizCSV">Unduh CSV</button></div>
+      <div class="tbl-wrap"><table class="tbl" id="quizHist"><thead><tr><th>Waktu</th><th>Kode</th><th>Mode</th><th>Skor</th><th>Durasi</th></tr></thead><tbody></tbody></table></div>
     </div>
   </div>
 </section>
@@ -316,9 +421,10 @@
     <div class="card prose">
       <h3>Metode Pengembangan · ADDIE</h3>
       <div class="addie">
-        <div><b>A</b><span>Analysis</span></div><div><b>D</b><span>Design</span></div><div><b>D</b><span>Development</span></div><div><b>I</b><span>Implementation</span></div><div><b>E</b><span>Evaluation</span></div>
+        <div><b>A</b><span>Analisis</span></div><div><b>D</b><span>Desain</span></div><div><b>D</b><span>Pengembangan</span></div><div><b>I</b><span>Implementasi</span></div><div><b>E</b><span>Evaluasi</span></div>
       </div>
-      <p>Teknologi: HTML, CSS, JavaScript (Canvas) untuk antarmuka; Python (NumPy, Matplotlib, Flask) sebagai mesin acuan kebenaran perhitungan.</p>
+      <p>Teknologi: HTML, CSS, dan JavaScript (Canvas) untuk antarmuka; Python (NumPy, Matplotlib) sebagai mesin acuan kebenaran, dijalankan di browser dengan Pyodide.</p>
+      <p>Kode sumber: <a href="https://github.com/dbdiro/q-tunnel-lab" target="_blank" rel="noopener">github.com/dbdiro/q-tunnel-lab</a></p>
     </div>
     <div class="card prose">
       <h3>Jurnal Sasaran</h3>
@@ -333,9 +439,49 @@
 
 </main>
 
-<footer class="foot">© 2026 Kelompok 7 — Ernauli Br. Haloho · Heny Asvarinda · Dila Badiro · Q-Tunnel Lab</footer>
+<footer class="foot">
+  © 2026 Kelompok 7 — Ernauli Br. Haloho · Heny Asvarinda · Dila Badiro · Q-Tunnel Lab
+  <button class="ver" id="verBtn" aria-haspopup="dialog">v1.1.0 · Apa yang baru?</button>
+</footer>
 
+<dialog id="changelog" aria-labelledby="clTitle">
+  <div class="cl-head">
+    <div><span class="pill">Pembaruan</span><h2 id="clTitle">Q-Tunnel Lab v1.1.0</h2><p class="muted small">27 November 2026 · revisi berdasarkan masukan dosen pengampu</p></div>
+    <button class="btn sm ghost" id="clClose" aria-label="Tutup">✕</button>
+  </div>
+  <div class="cl-body">
+    <h4>Baru</h4>
+    <ul>
+      <li><b>Python aktif di situs publik.</b> Verifikasi Python kini berjalan langsung di browser (Pyodide + NumPy + Matplotlib), tanpa server.</li>
+      <li><b>Tujuan pembelajaran</b>: CPMK, indikator ketercapaian, prasyarat, dan perkiraan waktu belajar di halaman Teori.</li>
+      <li><b>Rujukan</b>: daftar pustaka buku dan artikel acuan.</li>
+      <li><b>Penerapan nyata dijelaskan</b>: STM, peluruhan alfa, memori flash, dan fusi di Matahari, dengan tombol “Coba di simulasi”.</li>
+      <li><b>Menu Tugas</b>: tiga tugas terstruktur yang mencatat ketepatan dan waktu pengerjaan, dapat diunduh sebagai CSV.</li>
+      <li><b>Kuis baru</b>: 12 soal dengan pengecoh dari miskonsepsi umum, urutan soal dan opsi diacak, mode Latihan/Pretes/Postes, skor tersimpan dan dapat diunduh.</li>
+      <li><b>Keterangan (tooltip)</b> pada setiap kontrol simulasi.</li>
+    </ul>
+    <h4>Perbaikan</h4>
+    <ul>
+      <li>T yang sangat kecil tidak lagi ditampilkan “0 %”, melainkan dalam pangkat sepuluh (misalnya ≈ 10⁻¹⁷²⁹ %).</li>
+      <li>Halaman Verifikasi menjalankan uji JavaScript otomatis dan mencantumkan daftar kriterianya.</li>
+      <li>Teori: solusi untuk E &lt; V₀ (q = iκ) dan batas keberlakuan pendekatan penghalang tebal.</li>
+      <li>Nama fitur dan istilah diseragamkan dalam bahasa Indonesia; jumlah fitur di beranda diperbaiki.</li>
+      <li>Tampilan ponsel: semua menu terlihat lewat tombol Menu, tombol sentuh minimal 44 piksel.</li>
+      <li>Aksesibilitas: kontras teks ditingkatkan, fokus papan ketik terlihat jelas, kanvas diberi label.</li>
+    </ul>
+    <p class="muted small">Versi sebelumnya: v1.0.0 (14 November 2026), prototipe awal. Riwayat lengkap ada di <a href="https://github.com/dbdiro/q-tunnel-lab/releases" target="_blank" rel="noopener">GitHub Releases</a>.</p>
+  </div>
+</dialog>
+
+<div class="toast" id="toast" role="status" hidden>
+  <span>✨ Q-Tunnel Lab diperbarui ke <b>v1.1.0</b></span>
+  <button class="btn sm" id="toastOpen">Lihat perubahan</button>
+  <button class="btn sm ghost" id="toastClose" aria-label="Tutup pemberitahuan">✕</button>
+</div>
+
+<script type="text/x-python" id="pySrc" data-src="server/physics.py"></script>
 <script src="assets/physics.js"></script>
 <script src="assets/app.js"></script>
+<script src="assets/learn.js"></script>
 </body>
 </html>

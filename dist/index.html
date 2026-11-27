@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Q-Tunnel Lab — Kelompok 7</title>
-<meta name="description" content="Quantum Tunneling Interactive Lab: laboratorium virtual berbasis web untuk visualisasi transmisi partikel melalui penghalang potensial persegi.">
+<meta name="description" content="Q-Tunnel Lab: laboratorium virtual berbasis web untuk visualisasi transmisi partikel melalui penghalang potensial persegi.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@400;600&family=EB+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Courier+Prime&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
@@ -27,7 +27,7 @@
 [data-theme="light"]{
   --bg:#f4f6fb; --bg2:#ffffff; --card:#ffffff; --card2:#eef2fa; --line:#dde3ef; --line2:#c8d2e6;
   --text:#152038; --text2:#33415e; --muted:#5f6c88; --dim:#8a96b0;
-  --q:#0a8fc2; --q2:#5b3fd6; --c:#d47a00; --r:#d6325a; --ok:#11996a; --bad:#d6325a;
+  --q:#0573a0; --q2:#5b3fd6; --c:#a85d00; --r:#d6325a; --ok:#0b7d55; --bad:#d6325a;
   --barrier:rgba(91,63,214,.14); --shadow:0 8px 28px -14px rgba(30,50,100,.25);
   --on-accent:#ffffff; --topbar:rgba(255,255,255,.85);
   --bg-img:radial-gradient(1000px 500px at 90% -10%,rgba(10,143,194,.10),transparent 60%),radial-gradient(800px 400px at -10% 10%,rgba(91,63,214,.08),transparent 60%);
@@ -243,7 +243,7 @@ select{width:100%;background:var(--bg);border:1px solid var(--line2);border-radi
 .addie b{display:block;font-size:22px;color:var(--q)}
 .addie span{font-size:11px;color:var(--muted)}
 
-.foot{text-align:center;color:var(--dim);font-size:12.5px;padding:30px 16px;border-top:1px solid var(--line);margin-top:30px}
+.foot{text-align:center;color:var(--muted);font-size:12.5px;padding:30px 16px;border-top:1px solid var(--line);margin-top:30px}
 
 @media (max-width:1100px){
   .readouts{grid-template-columns:repeat(3,1fr)}
@@ -275,9 +275,121 @@ h1,h2,h3,.brand-name,.sec-title,.qtext,.tag,.pill,.member .role,.score .big{font
 h1,h2{letter-spacing:-.4px} h1{font-weight:800}
 [data-theme="classic"] h1,[data-theme="classic"] h2{letter-spacing:.3px}
 
+/* ===================== v1.1 ===================== */
+.skip{position:absolute;left:-999px;top:8px;z-index:100;background:var(--q);color:var(--on-accent);padding:8px 14px;border-radius:8px;font-weight:700}
+.skip:focus{left:12px}
+:focus-visible{outline:3px solid var(--q);outline-offset:2px;border-radius:6px}
+.mt{margin-top:16px}
+.small{font-size:12.5px}
+
+/* menu ponsel */
+.menu-btn{display:none;margin-left:auto;background:var(--card2);border:1px solid var(--line2);border-radius:10px;padding:10px 14px;min-height:44px;font-weight:600;cursor:pointer}
+
+/* status mesin Python */
+.engine.idle .dot{background:var(--q2)}
+.engine.busy .dot{background:var(--c);animation:pulse 1s infinite}
+.engine.off .dot{background:var(--bad)}
+@keyframes pulse{50%{opacity:.3}}
+
+/* tooltip */
+.tip{display:inline-grid;place-items:center;width:18px;height:18px;border-radius:50%;font-size:11px;font-weight:700;font-style:normal;
+  background:var(--card2);border:1px solid var(--line2);color:var(--muted);cursor:help;position:relative;vertical-align:middle;margin-left:4px}
+.tip:hover::after,.tip:focus::after{content:attr(data-tip);position:absolute;left:50%;top:calc(100% + 8px);transform:translateX(-50%);z-index:30;
+  width:240px;padding:10px 12px;border-radius:10px;background:var(--bg2);color:var(--text);border:1px solid var(--line2);box-shadow:var(--shadow);
+  font:500 12.5px/1.45 var(--font);text-align:left;white-space:normal;text-transform:none;letter-spacing:0}
+.controls .tip:hover::after,.controls .tip:focus::after{left:0;transform:none}
+.ro .tip{width:16px;height:16px;font-size:10px}
+
+/* teori */
+.goals h4,.apps h4{margin:14px 0 6px;font-family:var(--font-head);color:var(--text)}
+.goals-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+.goals ol,.goals ul{padding-left:20px}
+.goals{margin-bottom:20px}
+.apps{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:10px}
+.app{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:6px 16px 16px}
+.app p{font-size:14px}
+.refs{margin-top:20px}
+.refs li{margin-bottom:6px;font-size:14px}
+#page-theory > .card.prose:not(.goals){margin-top:20px}
+
+/* simulasi */
+.tiny-note{font-size:13px;color:var(--text2);background:var(--card);border:1px solid var(--line);border-left:3px solid var(--c);border-radius:10px;padding:10px 14px}
+.criteria{margin-top:10px;font-size:14px;color:var(--text2)}
+.criteria summary{cursor:pointer;font-weight:600;color:var(--q)}
+.criteria ol{margin:8px 0 0;padding-left:20px}
+
+/* tugas & kuis */
+.quiz-wrap.wide{max-width:900px}
+.resp-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:14px 0}
+.resp-row label{font-weight:600;font-size:14px}
+.inp{background:var(--bg);border:1px solid var(--line2);border-radius:10px;padding:10px 12px;min-height:44px;font:inherit;color:var(--text);min-width:160px}
+.task-list{display:flex;flex-direction:column;gap:12px}
+.task{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.task.done{border-left:3px solid var(--ok)}
+.task-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.task-head h4{margin:0;font-family:var(--font-head)}
+.tnum{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-weight:800;background:var(--q);color:var(--on-accent)}
+.task p{font-size:14.5px;color:var(--text2)}
+.task-body{display:flex;flex-direction:column;gap:10px;align-items:flex-start}
+.opt-radio{display:flex;gap:10px;align-items:center;padding:10px 12px;border:1px solid var(--line2);border-radius:10px;cursor:pointer;font-size:14.5px;min-height:44px}
+.opt-radio:hover{border-color:var(--q)}
+.tfeed{color:var(--bad)}
+.mode-row{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0}
+.opt.picked{border-color:var(--q);background:rgba(56,214,255,.1)}
+.review{margin-top:16px}
+.review summary{cursor:pointer;font-weight:600;color:var(--q)}
+.review li{margin:10px 0;font-size:14px}
+.review li.ok b{color:var(--ok)} .review li.no b{color:var(--bad)}
+
+/* footer, catatan pembaruan, toast */
+.ver{margin-left:8px;background:none;border:1px solid var(--line2);border-radius:999px;padding:4px 12px;color:var(--q);font:600 12.5px var(--font);cursor:pointer}
+.ver:hover{background:var(--card)}
+dialog#changelog{max-width:640px;width:calc(100% - 32px);border:1px solid var(--line2);border-radius:var(--radius);padding:0;background:var(--card);color:var(--text);box-shadow:var(--shadow)}
+dialog#changelog::backdrop{background:rgba(0,0,0,.55);backdrop-filter:blur(2px)}
+.cl-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:20px 22px 8px}
+.cl-head h2{margin:8px 0 2px}
+.cl-body{padding:0 22px 20px;max-height:65vh;overflow:auto}
+.cl-body h4{margin:14px 0 6px;color:var(--q);font-family:var(--font-head)}
+.cl-body li{font-size:14px;margin-bottom:6px;color:var(--text2)}
+.toast{position:fixed;right:20px;bottom:20px;z-index:50;display:flex;align-items:center;gap:10px;flex-wrap:wrap;max-width:calc(100% - 40px);
+  background:var(--card);border:1px solid var(--line2);border-radius:14px;padding:12px 14px;box-shadow:var(--shadow);font-size:14px;animation:fade .3s ease}
+.toast[hidden]{display:none}
+
+/* sentuh: target minimal 44 px */
+@media (pointer:coarse){
+  .btn,.btn.sm,.scenarios button,.tabs button,.theme-switch button{min-height:44px}
+  .theme-switch button{min-width:40px}
+  .tip{width:24px;height:24px}
+}
+@media (max-width:860px){
+  .menu-btn{display:inline-flex;align-items:center;gap:6px}
+  .topbar .tabs{display:none;order:4;width:100%;flex-wrap:wrap;overflow:visible;gap:6px}
+  body.menu-open .topbar .tabs{display:grid;grid-template-columns:repeat(4,1fr)}
+  .topbar .tabs button{min-height:44px;background:var(--card);border:1px solid var(--line);white-space:normal}
+  .engine{order:3}
+  .goals-grid,.apps{grid-template-columns:1fr}
+  .scenarios button{min-height:44px}
+  .tip:hover::after,.tip:focus::after{width:200px}
+}
+@media (max-width:420px){ body.menu-open .topbar .tabs{grid-template-columns:repeat(2,1fr)} }
+/* header padat (8 menu) */
+.topbar{gap:14px}
+.tabs button{padding:8px 11px}
+.engine{max-width:230px;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:1500px){ .brand-sub{display:none} }
+@media (max-width:1180px) and (min-width:861px){
+  .menu-btn{display:inline-flex;align-items:center}
+  .topbar{flex-wrap:wrap}
+  .topbar .tabs{display:none;order:4;width:100%;margin:0}
+  body.menu-open .topbar .tabs{display:flex;flex-wrap:wrap}
+}
+.ro b.long{font-size:14px}
+.task-body[hidden],.btn[hidden]{display:none}
+
 </style>
 </head>
 <body>
+<a class="skip" href="#main">Lewati ke konten</a>
 
 <header class="topbar">
   <div class="brand">
@@ -286,30 +398,32 @@ h1,h2{letter-spacing:-.4px} h1{font-weight:800}
     </div>
     <div>
       <div class="brand-name">Q-Tunnel Lab</div>
-      <div class="brand-sub">Quantum Tunneling Interactive Lab · Kelompok 7</div>
+      <div class="brand-sub">Laboratorium Virtual Penerowongan Kuantum · Kelompok 7</div>
     </div>
   </div>
-  <nav class="tabs" id="tabs">
+  <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="tabs" aria-label="Buka menu">☰ Menu</button>
+  <nav class="tabs" id="tabs" aria-label="Menu utama">
     <button data-tab="home" class="active">Beranda</button>
     <button data-tab="theory">Teori</button>
     <button data-tab="sim">Simulasi</button>
     <button data-tab="analysis">Analisis</button>
     <button data-tab="verify">Verifikasi</button>
+    <button data-tab="task">Tugas</button>
     <button data-tab="quiz">Kuis</button>
     <button data-tab="team">Tim</button>
   </nav>
   <div class="theme-switch" id="themeSwitch" role="group" aria-label="Mode tampilan">
-    <button data-theme="light" title="Mode Terang">☀</button>
-    <button data-theme="dark" title="Mode Gelap">☾</button>
-    <button data-theme="blue" title="Mode Biru">◆</button>
-    <button data-theme="classic" title="Mode Klasik (gaya lama)">❦</button>
+    <button data-theme="light" title="Mode Terang" aria-label="Mode terang">☀</button>
+    <button data-theme="dark" title="Mode Gelap" aria-label="Mode gelap">☾</button>
+    <button data-theme="blue" title="Mode Biru" aria-label="Mode biru">◆</button>
+    <button data-theme="classic" title="Mode Klasik (gaya lama)" aria-label="Mode klasik">❦</button>
   </div>
-  <div class="engine" id="engineBadge" title="Status mesin perhitungan Python (Flask)">
-    <span class="dot"></span><span class="txt">Python: memeriksa…</span>
+  <div class="engine idle" id="engineBadge" title="Mesin Python: berjalan langsung di browser (Pyodide) saat verifikasi Python dijalankan">
+    <span class="dot"></span><span class="txt">Python · siap dimuat</span>
   </div>
 </header>
 
-<main>
+<main id="main">
 
 <!-- ============ BERANDA ============ -->
 <section class="page active" id="page-home">
@@ -317,64 +431,95 @@ h1,h2{letter-spacing:-.4px} h1{font-weight:800}
     <div class="hero-text">
       <span class="pill">Jalur J1 · Simulasi &amp; Media Pembelajaran Fisika Kuantum</span>
       <h1>Pengembangan <em>Quantum Tunneling Interactive Lab</em> Berbasis Web untuk Visualisasi Transmisi Partikel</h1>
-      <p class="lead">Laboratorium virtual yang menyajikan prediksi <b>mekanika klasik</b> dan <b>mekanika kuantum</b> secara tersinkronisasi pada penghalang potensial persegi satu dimensi — lengkap dengan fungsi gelombang, koefisien transmisi–refleksi, eksplorasi limit klasik, dan verifikasi kebenaran fisika berbasis Python.</p>
+      <p class="lead">Laboratorium virtual yang menyajikan prediksi <b>mekanika klasik</b> dan <b>mekanika kuantum</b> secara tersinkronisasi pada penghalang potensial persegi satu dimensi, lengkap dengan fungsi gelombang, koefisien transmisi dan refleksi, penjelajahan limit klasik, serta verifikasi kebenaran fisika dengan JavaScript dan Python.</p>
       <div class="hero-cta">
         <button class="btn primary" data-goto="sim">Mulai Eksperimen →</button>
-        <button class="btn ghost" data-goto="theory">Pelajari Teori</button>
+        <button class="btn ghost" data-goto="theory">Tujuan &amp; Teori</button>
       </div>
       <div class="hero-stats">
-        <div><b>5</b><span>Fitur utama</span></div>
+        <div><b>6</b><span>Fitur utama</span></div>
         <div><b>3</b><span>Daerah energi</span></div>
         <div><b>&lt;10⁻⁶</b><span>Galat analitik–numerik</span></div>
       </div>
     </div>
     <div class="hero-visual card">
-      <canvas id="heroCanvas"></canvas>
+      <canvas id="heroCanvas" role="img" aria-label="Fungsi gelombang elektron menembus penghalang potensial"></canvas>
       <div class="hero-caption">ψ(x) elektron, E = 3 eV, V₀ = 5 eV, a = 0,4 nm · T ≈ 1,16 %</div>
     </div>
   </div>
 
   <h2 class="sec-title">Fitur Laboratorium</h2>
   <div class="features">
-    <div class="feature card"><div class="ficon">⚙</div><h3>Interactive Parameter Control</h3><p>Atur energi partikel E, tinggi penghalang V₀, lebar a, dan massa partikel secara langsung.</p></div>
-    <div class="feature card"><div class="ficon">◐</div><h3>Dual Physics Visualization</h3><p>Panel klasik dan kuantum berdampingan dengan parameter yang tersinkronisasi.</p></div>
-    <div class="feature card"><div class="ficon">⇄</div><h3>Transmission Comparison</h3><p>Bandingkan T klasik, T kuantum, dan selisih keduanya — termasuk refleksi saat E &gt; V₀.</p></div>
-    <div class="feature card"><div class="ficon">∞</div><h3>Classical Limit Explorer</h3><p>Amati bagaimana massa dan lebar penghalang membawa hasil kuantum mendekati klasik, lengkap dengan osilasi resonansi.</p></div>
-    <div class="feature card"><div class="ficon">✎</div><h3>Learning Scenarios</h3><p>Skenario terpandu: E &lt; V₀, E = V₀, E &gt; V₀, resonansi, penghalang tipis/tebal.</p></div>
-    <div class="feature card"><div class="ficon">✓</div><h3>Verifikasi Fisika</h3><p>Pembandingan solusi analitik dengan integrasi numerik Persamaan Schrödinger (JavaScript &amp; Python).</p></div>
+    <div class="feature card"><div class="ficon">⚙</div><h3>Pengatur Parameter Interaktif</h3><p>Atur energi partikel E, tinggi penghalang V₀, lebar a, dan massa partikel secara langsung.</p></div>
+    <div class="feature card"><div class="ficon">◐</div><h3>Visualisasi Klasik–Kuantum</h3><p>Panel mekanika klasik dan kuantum berdampingan dengan parameter yang tersinkronisasi.</p></div>
+    <div class="feature card"><div class="ficon">⇄</div><h3>Perbandingan Transmisi</h3><p>Bandingkan T klasik, T kuantum, dan selisihnya, termasuk refleksi saat E &gt; V₀.</p></div>
+    <div class="feature card"><div class="ficon">∞</div><h3>Penjelajah Limit Klasik</h3><p>Amati bagaimana massa dan lebar penghalang membawa hasil kuantum mendekati klasik, lengkap dengan osilasi resonansi.</p></div>
+    <div class="feature card"><div class="ficon">✎</div><h3>Skenario Belajar</h3><p>Skenario terpandu: E &lt; V₀, E = V₀, E &gt; V₀, resonansi, penghalang tipis dan tebal.</p></div>
+    <div class="feature card"><div class="ficon">✓</div><h3>Verifikasi Fisika</h3><p>Solusi analitik dibandingkan dengan integrasi numerik Persamaan Schrödinger, di JavaScript dan Python.</p></div>
   </div>
 
-  <h2 class="sec-title">Alur Belajar (Prosedur)</h2>
+  <h2 class="sec-title">Alur Belajar</h2>
   <ol class="steps">
-    <li><b>Pahami teori</b> — baca ringkasan Persamaan Schrödinger dan koefisien transmisi.</li>
-    <li><b>Pilih skenario</b> — gunakan Learning Scenarios atau atur parameter sendiri.</li>
-    <li><b>Amati &amp; bandingkan</b> — lihat perbedaan prediksi klasik dan kuantum serta aliran partikel.</li>
-    <li><b>Analisis grafik</b> — telusuri T(E), T(a), dan limit klasik; ekspor data CSV.</li>
-    <li><b>Verifikasi</b> — jalankan uji kebenaran fisika, lalu uji pemahaman melalui kuis.</li>
+    <li><b>Kerjakan pretes</b> (menu Kuis), lalu baca tujuan pembelajaran dan teori.</li>
+    <li><b>Pilih skenario</b> di halaman Simulasi, atau atur parameter sendiri.</li>
+    <li><b>Amati dan bandingkan</b> prediksi klasik, kuantum, dan aliran partikel.</li>
+    <li><b>Analisis grafik</b> T(E), T(a), dan limit klasik; kerjakan menu Tugas.</li>
+    <li><b>Verifikasi</b> kebenaran fisika, lalu kerjakan <b>postes</b>.</li>
   </ol>
 </section>
 
 <!-- ============ TEORI ============ -->
 <section class="page" id="page-theory">
+  <div class="card prose goals">
+    <h2>Tujuan Pembelajaran</h2>
+    <div class="goals-grid">
+      <div>
+        <h4>Capaian Pembelajaran Mata Kuliah (CPMK)</h4>
+        <p>Mahasiswa mampu menerapkan Persamaan Schrödinger tak bergantung waktu pada sistem potensial satu dimensi untuk menjelaskan gejala kuantum, termasuk penerowongan melalui penghalang potensial, serta membandingkannya dengan prediksi mekanika klasik.</p>
+        <h4>Prasyarat</h4>
+        <ul>
+          <li>Bilangan kompleks dan fungsi eksponensial/hiperbolik</li>
+          <li>Persamaan diferensial orde dua dengan koefisien konstan</li>
+          <li>Konsep fungsi gelombang dan tafsiran |ψ|² sebagai rapat peluang</li>
+        </ul>
+        <p class="muted small">Perkiraan waktu belajar: 2 × 50 menit (termasuk pretes, tugas, dan postes).</p>
+      </div>
+      <div>
+        <h4>Indikator Ketercapaian</h4>
+        <p>Setelah menggunakan Q-Tunnel Lab, mahasiswa dapat:</p>
+        <ol>
+          <li>menuliskan solusi Persamaan Schrödinger pada tiga daerah penghalang persegi untuk E &lt; V₀ dan E &gt; V₀;</li>
+          <li>menjelaskan syarat kontinuitas ψ dan dψ/dx serta kekekalan peluang T + R = 1;</li>
+          <li>menghitung T untuk parameter tertentu dan memeriksanya dengan simulasi;</li>
+          <li>menganalisis pengaruh E, V₀, a, dan m terhadap T, termasuk resonansi pada E &gt; V₀;</li>
+          <li>membedakan prediksi mekanika klasik dan kuantum serta menjelaskan limit klasik;</li>
+          <li>mengaitkan penerowongan dengan penerapannya (STM, peluruhan alfa, memori flash, fusi).</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
   <div class="grid-2">
     <article class="card prose">
-      <h2>Tujuan</h2>
-      <p>Mengamati fenomena penerowongan kuantum (<i>quantum tunneling</i>) dan menentukan koefisien transmisi \(T\) serta refleksi \(R\) partikel yang menumbuk penghalang potensial persegi, kemudian membandingkannya dengan prediksi mekanika klasik.</p>
       <h2>Persamaan Schrödinger</h2>
       <p>Partikel bermassa \(m\) dan energi \(E\) dalam satu dimensi memenuhi persamaan Schrödinger tak bergantung waktu:</p>
       <div class="eq">$$-\frac{\hbar^2}{2m}\frac{d^2\psi}{dx^2}+V(x)\psi=E\psi \qquad (1)$$</div>
-      <p>dengan \(V(x)=V_0\) untuk \(0&lt;x&lt;a\) dan \(V(x)=0\) di luar daerah tersebut. Solusi tiga daerah:</p>
-      <div class="eq">$$\psi(x)=\begin{cases} e^{ikx}+r\,e^{-ikx}, & x&lt;0\\ C e^{iqx}+D e^{-iqx}, & 0\le x\le a\\ t\,e^{ikx}, & x&gt;a\end{cases}$$</div>
-      <p>dengan \(k=\sqrt{2mE}/\hbar\) dan \(q=\sqrt{2m(E-V_0)}/\hbar\). Konstanta ditentukan dari kontinuitas \(\psi\) dan \(d\psi/dx\) di \(x=0\) dan \(x=a\).</p>
+      <p>dengan \(V(x)=V_0\) untuk \(0&lt;x&lt;a\) dan \(V(x)=0\) di luar daerah tersebut. Di luar penghalang \(k=\sqrt{2mE}/\hbar\).</p>
+      <p><b>Untuk \(E&gt;V_0\)</b>, gelombang di dalam penghalang berosilasi dengan \(k'=\sqrt{2m(E-V_0)}/\hbar\):</p>
+      <div class="eq">$$\psi(x)=\begin{cases} e^{ikx}+r\,e^{-ikx}, & x&lt;0\\ C e^{ik'x}+D e^{-ik'x}, & 0\le x\le a\\ t\,e^{ikx}, & x&gt;a\end{cases}$$</div>
+      <p><b>Untuk \(E&lt;V_0\)</b>, \(k'\) menjadi imajiner (\(k'=i\kappa\)) sehingga di dalam penghalang ψ meluruh/tumbuh eksponensial dengan \(\kappa=\sqrt{2m(V_0-E)}/\hbar\):</p>
+      <div class="eq">$$\psi(x)=C e^{\kappa x}+D e^{-\kappa x},\qquad 0\le x\le a$$</div>
+      <p>Konstanta \(r, C, D, t\) ditentukan dari kontinuitas \(\psi\) dan \(d\psi/dx\) di \(x=0\) dan \(x=a\). Koefisien transmisi \(T=|t|^2\) dan refleksi \(R=|r|^2\).</p>
       <h2>Koefisien Transmisi</h2>
       <p><b>Daerah \(0&lt;E&lt;V_0\)</b> (penerowongan):</p>
-      <div class="eq">$$T=\left[1+\frac{V_0^2\sinh^2(\kappa a)}{4E(V_0-E)}\right]^{-1},\quad \kappa=\frac{\sqrt{2m(V_0-E)}}{\hbar}\qquad(2)$$</div>
-      <p><b>Daerah \(E&gt;V_0\)</b> (gelombang berosilasi di dalam penghalang):</p>
-      <div class="eq">$$T=\left[1+\frac{V_0^2\sin^2(k'a)}{4E(E-V_0)}\right]^{-1},\quad k'=\frac{\sqrt{2m(E-V_0)}}{\hbar}\qquad(3)$$</div>
+      <div class="eq">$$T=\left[1+\frac{V_0^2\sinh^2(\kappa a)}{4E(V_0-E)}\right]^{-1}\qquad(2)$$</div>
+      <p><b>Daerah \(E&gt;V_0\)</b>:</p>
+      <div class="eq">$$T=\left[1+\frac{V_0^2\sin^2(k'a)}{4E(E-V_0)}\right]^{-1}\qquad(3)$$</div>
       <p><b>Kasus batas \(E=V_0\)</b>:</p>
       <div class="eq">$$T=\left[1+\frac{mV_0a^2}{2\hbar^2}\right]^{-1}\qquad(4)$$</div>
-      <p>Koefisien refleksi \(R=1-T\). Untuk penghalang tebal (\(\kappa a\gg1\)):</p>
+      <p>Koefisien refleksi \(R=1-T\). Untuk penghalang tebal (\(\kappa a\gg1\)) berlaku pendekatan:</p>
       <div class="eq">$$T\approx16\frac{E}{V_0}\left(1-\frac{E}{V_0}\right)e^{-2\kappa a}\qquad(5)$$</div>
+      <p class="note"><b>Batas keberlakuan pers. (5).</b> Galat relatifnya turun sebanding \(e^{-2\kappa a}\). Untuk \(E/V_0=0{,}6\): sekitar 27 % pada \(\kappa a=1\), 3,4 % pada \(\kappa a=2\), 0,5 % pada \(\kappa a=3\), dan 2×10⁻⁷ pada \(\kappa a=8\) (lihat halaman Verifikasi). Gunakan pers. (5) bila \(\kappa a\gtrsim3\) agar galatnya di bawah 1 %.</p>
     </article>
     <aside>
       <div class="card prose">
@@ -382,12 +527,13 @@ h1,h2{letter-spacing:-.4px} h1{font-weight:800}
         <table class="tbl">
           <thead><tr><th>Kondisi</th><th>Klasik</th><th>Kuantum</th></tr></thead>
           <tbody>
-            <tr><td>\(E&lt;V_0\)</td><td>\(T=0\) — selalu memantul</td><td>\(T&gt;0\) — bisa menembus</td></tr>
-            <tr><td>\(E=V_0\)</td><td>batas (ambang)</td><td>\(T\) hingga, persamaan (4)</td></tr>
-            <tr><td>\(E&gt;V_0\)</td><td>\(T=1\) — selalu lolos</td><td>\(T\le1\) — masih ada refleksi</td></tr>
+            <tr><td>\(E&lt;V_0\)</td><td>\(T=0\): selalu memantul</td><td>\(T&gt;0\): dapat menembus</td></tr>
+            <tr><td>\(E=V_0\)</td><td>ambang</td><td>\(T\) berhingga, pers. (4)</td></tr>
+            <tr><td>\(E&gt;V_0\)</td><td>\(T=1\): selalu lolos</td><td>\(T\le1\): masih ada refleksi</td></tr>
           </tbody>
         </table>
-        <p class="note">Resonansi \(T=1\) terjadi saat \(k'a=n\pi\) (\(n=1,2,3,\dots\)): penghalang menjadi "transparan" seperti interferensi pada lapisan tipis.</p>
+        <p class="note">Resonansi \(T=1\) terjadi saat \(k'a=n\pi\) (\(n=1,2,3,\dots\)): pantulan di kedua tepi penghalang saling meniadakan, mirip interferensi pada lapisan tipis.</p>
+        <p class="note">Partikel yang menembus <b>tidak kehilangan energi</b>: energinya tetap E di kedua sisi; yang berkurang adalah amplitudo (peluang).</p>
       </div>
       <div class="card prose">
         <h2>Konstanta yang Dipakai</h2>
@@ -397,18 +543,49 @@ h1,h2{letter-spacing:-.4px} h1{font-weight:800}
           <li><span>\(m_\mu/m_e\)</span><b>206,77</b></li>
           <li><span>\(m_p/m_e\)</span><b>1836,15</b></li>
         </ul>
-        <p class="note">Contoh acuan proposal: elektron, \(V_0=5\) eV, \(a=0{,}4\) nm, \(E=3\) eV → \(\kappa a\approx2{,}90\) dan \(T\approx1{,}16\%\).</p>
-      </div>
-      <div class="card prose">
-        <h2>Aplikasi Nyata</h2>
-        <ul>
-          <li>Mikroskop penerowongan (STM)</li>
-          <li>Peluruhan alfa inti atom</li>
-          <li>Dioda terowongan &amp; memori flash</li>
-          <li>Fusi nuklir di inti Matahari</li>
-        </ul>
+        <p class="note">Contoh acuan: elektron, \(V_0=5\) eV, \(a=0{,}4\) nm, \(E=3\) eV → \(\kappa a\approx2{,}90\) dan \(T\approx1{,}16\%\).</p>
       </div>
     </aside>
+  </div>
+
+  <div class="card prose">
+    <h2>Penerapan Nyata Penerowongan Kuantum</h2>
+    <p class="muted">Pada semua contoh, T sangat peka terhadap κ dan lebar penghalang karena T ∝ e<sup>−2κa</sup>.</p>
+    <div class="apps">
+      <div class="app">
+        <h4>Mikroskop Penerowongan (STM)</h4>
+        <p>Jarum logam didekatkan ke permukaan sampel hingga celah vakum sekitar 0,5 nm. Elektron menembus celah itu walaupun energinya lebih rendah daripada fungsi kerja (~4,5 eV), sehingga κ ≈ 11 nm⁻¹. Karena T ∝ e<sup>−2κa</sup>, perubahan celah 0,1 nm saja mengubah arus sekitar 9 kali, yang membuat STM mampu “melihat” atom satu per satu.</p>
+        <button class="btn sm" data-preset='{"E":1,"V0":5.5,"a":0.5,"m":1}'>Coba di simulasi</button>
+      </div>
+      <div class="app">
+        <h4>Peluruhan Alfa</h4>
+        <p>Partikel alfa (≈ 7300 mₑ) terkurung oleh penghalang Coulomb inti setinggi ~25–30 MeV, padahal energinya hanya 4–9 MeV. Secara klasik ia tidak dapat keluar; secara kuantum ia menerowong (teori Gamow, 1928). Karena T bergantung eksponensial pada κa, selisih energi beberapa MeV menghasilkan waktu paruh dari mikrodetik sampai miliaran tahun.</p>
+        <p class="muted small">Skala MeV–femtometer berada di luar rentang slider; gunakan skenario proton untuk melihat efek massa besar.</p>
+      </div>
+      <div class="app">
+        <h4>Memori Flash dan Dioda Terowongan</h4>
+        <p>Pada memori flash, elektron dipaksa menembus lapisan oksida silikon (penghalang ~3 eV) untuk mengisi atau mengosongkan “gerbang mengambang”. Lapisan oksida dibuat cukup tebal (beberapa nm) agar T sangat kecil saat data disimpan, sehingga data bertahan bertahun-tahun. Dioda terowongan (Esaki, 1958) memakai sambungan p–n yang sangat tipis sehingga elektron menerowong langsung.</p>
+        <button class="btn sm" data-preset='{"E":1,"V0":4,"a":1.5,"m":1}'>Coba di simulasi</button>
+      </div>
+      <div class="app">
+        <h4>Fusi Nuklir di Matahari</h4>
+        <p>Di inti Matahari (~15 juta K), energi termal proton hanya ~1 keV, jauh di bawah penghalang Coulomb (~1 MeV). Tanpa penerowongan, fusi hidrogen tidak akan terjadi. Massa proton yang besar membuat κ besar, sehingga penerowongan hanya mungkin karena penghalangnya sangat tipis pada skala inti.</p>
+        <button class="btn sm" data-preset='{"E":3,"V0":5,"a":0.02,"m":1836.15}'>Coba di simulasi (proton, penghalang tipis)</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card prose refs">
+    <h2>Rujukan</h2>
+    <ol>
+      <li>Griffiths, D. J., &amp; Schroeter, D. F. (2018). <i>Introduction to Quantum Mechanics</i> (3rd ed.). Cambridge University Press.</li>
+      <li>Serway, R. A., Moses, C. J., &amp; Moyer, C. A. (2005). <i>Modern Physics</i> (3rd ed.). Thomson Brooks/Cole.</li>
+      <li>Krane, K. S. (2012). <i>Modern Physics</i> (3rd ed.). John Wiley &amp; Sons.</li>
+      <li>Binnig, G., Rohrer, H., Gerber, Ch., &amp; Weibel, E. (1982). Surface studies by scanning tunneling microscopy. <i>Physical Review Letters, 49</i>(1), 57–61.</li>
+      <li>Gamow, G. (1928). Zur Quantentheorie des Atomkernes. <i>Zeitschrift für Physik, 51</i>, 204–212.</li>
+      <li>Esaki, L. (1958). New phenomenon in narrow germanium p–n junctions. <i>Physical Review, 109</i>(2), 603–604.</li>
+      <li>McKagan, S. B., Perkins, K. K., &amp; Wieman, C. E. (2008). A deeper look at student learning of quantum mechanics: The case of tunneling. <i>Physical Review Special Topics – Physics Education Research, 4</i>(2), 020103.</li>
+    </ol>
   </div>
 </section>
 
@@ -416,72 +593,73 @@ h1,h2{letter-spacing:-.4px} h1{font-weight:800}
 <section class="page" id="page-sim">
   <div class="sim-layout">
     <aside class="card controls">
-      <h3>Interactive Parameter Control</h3>
+      <h3>Pengatur Parameter Interaktif</h3>
       <div class="ctrl">
-        <label>Energi partikel <i>E</i><output id="oE"></output></label>
+        <label for="sE">Energi partikel <i>E</i> <span class="tip" tabindex="0" data-tip="Energi kinetik partikel datang. Bandingkan dengan V₀: E < V₀ = penerowongan, E > V₀ = di atas penghalang.">?</span><output id="oE"></output></label>
         <input type="range" id="sE" min="0.05" max="15" step="0.01" value="3">
       </div>
       <div class="ctrl">
-        <label>Tinggi penghalang <i>V₀</i><output id="oV"></output></label>
+        <label for="sV">Tinggi penghalang <i>V₀</i> <span class="tip" tabindex="0" data-tip="Energi potensial di dalam penghalang (0 < x < a). Makin tinggi V₀, makin besar κ dan makin kecil T.">?</span><output id="oV"></output></label>
         <input type="range" id="sV" min="0.5" max="12" step="0.05" value="5">
       </div>
       <div class="ctrl">
-        <label>Lebar penghalang <i>a</i><output id="oA"></output></label>
+        <label for="sA">Lebar penghalang <i>a</i> <span class="tip" tabindex="0" data-tip="Tebal penghalang. Untuk E < V₀, T turun kira-kira sebanding e^(−2κa).">?</span><output id="oA"></output></label>
         <input type="range" id="sA" min="0.02" max="2" step="0.005" value="0.4">
       </div>
       <div class="ctrl">
-        <label>Massa partikel<output id="oM"></output></label>
+        <label for="selM">Massa partikel <span class="tip" tabindex="0" data-tip="Massa dalam kelipatan massa elektron. κ ∝ √m, jadi partikel berat sulit menerowong (limit klasik).">?</span><output id="oM"></output></label>
         <select id="selM">
           <option value="1" selected>Elektron (mₑ)</option>
           <option value="206.77">Muon (206,77 mₑ)</option>
           <option value="1836.15">Proton (1836 mₑ)</option>
           <option value="custom">Kustom…</option>
         </select>
-        <input type="range" id="sM" min="0" max="3.5" step="0.01" value="0" class="hidden">
+        <input type="range" id="sM" min="0" max="3.5" step="0.01" value="0" class="hidden" aria-label="Massa kustom (skala log)">
       </div>
 
-      <h3 class="mt">Learning Scenarios</h3>
+      <h3 class="mt">Skenario Belajar <span class="tip" tabindex="0" data-tip="Pilih skenario untuk mengatur parameter otomatis dan membaca panduan pengamatannya.">?</span></h3>
       <div class="scenarios" id="scenarios"></div>
-      <div class="scenario-note" id="scenarioNote">Pilih skenario untuk panduan eksplorasi.</div>
+      <div class="scenario-note" id="scenarioNote" aria-live="polite">Pilih skenario untuk panduan eksplorasi.</div>
 
       <h3 class="mt">Tampilan</h3>
       <div class="toggles">
         <label><input type="checkbox" id="tRe" checked> Re ψ (animasi)</label>
-        <label><input type="checkbox" id="tProb" checked> |ψ|² densitas</label>
+        <label><input type="checkbox" id="tProb" checked> |ψ|² rapat peluang</label>
         <label><input type="checkbox" id="tPlay" checked> Jalankan animasi</label>
       </div>
     </aside>
 
     <div class="sim-main">
-      <div class="readouts">
+      <div class="readouts" aria-live="polite">
         <div class="ro"><span>Rezim</span><b id="rRegime">—</b></div>
-        <div class="ro"><span>T kuantum</span><b id="rTq" class="c-q">—</b></div>
+        <div class="ro"><span>T kuantum <span class="tip" tabindex="0" data-tip="Peluang partikel diteruskan, dari pers. (2)–(4). Nilai sangat kecil ditulis dalam pangkat sepuluh.">?</span></span><b id="rTq" class="c-q">—</b></div>
         <div class="ro"><span>R kuantum</span><b id="rRq" class="c-r">—</b></div>
         <div class="ro"><span>T klasik</span><b id="rTc" class="c-c">—</b></div>
-        <div class="ro"><span>ΔT (Kuantum − Klasik)</span><b id="rDT">—</b></div>
+        <div class="ro"><span>ΔT (kuantum − klasik)</span><b id="rDT">—</b></div>
         <div class="ro"><span id="rKlabel">κa</span><b id="rKa">—</b></div>
       </div>
+      <div class="tiny-note" id="tinyNote" hidden></div>
 
       <div class="dual">
         <div class="card panel">
           <div class="panel-head"><span class="tag c">Mekanika Klasik</span><span class="sub" id="clsText"></span></div>
-          <canvas id="cvClassical"></canvas>
+          <canvas id="cvClassical" role="img" aria-label="Animasi partikel klasik terhadap penghalang"></canvas>
         </div>
         <div class="card panel">
           <div class="panel-head"><span class="tag q">Mekanika Kuantum</span><span class="sub">Fungsi gelombang ψ(x) dari Persamaan Schrödinger</span></div>
-          <canvas id="cvQuantum"></canvas>
+          <canvas id="cvQuantum" role="img" aria-label="Fungsi gelombang kuantum dan rapat peluang"></canvas>
         </div>
       </div>
 
       <div class="card panel">
         <div class="panel-head">
-          <span class="tag">Transmission Comparison · Aliran Partikel</span>
+          <span class="tag">Perbandingan Transmisi · Aliran Partikel</span>
           <span class="sub">Setiap titik adalah satu partikel; hasil empiris mendekati nilai teoretis</span>
           <div class="spacer"></div>
           <button class="btn sm" id="btnFire">Tembakkan 200</button>
           <button class="btn sm ghost" id="btnReset">Reset</button>
         </div>
-        <canvas id="cvStream"></canvas>
+        <canvas id="cvStream" role="img" aria-label="Simulasi aliran partikel klasik dan kuantum"></canvas>
         <div class="bars">
           <div class="bar-row"><span>Klasik</span><div class="bar"><i id="bC" class="b-c"></i></div><b id="bCv">0 %</b><small id="cntC">0 / 0</small></div>
           <div class="bar-row"><span>Kuantum</span><div class="bar"><i id="bQ" class="b-q"></i></div><b id="bQv">0 %</b><small id="cntQ">0 / 0</small></div>
@@ -502,10 +680,10 @@ h1,h2{letter-spacing:-.4px} h1{font-weight:800}
     </div>
   </div>
   <div class="grid-2">
-    <div class="card panel"><div class="panel-head"><span class="tag">T dan R terhadap Energi</span><span class="sub">T(E), R(E) — perhatikan resonansi E &gt; V₀</span></div><canvas id="cvTE" class="chart"></canvas></div>
-    <div class="card panel"><div class="panel-head"><span class="tag">T terhadap Lebar Penghalang</span><span class="sub">T(a) — skala logaritmik</span></div><canvas id="cvTA" class="chart"></canvas></div>
-    <div class="card panel"><div class="panel-head"><span class="tag">Classical Limit Explorer</span><span class="sub">T terhadap massa partikel m/mₑ (log)</span></div><canvas id="cvTM" class="chart"></canvas></div>
-    <div class="card panel"><div class="panel-head"><span class="tag">|T<sub>kuantum</sub> − T<sub>klasik</sub>|</span><span class="sub">Selisih kedua model sepanjang energi</span></div><canvas id="cvDiff" class="chart"></canvas></div>
+    <div class="card panel"><div class="panel-head"><span class="tag">T dan R terhadap Energi</span><span class="sub">T(E), R(E): perhatikan resonansi E &gt; V₀</span></div><canvas id="cvTE" class="chart" role="img" aria-label="Grafik T dan R terhadap energi"></canvas></div>
+    <div class="card panel"><div class="panel-head"><span class="tag">T terhadap Lebar Penghalang</span><span class="sub">T(a), skala logaritmik</span></div><canvas id="cvTA" class="chart" role="img" aria-label="Grafik T terhadap lebar penghalang"></canvas></div>
+    <div class="card panel"><div class="panel-head"><span class="tag">Penjelajah Limit Klasik</span><span class="sub">T terhadap massa partikel m/mₑ (log)</span></div><canvas id="cvTM" class="chart" role="img" aria-label="Grafik T terhadap massa partikel"></canvas></div>
+    <div class="card panel"><div class="panel-head"><span class="tag">|T<sub>kuantum</sub> − T<sub>klasik</sub>|</span><span class="sub">Selisih kedua model sepanjang energi</span></div><canvas id="cvDiff" class="chart" role="img" aria-label="Grafik selisih T kuantum dan klasik"></canvas></div>
   </div>
   <div class="card prose insight" id="insight"></div>
 </section>
@@ -515,17 +693,31 @@ h1,h2{letter-spacing:-.4px} h1{font-weight:800}
   <div class="card analysis-head">
     <div>
       <h2>Pemeriksaan Kebenaran Fisika</h2>
-      <p class="muted">Solusi analitik (pers. 2–4) dibandingkan dengan integrasi numerik RK4 Persamaan Schrödinger (pers. 1). Kriteria sesuai Lampiran proposal.</p>
+      <p class="muted">Solusi analitik (pers. 2–4) dibandingkan dengan integrasi numerik Runge–Kutta orde 4 (RK4) Persamaan Schrödinger (pers. 1), memakai parameter V₀, a, dan m dari halaman Simulasi. Uji JavaScript berjalan otomatis; tekan <b>Jalankan (Python)</b> untuk menjalankan uji yang sama dengan NumPy langsung di browser.</p>
+      <details class="criteria">
+        <summary>Kriteria yang diperiksa</summary>
+        <ol>
+          <li>Kekekalan peluang: |T + R − 1| &lt; 10⁻⁶ untuk semua energi uji.</li>
+          <li>Galat relatif analitik vs numerik &lt; 10⁻⁶.</li>
+          <li>Kontinuitas T di E = V₀ (pers. 2 dan 3 menuju pers. 4).</li>
+          <li>Penghalang sangat tipis (a → 0) memberi T → 1.</li>
+          <li>Penghalang tebal (κa = 8) cocok dengan pendekatan pers. (5).</li>
+          <li>Resonansi T = 1 saat k′a = π.</li>
+          <li>Massa besar (proton) memberi T mendekati prediksi klasik.</li>
+          <li>Contoh acuan elektron (V₀ = 5 eV, a = 0,4 nm, E = 3 eV) memberi T ≈ 1,16 %.</li>
+          <li>T yang sangat kecil tidak dibulatkan menjadi nol.</li>
+        </ol>
+      </details>
     </div>
     <div class="row-gap">
-      <button class="btn" id="btnVerifyJS">Jalankan (JavaScript)</button>
+      <button class="btn" id="btnVerifyJS">Jalankan ulang (JavaScript)</button>
       <button class="btn primary" id="btnVerifyPy">Jalankan (Python)</button>
     </div>
   </div>
   <div class="grid-2">
     <div class="card">
       <h3>Hasil Kriteria</h3>
-      <div id="verifyList" class="verify-list"><p class="muted">Belum dijalankan.</p></div>
+      <div id="verifyList" class="verify-list" aria-live="polite"><p class="muted">Menjalankan uji…</p></div>
     </div>
     <div class="card">
       <h3>Tabel Analitik vs Numerik</h3>
@@ -535,7 +727,27 @@ h1,h2{letter-spacing:-.4px} h1{font-weight:800}
   </div>
   <div class="card" id="pyPlotCard" hidden>
     <h3>Grafik Verifikasi (Matplotlib, dihasilkan Python)</h3>
-    <img id="pyPlot" alt="Grafik verifikasi dari Python">
+    <img id="pyPlot" alt="Grafik verifikasi dari Python: T(E) analitik dan numerik, serta T terhadap lebar penghalang">
+  </div>
+</section>
+
+<!-- ============ TUGAS ============ -->
+<section class="page" id="page-task">
+  <div class="quiz-wrap wide">
+    <div class="card">
+      <div class="quiz-top"><h2>Tugas Terstruktur</h2><span class="chip" id="taskProg"></span></div>
+      <p class="muted">Kerjakan setiap tugas memakai halaman Simulasi atau Analisis. Waktu dihitung sejak tombol <b>Mulai</b> ditekan sampai jawaban dikirim. Hasil tersimpan di peramban ini dan dapat diunduh sebagai CSV untuk uji kepraktisan.</p>
+      <div class="resp-row">
+        <label for="respCode">Kode responden</label>
+        <input id="respCode" class="inp" placeholder="contoh: R07" maxlength="20" autocomplete="off">
+        <span class="muted small" id="deviceInfo"></span>
+      </div>
+      <div id="taskList" class="task-list"></div>
+      <div class="row-gap mt">
+        <button class="btn primary" id="btnTaskCSV">Unduh hasil (CSV)</button>
+        <button class="btn ghost" id="btnTaskClear">Hapus data di peramban ini</button>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -546,6 +758,10 @@ h1,h2{letter-spacing:-.4px} h1{font-weight:800}
       <div class="quiz-top"><h2>Uji Pemahaman</h2><span class="chip" id="quizProg"></span></div>
       <div class="progress"><i id="quizBar"></i></div>
       <div id="quizBody"></div>
+    </div>
+    <div class="card mt">
+      <div class="quiz-top"><h3>Riwayat Skor di Peramban Ini</h3><button class="btn sm" id="btnQuizCSV">Unduh CSV</button></div>
+      <div class="tbl-wrap"><table class="tbl" id="quizHist"><thead><tr><th>Waktu</th><th>Kode</th><th>Mode</th><th>Skor</th><th>Durasi</th></tr></thead><tbody></tbody></table></div>
     </div>
   </div>
 </section>
@@ -581,9 +797,10 @@ h1,h2{letter-spacing:-.4px} h1{font-weight:800}
     <div class="card prose">
       <h3>Metode Pengembangan · ADDIE</h3>
       <div class="addie">
-        <div><b>A</b><span>Analysis</span></div><div><b>D</b><span>Design</span></div><div><b>D</b><span>Development</span></div><div><b>I</b><span>Implementation</span></div><div><b>E</b><span>Evaluation</span></div>
+        <div><b>A</b><span>Analisis</span></div><div><b>D</b><span>Desain</span></div><div><b>D</b><span>Pengembangan</span></div><div><b>I</b><span>Implementasi</span></div><div><b>E</b><span>Evaluasi</span></div>
       </div>
-      <p>Teknologi: HTML, CSS, JavaScript (Canvas) untuk antarmuka; Python (NumPy, Matplotlib, Flask) sebagai mesin acuan kebenaran perhitungan.</p>
+      <p>Teknologi: HTML, CSS, dan JavaScript (Canvas) untuk antarmuka; Python (NumPy, Matplotlib) sebagai mesin acuan kebenaran, dijalankan di browser dengan Pyodide.</p>
+      <p>Kode sumber: <a href="https://github.com/dbdiro/q-tunnel-lab" target="_blank" rel="noopener">github.com/dbdiro/q-tunnel-lab</a></p>
     </div>
     <div class="card prose">
       <h3>Jurnal Sasaran</h3>
@@ -598,8 +815,214 @@ h1,h2{letter-spacing:-.4px} h1{font-weight:800}
 
 </main>
 
-<footer class="foot">© 2026 Kelompok 7 — Ernauli Br. Haloho · Heny Asvarinda · Dila Badiro · Q-Tunnel Lab</footer>
+<footer class="foot">
+  © 2026 Kelompok 7 — Ernauli Br. Haloho · Heny Asvarinda · Dila Badiro · Q-Tunnel Lab
+  <button class="ver" id="verBtn" aria-haspopup="dialog">v1.1.0 · Apa yang baru?</button>
+</footer>
 
+<dialog id="changelog" aria-labelledby="clTitle">
+  <div class="cl-head">
+    <div><span class="pill">Pembaruan</span><h2 id="clTitle">Q-Tunnel Lab v1.1.0</h2><p class="muted small">27 November 2026 · revisi berdasarkan masukan dosen pengampu</p></div>
+    <button class="btn sm ghost" id="clClose" aria-label="Tutup">✕</button>
+  </div>
+  <div class="cl-body">
+    <h4>Baru</h4>
+    <ul>
+      <li><b>Python aktif di situs publik.</b> Verifikasi Python kini berjalan langsung di browser (Pyodide + NumPy + Matplotlib), tanpa server.</li>
+      <li><b>Tujuan pembelajaran</b>: CPMK, indikator ketercapaian, prasyarat, dan perkiraan waktu belajar di halaman Teori.</li>
+      <li><b>Rujukan</b>: daftar pustaka buku dan artikel acuan.</li>
+      <li><b>Penerapan nyata dijelaskan</b>: STM, peluruhan alfa, memori flash, dan fusi di Matahari, dengan tombol “Coba di simulasi”.</li>
+      <li><b>Menu Tugas</b>: tiga tugas terstruktur yang mencatat ketepatan dan waktu pengerjaan, dapat diunduh sebagai CSV.</li>
+      <li><b>Kuis baru</b>: 12 soal dengan pengecoh dari miskonsepsi umum, urutan soal dan opsi diacak, mode Latihan/Pretes/Postes, skor tersimpan dan dapat diunduh.</li>
+      <li><b>Keterangan (tooltip)</b> pada setiap kontrol simulasi.</li>
+    </ul>
+    <h4>Perbaikan</h4>
+    <ul>
+      <li>T yang sangat kecil tidak lagi ditampilkan “0 %”, melainkan dalam pangkat sepuluh (misalnya ≈ 10⁻¹⁷²⁹ %).</li>
+      <li>Halaman Verifikasi menjalankan uji JavaScript otomatis dan mencantumkan daftar kriterianya.</li>
+      <li>Teori: solusi untuk E &lt; V₀ (q = iκ) dan batas keberlakuan pendekatan penghalang tebal.</li>
+      <li>Nama fitur dan istilah diseragamkan dalam bahasa Indonesia; jumlah fitur di beranda diperbaiki.</li>
+      <li>Tampilan ponsel: semua menu terlihat lewat tombol Menu, tombol sentuh minimal 44 piksel.</li>
+      <li>Aksesibilitas: kontras teks ditingkatkan, fokus papan ketik terlihat jelas, kanvas diberi label.</li>
+    </ul>
+    <p class="muted small">Versi sebelumnya: v1.0.0 (14 November 2026), prototipe awal. Riwayat lengkap ada di <a href="https://github.com/dbdiro/q-tunnel-lab/releases" target="_blank" rel="noopener">GitHub Releases</a>.</p>
+  </div>
+</dialog>
+
+<div class="toast" id="toast" role="status" hidden>
+  <span>✨ Q-Tunnel Lab diperbarui ke <b>v1.1.0</b></span>
+  <button class="btn sm" id="toastOpen">Lihat perubahan</button>
+  <button class="btn sm ghost" id="toastClose" aria-label="Tutup pemberitahuan">✕</button>
+</div>
+
+<script type="text/x-python" id="pySrc">
+"""Q-Tunnel Lab — mesin fisika Python (acuan kebenaran).
+
+Satuan: energi eV, panjang nm, massa kelipatan massa elektron.
+hbar^2 / (2 m_e) = 0.0380998 eV nm^2
+"""
+import numpy as np
+
+H2M = 0.0380998  # eV nm^2
+
+
+def transmission(E, V0, a, m=1.0):
+    """Koefisien transmisi analitik, pers. (2), (3), (4)."""
+    E = float(E)
+    if E <= 0:
+        return 0.0
+    if abs(E - V0) / V0 < 1e-9:
+        return 1.0 / (1.0 + m * V0 * a**2 / (4 * H2M))
+    if E < V0:
+        ka = np.sqrt(m * (V0 - E) / H2M) * a
+        if ka > 350:
+            return 0.0
+        return 1.0 / (1.0 + V0**2 * np.sinh(ka) ** 2 / (4 * E * (V0 - E)))
+    kpa = np.sqrt(m * (E - V0) / H2M) * a
+    return 1.0 / (1.0 + V0**2 * np.sin(kpa) ** 2 / (4 * E * (E - V0)))
+
+
+def classical_T(E, V0):
+    return 1.0 if E > V0 else (0.0 if E < V0 else 0.5)
+
+
+def log10_transmission(E, V0, a, m=1.0):
+    """log10 T, tetap akurat walau T di bawah batas float (~1e-308)."""
+    if E <= 0:
+        return -np.inf
+    if E < V0 and abs(E - V0) / V0 >= 1e-9:
+        ka = np.sqrt(m * (V0 - E) / H2M) * a
+        if ka > 20:  # T ≈ 16E(V0-E)/V0² e^(-2κa), galat relatif ~e^(-2κa)
+            return np.log10(16 * E * (V0 - E) / V0**2) - 2 * ka / np.log(10)
+    return np.log10(transmission(E, V0, a, m))
+
+
+def numerical_T(E, V0, a, m=1.0, N=4000):
+    """Integrasi numerik RK4 pers. (1), mundur dari x=a ke x=0.
+
+    Kondisi awal: gelombang keluar psi = exp(ikx) di x=a.
+    Di x=0, psi = A e^{ikx} + B e^{-ikx}  =>  T = 1/|A|^2, R = |B|^2/|A|^2.
+    E boleh berupa skalar atau array (semua energi diintegrasikan serentak).
+    """
+    scalar = np.ndim(E) == 0
+    E = np.atleast_1d(np.asarray(E, dtype=float))
+    k = np.sqrt(m * E / H2M)
+    f = m * (V0 - E) / H2M
+    p = np.exp(1j * k * a)
+    dp = 1j * k * p
+    h = -a / N
+    for _ in range(N):  # ψ'' = f ψ  (f konstan di dalam penghalang)
+        k1p, k1d = dp, f * p
+        k2p, k2d = dp + h / 2 * k1d, f * (p + h / 2 * k1p)
+        k3p, k3d = dp + h / 2 * k2d, f * (p + h / 2 * k2p)
+        k4p, k4d = dp + h * k3d, f * (p + h * k3p)
+        p = p + h / 6 * (k1p + 2 * k2p + 2 * k3p + k4p)
+        dp = dp + h / 6 * (k1d + 2 * k2d + 2 * k3d + k4d)
+    A = 0.5 * (p + dp / (1j * k))
+    B = 0.5 * (p - dp / (1j * k))
+    T, R = 1 / np.abs(A) ** 2, np.abs(B) ** 2 / np.abs(A) ** 2
+    return (float(T[0]), float(R[0])) if scalar else (T, R)
+
+
+def transfer_matrix_T(E, V0, a, m=1.0):
+    """Metode matriks transfer (pembanding kedua)."""
+    k = np.sqrt(m * E / H2M + 0j)
+    q = np.sqrt(m * (E - V0) / H2M + 0j)
+    if abs(q) < 1e-12:
+        q = 1e-9 + 0j
+
+    def M(kk, x):
+        return np.array([[np.exp(1j * kk * x), np.exp(-1j * kk * x)],
+                         [1j * kk * np.exp(1j * kk * x), -1j * kk * np.exp(-1j * kk * x)]])
+
+    Mt = np.linalg.solve(M(k, 0), M(q, 0)) @ np.linalg.solve(M(q, a), M(k, a))
+    return float(abs(1 / Mt[0, 0]) ** 2)
+
+
+def verify(V0=5.0, a=0.4, m=1.0):
+    """Semua kriteria kebenaran fisika pada Lampiran proposal."""
+    Es = [V0 * f for f in (0.1, 0.2, 0.4, 0.6, 0.8, 0.98)] + [V0] + [V0 * f for f in (1.02, 1.2, 1.4, 1.6, 2.0)]
+    Tn_all, Rn_all = numerical_T([E if E != V0 else V0 * (1 + 1e-9) for E in Es], V0, a, m)
+    table = []
+    for E, Tn, Rn in zip(Es, Tn_all, Rn_all):
+        Ta = transmission(E, V0, a, m)
+        Tn, Rn = float(Tn), float(Rn)
+        table.append(dict(E=E, Ta=Ta, Tn=Tn, err=abs(Tn - Ta) / max(Ta, 1e-300), sum=Tn + Rn))
+    max_err = max(r["err"] for r in table)
+    max_cons = max(abs(r["sum"] - 1) for r in table)
+
+    Tlo, Teq, Thi = (transmission(V0 * s, V0, a, m) for s in (1 - 1e-6, 1, 1 + 1e-6))
+    Tthin = transmission(0.6 * V0, V0, 1e-5, m)
+    kth = np.sqrt(m * 0.4 * V0 / H2M)
+    ath = 8 / kth
+    Tex = transmission(0.6 * V0, V0, ath, m)
+    Tap = 16 * 0.6 * 0.4 * np.exp(-2 * kth * ath)
+    Eres = V0 + H2M * (np.pi / a) ** 2 / m
+    Tres = transmission(Eres, V0, a, m)
+    Te, Tp = transmission(0.6 * V0, V0, a, 1), transmission(0.6 * V0, V0, a, 1836.15)
+    ref = transmission(3, 5, 0.4, 1)
+    Ttm = transfer_matrix_T(0.6 * V0, V0, a, m)
+    Tan = transmission(0.6 * V0, V0, a, m)
+    lgx = log10_transmission(0.05, 12, 2, 3162)
+
+    checks = [
+        ("Kekekalan probabilitas T + R = 1", max_cons < 1e-6, f"max |T+R-1| = {max_cons:.2e}"),
+        ("Kesesuaian analitik–numerik RK4 (< 10⁻⁶)", max_err < 1e-6, f"galat relatif maks = {max_err:.2e}"),
+        ("Kesesuaian dengan matriks transfer", abs(Ttm - Tan) / Tan < 1e-8, f"analitik {Tan:.10e} · TMM {Ttm:.10e}"),
+        ("Kontinuitas di E = V₀", abs(Tlo - Teq) / Teq < 1e-4 and abs(Thi - Teq) / Teq < 1e-4,
+         f"T(V₀⁻)={Tlo:.8f} · T(V₀)={Teq:.8f} · T(V₀⁺)={Thi:.8f}"),
+        ("Penghalang sangat tipis: a → 0 ⇒ T → 1", Tthin > 0.999, f"a = 1e-5 nm → T = {Tthin:.8f}"),
+        ("Penghalang tebal sesuai pers. (5)", abs(Tap - Tex) / Tex < 1e-3, f"κa = 8 → eksak {Tex:.4e} · aproks {Tap:.4e}"),
+        ("Resonansi T = 1 pada k′a = π", abs(Tres - 1) < 1e-9, f"E = {Eres:.4f} eV → T = {Tres:.12f}"),
+        ("Massa besar → mendekati klasik", Tp < Te and Tp < 1e-10, f"elektron T={Te:.2e} · proton T={Tp:.2e}"),
+        ("Contoh acuan (e⁻, V₀=5, a=0,4, E=3) ≈ 1,16 %", abs(ref * 100 - 1.16) < 0.01, f"T = {ref*100:.4f} %"),
+        ("T sangat kecil tidak dibulatkan ke nol", np.isfinite(lgx) and lgx < -300,
+         f"m=3162 mₑ, V₀=12 eV, a=2 nm, E=0,05 eV → T ≈ 10^{lgx:.1f} (bukan 0)"),
+    ]
+    return dict(checks=[dict(name=n, pass_=bool(p), detail=d) for n, p, d in checks], table=table)
+
+
+def verification_plot(V0=5.0, a=0.4, m=1.0):
+    """Grafik verifikasi Matplotlib -> PNG base64."""
+    import base64
+    import io
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    Es = np.linspace(0.01, 3 * V0, 800)
+    T = np.array([transmission(E, V0, a, m) for E in Es])
+    En = np.linspace(0.05 * V0, 3 * V0, 25)
+    Tn = numerical_T(np.where(np.abs(En - V0) > 1e-9, En, V0 * (1 + 1e-9)), V0, a, m, N=1500)[0]
+    aa = np.linspace(0.01, 2, 400)
+    Ta = [transmission(0.6 * V0, V0, x, m) for x in aa]
+
+    fig, ax = plt.subplots(1, 2, figsize=(11, 4), dpi=110)
+    ax[0].plot(Es, T, label="T analitik", color="#0aa5d6")
+    ax[0].plot(Es, 1 - T, label="R = 1 − T", color="#e0466a", lw=1)
+    ax[0].plot(En, Tn, "o", ms=4, label="T numerik (RK4)", color="#5b3fd6")
+    ax[0].step([0, V0, 3 * V0], [0, 1, 1], where="post", ls="--", color="#e08a00", label="T klasik")
+    ax[0].axvline(V0, color="gray", ls=":")
+    ax[0].set(xlabel="E (eV)", ylabel="Koefisien", title=f"T(E): V₀={V0} eV, a={a} nm, m={m:g} mₑ")
+    ax[0].legend(fontsize=8)
+    ax[1].semilogy(aa, Ta, color="#0aa5d6", label="T eksak (E = 0,6 V₀)")
+    k = np.sqrt(m * 0.4 * V0 / H2M)
+    ax[1].semilogy(aa, 16 * 0.6 * 0.4 * np.exp(-2 * k * aa), "--", color="#13a873", label="Aproksimasi pers. (5)")
+    ax[1].set(xlabel="a (nm)", ylabel="T", title="T terhadap lebar penghalang")
+    ax[1].legend(fontsize=8)
+    fig.tight_layout()
+    buf = io.BytesIO()
+    fig.savefig(buf, format="png")
+    plt.close(fig)
+    return base64.b64encode(buf.getvalue()).decode()
+
+
+if __name__ == "__main__":
+    res = verify()
+    for c in res["checks"]:
+        print(("✓" if c["pass_"] else "✗"), c["name"], "—", c["detail"])
+
+</script>
 <script>
 /* Q-Tunnel Lab — mesin fisika (JavaScript)
  * Satuan: energi eV, panjang nm, massa dalam kelipatan massa elektron.
@@ -636,6 +1059,17 @@ const Physics = (() => {
     return 1 / (1 + (V0 * V0 * s * s) / (4 * E * (E - V0)));
   }
 
+  /** log10 T — tetap akurat walau T di bawah batas angka komputer (~1e-308).
+   *  Untuk κa besar: T ≈ 16 E(V0−E)/V0² · e^(−2κa)  (galat relatif ~ e^(−2κa)). */
+  function log10T(E, V0, a, m = 1) {
+    if (E <= 0) return -Infinity;
+    if (E < V0 && Math.abs(E - V0) / V0 >= 1e-9) {
+      const ka = Math.sqrt(m * (V0 - E) / H2M) * a;
+      if (ka > 20) return Math.log10(16 * E * (V0 - E) / (V0 * V0)) - 2 * ka / Math.LN10;
+    }
+    return Math.log10(transmission(E, V0, a, m));
+  }
+
   const classicalT = (E, V0) => (E > V0 ? 1 : E < V0 ? 0 : 0.5);
 
   function regime(E, V0) {
@@ -667,8 +1101,19 @@ const Physics = (() => {
 
   /** Fungsi gelombang ψ(x) (kompleks) */
   function psiFactory(E, V0, a, m = 1) {
-    const A = amplitudes(E, V0, a, m);
     const I = C(0, 1);
+    if (E < V0 && Math.sqrt(m * (V0 - E) / H2M) * a > 200) {
+      // κa sangat besar: e^{κa} meluap. Gunakan solusi tangga potensial tebal:
+      // r = (k − iκ)/(k + iκ), di dalam ψ ≈ (1+r) e^{−κx}, di kanan ψ ≈ 0 (T < 10⁻¹⁷⁰).
+      const k = wavenumber(E, m), kap = Math.sqrt(m * (V0 - E) / H2M);
+      const r = div(C(k, -kap), C(k, kap)), onePr = add(C(1), r);
+      return (x) => {
+        if (x < 0) return add(cexp(C(0, k * x)), mul(r, cexp(C(0, -k * x))));
+        if (x <= a) return scale(onePr, Math.exp(-kap * x));
+        return C(0, 0);
+      };
+    }
+    const A = amplitudes(E, V0, a, m);
     return (x) => {
       if (x < 0) return add(cexp(C(0, A.k * x)), mul(A.r, cexp(C(0, -A.k * x))));
       if (x <= a) return add(mul(A.C, cexp(mul(I, scale(A.q, x)))), mul(A.D, cexp(mul(I, scale(A.q, -x)))));
@@ -702,7 +1147,7 @@ const Physics = (() => {
     return { T, R };
   }
 
-  return { H2M, transmission, classicalT, regime, amplitudes, psiFactory, numericalT, wavenumber, abs2 };
+  return { H2M, transmission, log10T, classicalT, regime, amplitudes, psiFactory, numericalT, wavenumber, abs2 };
 })();
 
 </script>
@@ -733,7 +1178,15 @@ const Physics = (() => {
     if (p < 0.01) return p.toExponential(2) + ' %';
     return p.toFixed(p < 10 ? 3 : 2) + ' %';
   };
-  const fmt = (v, d = 3) => (Math.abs(v) < 1e-3 && v !== 0 ? v.toExponential(2) : v.toFixed(d));
+  const SUP = { '-': '⁻', 0: '⁰', 1: '¹', 2: '²', 3: '³', 4: '⁴', 5: '⁵', 6: '⁶', 7: '⁷', 8: '⁸', 9: '⁹' };
+  const sup = (n) => String(n).split('').map((c) => SUP[c] ?? c).join('');
+  /** T dalam persen; bila T terlalu kecil untuk angka biasa, tampilkan sebagai pangkat sepuluh dari log10 T. */
+  function fmtT(T, lg) {
+    if (T > 1e-300 || !isFinite(lg)) return fmtPct(T);
+    const e = lg + 2; // persen
+    const ex = Math.floor(e), mant = Math.pow(10, e - ex);
+    return '≈ ' + mant.toFixed(2) + '×10' + sup(ex) + ' %';
+  }
 
   function setupCanvas(cv) {
     const dpr = window.devicePixelRatio || 1;
@@ -751,11 +1204,23 @@ const Physics = (() => {
     document.querySelectorAll('#tabs button').forEach((b) => b.classList.toggle('active', b.dataset.tab === tab));
     document.querySelectorAll('.page').forEach((p) => p.classList.toggle('active', p.id === 'page-' + tab));
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    document.body.classList.remove('menu-open'); $('menuBtn').setAttribute('aria-expanded', 'false');
+    if (tab === 'verify' && !verifiedOnce) { verifiedOnce = true; setTimeout(verifyJS, 30); }
     requestAnimationFrame(() => { drawAll(); if (tab === 'analysis') drawAnalysis(); });
     try { localStorage.setItem('qtl-tab', tab); } catch (e) {}
   }
   document.querySelectorAll('#tabs button').forEach((b) => b.addEventListener('click', () => go(b.dataset.tab)));
   document.querySelectorAll('[data-goto]').forEach((b) => b.addEventListener('click', () => go(b.dataset.goto)));
+  let verifiedOnce = false;
+  $('menuBtn').addEventListener('click', () => {
+    const open = document.body.classList.toggle('menu-open');
+    $('menuBtn').setAttribute('aria-expanded', String(open));
+  });
+  document.querySelectorAll('[data-preset]').forEach((b) => b.addEventListener('click', () => {
+    setParams(JSON.parse(b.dataset.preset)); clearScenario();
+    $('scenarioNote').innerHTML = 'Parameter diatur dari contoh penerapan: <b>' + b.closest('.app').querySelector('h4').textContent + '</b>. Amati nilai T dan κa, lalu ubah lebar a sedikit.';
+    resetStream(); go('sim');
+  }));
 
   // ================= kontrol =================
   const sE = $('sE'), sV = $('sV'), sA = $('sA'), sM = $('sM'), selM = $('selM');
@@ -783,7 +1248,7 @@ const Physics = (() => {
   const resonanceE = (V0, a, m, n = 1) => V0 + H2Mn(n, a) / m;
   function H2Mn(n, a) { return P.H2M * Math.pow(n * Math.PI / a, 2); }
   const SCEN = [
-    { id: 'tun', name: 'E < V₀ · Tunneling', p: { E: 3, V0: 5, a: 0.4, m: 1 }, note: 'Kasus acuan proposal. Klasik: partikel <b>selalu memantul</b> (T = 0). Kuantum: fungsi gelombang meluruh eksponensial di dalam penghalang namun tidak nol, sehingga <b>T ≈ 1,16 %</b>. Perhatikan aliran partikel di bawah.' },
+    { id: 'tun', name: 'E < V₀ · Penerowongan', p: { E: 3, V0: 5, a: 0.4, m: 1 }, note: 'Kasus acuan. Klasik: partikel <b>selalu memantul</b> (T = 0). Kuantum: fungsi gelombang meluruh eksponensial di dalam penghalang namun tidak nol, sehingga <b>T ≈ 1,16 %</b>. Perhatikan aliran partikel di bawah.' },
     { id: 'eq', name: 'E = V₀ · Batas', p: { E: 5, V0: 5, a: 0.4, m: 1 }, note: 'Kasus batas: di dalam penghalang ψ berubah linier. T mengikuti pers. (4) dan bersambung mulus dengan pers. (2) dan (3).' },
     { id: 'above', name: 'E > V₀ · Refleksi', p: { E: 7, V0: 5, a: 0.4, m: 1 }, note: 'Klasik memprediksi <b>transmisi penuh</b> (T = 1). Kuantum: sebagian gelombang <b>tetap terpantul</b> karena perubahan bilangan gelombang di tepi penghalang.' },
     { id: 'res', name: 'Resonansi T = 1', p: null, note: 'Energi dipilih sehingga <b>k′a = π</b>. Gelombang di dalam penghalang membentuk gelombang berdiri, interferensi pantulan saling meniadakan → <b>T = 1</b> secara kuantum.' },
@@ -813,13 +1278,20 @@ const Physics = (() => {
   function update() {
     const { E, V0, a, m } = state;
     const T = P.transmission(E, V0, a, m), Tc = P.classicalT(E, V0);
-    cache = { T, Tc, psi: P.psiFactory(E, V0, a, m), amp: P.amplitudes(E, V0, a, m) };
+    const lgT = P.log10T(E, V0, a, m);
+    cache = { T, Tc, lgT, psi: P.psiFactory(E, V0, a, m), amp: P.amplitudes(E, V0, a, m) };
+    const tn = $('tinyNote');
+    if (T < 1e-12 && isFinite(lgT)) {
+      tn.hidden = false;
+      tn.innerHTML = `T sangat kecil tetapi <b>bukan nol</b>: T ≈ 10<sup>${lgT.toFixed(1)}</sup>. ` +
+        (T <= 1e-300 ? 'Nilai ini di bawah batas angka komputer (~10⁻³⁰⁸), sehingga dihitung dalam bentuk logaritma dengan pendekatan pers. (5), yang sangat teliti untuk κa besar. Pada skala ini, prediksi kuantum praktis sama dengan klasik.' : 'Pada skala ini, prediksi kuantum praktis sama dengan klasik (limit klasik).');
+    } else tn.hidden = true;
     $('oE').textContent = E.toFixed(2) + ' eV';
     $('oV').textContent = V0.toFixed(2) + ' eV';
     $('oA').textContent = a.toFixed(3) + ' nm';
     $('oM').textContent = m.toFixed(m < 10 ? 2 : 0) + ' mₑ';
     $('rRegime').textContent = P.regime(E, V0);
-    $('rTq').textContent = fmtPct(T);
+    $('rTq').textContent = fmtT(T, lgT); $('rTq').classList.toggle('long', $('rTq').textContent.length > 11);
     $('rRq').textContent = fmtPct(1 - T);
     $('rTc').textContent = Tc === 0.5 ? 'ambang' : fmtPct(Tc);
     const dT = T - (Tc === 0.5 ? T : Tc);
@@ -827,7 +1299,7 @@ const Physics = (() => {
     if (E < V0) { $('rKlabel').textContent = 'κa'; $('rKa').textContent = (Math.sqrt(m * (V0 - E) / P.H2M) * a).toFixed(3); }
     else { $('rKlabel').textContent = "k′a / π"; $('rKa').textContent = (Math.sqrt(m * Math.max(E - V0, 0) / P.H2M) * a / Math.PI).toFixed(3); }
     $('clsText').textContent = E < V0 ? 'E < V₀ → partikel terpantul seluruhnya' : E > V0 ? 'E > V₀ → partikel lolos seluruhnya' : 'E = V₀ → tepat di ambang';
-    $('bTv').textContent = fmtPct(T); $('bT').style.width = (T * 100) + '%';
+    $('bTv').textContent = T < 1e-4 ? '≈ 0 %' : fmtPct(T); $('bT').style.width = (T * 100) + '%';
     $('paramChip').textContent = `E=${E.toFixed(2)} eV · V₀=${V0.toFixed(2)} eV · a=${a.toFixed(3)} nm · m=${m.toFixed(m < 10 ? 2 : 0)} mₑ`;
     if (document.querySelector('#page-analysis.active')) drawAnalysis();
     if (!state.playing) drawAll();
@@ -897,7 +1369,7 @@ const Physics = (() => {
     if (showProb) { ctx.fillStyle = COL.vlabel; ctx.fillRect(lx, ly + 8, 14, 3); ctx.fillStyle = COL.text; ctx.fillText('|ψ(x)|²', lx + 20, ly + 13); }
     if (!opts.hero) {
       ctx.font = '600 12px JetBrains Mono'; ctx.fillStyle = COL.q;
-      ctx.fillText('T = ' + fmtPct(cache.T), Math.min(X(state.a) + 10, w - 120), h - padB - 30);
+      ctx.fillText('T = ' + fmtT(cache.T, cache.lgT),Math.min(X(state.a) + 10, w - 120), h - padB - 30);
       ctx.fillStyle = COL.r; ctx.fillText('R = ' + fmtPct(1 - cache.T), 10, h - padB - 30);
     }
   }
@@ -1122,8 +1594,9 @@ const Physics = (() => {
     if (E < V0) {
       const ka = Math.sqrt(m * (V0 - E) / P.H2M) * a;
       const approx = 16 * (E / V0) * (1 - E / V0) * Math.exp(-2 * ka);
-      txt = `Rezim <b>penerowongan</b>: κa = ${ka.toFixed(3)}. Teori kuantum memberi T = <b>${fmtPct(T)}</b>, sedangkan klasik T = 0. ` +
-        (ka > 1 ? `Karena κa &gt; 1, pendekatan pers. (5) memberi ${fmtPct(approx)} (galat ${(Math.abs(approx - T) / T * 100).toFixed(1)} %).` : 'κa &lt; 1 sehingga pendekatan penghalang tebal belum berlaku.');
+      txt = `Rezim <b>penerowongan</b>: κa = ${ka.toFixed(3)}. Teori kuantum memberi T = <b>${fmtT(T, cache.lgT)}</b>, sedangkan klasik T = 0. ` +
+        (T <= 1e-300 ? 'T berada di bawah batas angka komputer; nilainya dihitung dengan pendekatan pers. (5) dalam bentuk logaritma.'
+          : ka > 1 ? `Karena κa &gt; 1, pendekatan pers. (5) memberi ${fmtPct(approx)} (galat ${(Math.abs(approx - T) / T * 100).toFixed(2)} %).` : 'κa &lt; 1 sehingga pendekatan penghalang tebal belum berlaku.');
     } else {
       txt = `Rezim <b>di atas penghalang</b>: k′a/π = ${(kpa / Math.PI).toFixed(3)}. Klasik memprediksi T = 100 %, kuantum memberi T = <b>${fmtPct(T)}</b> — refleksi ${fmtPct(1 - T)} murni efek gelombang. ` +
         `Resonansi T = 1 terdekat ada pada E = ${(V0 + H2Mn(Math.max(1, Math.round(kpa / Math.PI)), a) / m).toFixed(3)} eV.`;
@@ -1165,6 +1638,7 @@ const Physics = (() => {
     const Eres = V0 + H2Mn(1, a) / m, Tres = P.transmission(Eres, V0, a, m);
     const Tp = P.transmission(0.6 * V0, V0, a, 1836.15), Te = P.transmission(0.6 * V0, V0, a, 1);
     const ref = P.transmission(3, 5, 0.4, 1);
+    const lgx = P.log10T(0.05, 12, 2, 3162);
     const checks = [
       { name: 'Kekekalan probabilitas T + R = 1', pass: maxCons < 1e-6, detail: 'max |T+R−1| = ' + maxCons.toExponential(2) },
       { name: 'Kesesuaian analitik–numerik (< 10⁻⁶)', pass: maxErr < 1e-6, detail: 'galat relatif maks = ' + maxErr.toExponential(2) },
@@ -1173,72 +1647,84 @@ const Physics = (() => {
       { name: 'Penghalang tebal sesuai pers. (5)', pass: Math.abs(Tap - Tex) / Tex < 1e-3, detail: `κa = 8 → eksak ${Tex.toExponential(4)} · aproks ${Tap.toExponential(4)}` },
       { name: 'Resonansi T = 1 pada k′a = π', pass: Math.abs(Tres - 1) < 1e-9, detail: `E = ${Eres.toFixed(4)} eV → T = ${Tres.toFixed(12)}` },
       { name: 'Massa besar → mendekati klasik', pass: Tp < Te && Tp < 1e-10, detail: `elektron T=${Te.toExponential(2)} · proton T=${Tp.toExponential(2)}` },
-      { name: 'Contoh proposal (e⁻, V₀=5, a=0,4, E=3) ≈ 1,16 %', pass: Math.abs(ref * 100 - 1.16) < 0.01, detail: 'T = ' + (ref * 100).toFixed(4) + ' %' },
+      { name: 'Contoh acuan (e⁻, V₀=5, a=0,4, E=3) ≈ 1,16 %', pass: Math.abs(ref * 100 - 1.16) < 0.01, detail: 'T = ' + (ref * 100).toFixed(4) + ' %' },
+      { name: 'T sangat kecil tidak dibulatkan ke nol', pass: isFinite(lgx) && lgx < -300, detail: `m=3162 mₑ, V₀=12 eV, a=2 nm, E=0,05 eV → T ≈ 10^${lgx.toFixed(1)} (bukan 0)` },
     ];
     renderVerify({ checks, table }, `Sumber: mesin JavaScript (RK4, N = 4000 langkah) · V₀=${V0} eV, a=${a} nm, m=${m.toFixed(2)} mₑ`);
   }
   $('btnVerifyJS').addEventListener('click', verifyJS);
-  $('btnVerifyPy').addEventListener('click', async () => {
-    const b = $('btnVerifyPy'); b.disabled = true; b.textContent = 'Menghitung…';
+
+  // ================= mesin Python =================
+  // 1) server Flask lokal (bila dijalankan),  2) Pyodide: Python + NumPy + Matplotlib langsung di browser.
+  const badge = (cls, txt) => { const el = $('engineBadge'); el.className = 'engine ' + cls; el.querySelector('.txt').textContent = txt; };
+  let flaskOK = false, pyodide = null, pyLoading = null;
+  async function pingFlask() {
+    if (!isLocal) return;
     try {
-      const { V0, a, m } = state;
+      const r = await fetch(API + '/api/health', { cache: 'no-store' });
+      const j = await r.json(); flaskOK = true; badge('on', 'Python · server lokal');
+    } catch (e) { flaskOK = false; if (!pyodide) badge('idle', 'Python · siap dimuat'); }
+  }
+  async function pySource() {
+    const tag = $('pySrc');
+    if (tag.textContent.trim()) return tag.textContent;
+    const r = await fetch(tag.dataset.src); if (!r.ok) throw new Error('physics.py tidak ditemukan'); return r.text();
+  }
+  function loadScript(src) {
+    return new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = () => rej(new Error('Gagal memuat ' + src)); document.head.appendChild(s); });
+  }
+  async function getPyodide() {
+    if (pyodide) return pyodide;
+    if (!pyLoading) pyLoading = (async () => {
+      badge('busy', 'Python · memuat…');
+      await loadScript('https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js');
+      const py = await loadPyodide();
+      badge('busy', 'Python · memuat NumPy…');
+      await py.loadPackage(['numpy', 'matplotlib']);
+      const src = await pySource();
+      py.FS.writeFile('/home/pyodide/physics.py', src);
+      await py.runPythonAsync('import sys, json; sys.path.insert(0, "/home/pyodide"); import numpy as np, physics as ph');
+      pyodide = py;
+      badge('on', 'Python · aktif (NumPy ' + py.runPython('np.__version__') + ')');
+      return py;
+    })().catch((e) => { pyLoading = null; badge('off', 'Python · gagal dimuat'); throw e; });
+    return pyLoading;
+  }
+  async function verifyPython(V0, a, m) {
+    if (flaskOK) {
       const r = await fetch(`${API}/api/verify?V0=${V0}&a=${a}&m=${m}`);
-      if (!r.ok) throw new Error(r.status);
+      if (!r.ok) throw new Error('HTTP ' + r.status);
       const j = await r.json();
-      renderVerify(j, `Sumber: mesin Python (NumPy ${j.numpy || ''}, ${j.method}) · V₀=${V0} eV, a=${a} nm, m=${m.toFixed(2)} mₑ`);
+      return { ...j, src: `Sumber: Python di server lokal (NumPy ${j.numpy}, ${j.method})` };
+    }
+    const py = await getPyodide();
+    py.globals.set('V0_', V0); py.globals.set('a_', a); py.globals.set('m_', m);
+    const out = await py.runPythonAsync(`
+res = ph.verify(V0_, a_, m_)
+for c in res["checks"]:
+    c["pass"] = c.pop("pass_")
+try:
+    res["plot"] = ph.verification_plot(V0_, a_, m_)
+except Exception as e:
+    res["plot_error"] = str(e)
+json.dumps(res, default=float)`);
+    const j = JSON.parse(out);
+    return { ...j, src: `Sumber: Python di browser (Pyodide, NumPy ${py.runPython('np.__version__')}, RK4 N=4000 + matriks transfer)` };
+  }
+  $('btnVerifyPy').addEventListener('click', async () => {
+    const b = $('btnVerifyPy'); b.disabled = true; b.textContent = 'Menyiapkan Python…';
+    const { V0, a, m } = state;
+    try {
+      const t0 = performance.now();
+      const j = await verifyPython(V0, a, m);
+      renderVerify(j, `${j.src} · V₀=${V0} eV, a=${a} nm, m=${m.toFixed(2)} mₑ · ${((performance.now() - t0) / 1000).toFixed(1)} s`);
       if (j.plot) { $('pyPlot').src = 'data:image/png;base64,' + j.plot; $('pyPlotCard').hidden = false; }
     } catch (e) {
-      verifyJS();
-      $('verifySrc').textContent += ' — Server Python tidak aktif. Jalankan: python server/app.py';
+      $('verifySrc').textContent = 'Python belum dapat dijalankan (periksa koneksi internet untuk memuat Pyodide). Hasil di atas berasal dari mesin JavaScript.';
+      console.error(e);
     }
     b.disabled = false; b.textContent = 'Jalankan (Python)';
   });
-
-  // status mesin Python
-  async function ping() {
-    const el = $('engineBadge');
-    try {
-      const r = await fetch(API + '/api/health', { cache: 'no-store' });
-      const j = await r.json();
-      el.className = 'engine on'; el.querySelector('.txt').textContent = 'Python: online · ' + j.engine;
-    } catch (e) { el.className = 'engine off'; el.querySelector('.txt').textContent = 'Python: offline · mode JS'; }
-  }
-
-  // ================= kuis =================
-  const QUIZ = [
-    { q: 'Menurut mekanika klasik, berapa peluang partikel dengan E < V₀ melewati penghalang?', o: ['0', 'Antara 0 dan 1', '1', 'Bergantung pada lebar penghalang'], a: 0, e: 'Secara klasik energi kinetik di dalam penghalang akan negatif, sehingga partikel pasti terpantul: T = 0.' },
-    { q: 'Di dalam penghalang (E < V₀), bentuk fungsi gelombang adalah…', o: ['Sinusoidal dengan amplitudo tetap', 'Meluruh/tumbuh eksponensial', 'Nol', 'Linier'], a: 1, e: 'Solusinya kombinasi e^{κx} dan e^{−κx}, dengan κ = √(2m(V₀−E))/ħ.' },
-    { q: 'Jika lebar penghalang a diperbesar (κa ≫ 1), maka T…', o: ['Naik linier', 'Tetap', 'Turun kira-kira ∝ e^(−2κa)', 'Berosilasi menuju 1'], a: 2, e: 'Pendekatan penghalang tebal: T ≈ 16(E/V₀)(1−E/V₀)e^(−2κa).' },
-    { q: 'Untuk E > V₀, mekanika kuantum memprediksi…', o: ['T = 1 selalu', 'T < 1 umumnya, dengan resonansi T = 1', 'T = 0', 'R = 1'], a: 1, e: 'Masih ada refleksi akibat sifat gelombang; T = 1 hanya pada resonansi k′a = nπ.' },
-    { q: 'Mengapa proton jauh lebih sulit menerowong dibanding elektron pada penghalang sama?', o: ['Muatan proton positif', 'Massa besar membuat κ besar', 'Proton tidak memiliki fungsi gelombang', 'Proton bergerak lebih cepat'], a: 1, e: 'κ ∝ √m, sehingga e^(−2κa) menjadi sangat kecil — mendekati limit klasik.' },
-    { q: 'Syarat apa yang dipakai untuk menghubungkan solusi di tiga daerah?', o: ['Kekekalan momentum', 'Kontinuitas ψ dan dψ/dx', 'ψ = 0 di tepi penghalang', 'E = V₀'], a: 1, e: 'Karena potensial berhingga, ψ dan turunannya harus kontinu di x = 0 dan x = a.' },
-    { q: 'Hubungan yang selalu berlaku antara T dan R adalah…', o: ['T = R', 'T · R = 1', 'T + R = 1', 'T − R = 1'], a: 2, e: 'Kekekalan probabilitas (arus): seluruh partikel datang pasti diteruskan atau dipantulkan.' },
-    { q: 'Elektron, V₀ = 5 eV, a = 0,4 nm, E = 3 eV. Nilai T kira-kira…', o: ['0 %', '1,16 %', '40 %', '100 %'], a: 1, e: 'κa ≈ 2,90 → T ≈ 1,16 % (contoh acuan pada proposal). Coba di halaman Simulasi!' },
-  ];
-  let qi = 0, score = 0, answered = false;
-  function renderQuiz() {
-    const body = $('quizBody');
-    $('quizBar').style.width = (qi / QUIZ.length) * 100 + '%';
-    if (qi >= QUIZ.length) {
-      $('quizProg').textContent = 'Selesai';
-      const pct = Math.round((score / QUIZ.length) * 100);
-      body.innerHTML = `<div class="score"><div class="big">${pct}</div><p>Benar ${score} dari ${QUIZ.length} soal. ${pct >= 75 ? 'Pemahaman sangat baik!' : 'Coba eksplorasi skenario di halaman Simulasi lalu ulangi.'}</p><button class="btn primary" id="qRestart">Ulangi Kuis</button></div>`;
-      $('qRestart').onclick = () => { qi = 0; score = 0; renderQuiz(); };
-      return;
-    }
-    const Q = QUIZ[qi]; answered = false;
-    $('quizProg').textContent = `Soal ${qi + 1} / ${QUIZ.length} · Skor ${score}`;
-    body.innerHTML = `<div class="qtext">${Q.q}</div><div class="opts">${Q.o.map((o, i) => `<button class="opt" data-i="${i}">${String.fromCharCode(65 + i)}. ${o}</button>`).join('')}</div><div id="qExp"></div><div class="quiz-nav"><button class="btn primary hidden" id="qNext">Lanjut →</button></div>`;
-    body.querySelectorAll('.opt').forEach((b) => b.addEventListener('click', () => {
-      if (answered) return; answered = true;
-      const i = +b.dataset.i;
-      body.querySelectorAll('.opt').forEach((x) => { x.disabled = true; if (+x.dataset.i === Q.a) x.classList.add('right'); });
-      if (i === Q.a) score++; else b.classList.add('wrong');
-      $('qExp').innerHTML = `<div class="explain"><b>${i === Q.a ? 'Benar.' : 'Kurang tepat.'}</b> ${Q.e}</div>`;
-      $('qNext').classList.remove('hidden');
-      $('qNext').onclick = () => { qi++; renderQuiz(); };
-    }));
-  }
 
   // ================= init =================
   window.addEventListener('resize', () => { drawAll(); if (document.querySelector('#page-analysis.active')) drawAnalysis(); });
@@ -1249,12 +1735,217 @@ const Physics = (() => {
   document.documentElement.dataset.theme = th; loadColors();
   document.querySelectorAll('#themeSwitch button').forEach((b) => b.classList.toggle('on', b.dataset.theme === th));
   readControls();
-  renderQuiz();
-  ping(); setInterval(ping, 15000);
+  pingFlask();
   let startTab = 'home'; try { startTab = localStorage.getItem('qtl-tab') || 'home'; } catch (e) {}
   go(startTab);
   requestAnimationFrame(loop);
-  window.QTL = { state, setParams };
+  window.QTL = { state, setParams, go, fmtT, update: () => update() };
+})();
+
+</script>
+<script>
+/* Q-Tunnel Lab — kuis (latihan/pretes/postes), tugas terstruktur, dan catatan pembaruan */
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const VERSION = '1.1.0';
+  const store = {
+    get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} },
+  };
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const shuffle = (arr) => { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const nowStr = () => new Date().toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' });
+  function download(name, rows) {
+    const csv = rows.map((r) => r.map((c) => '"' + String(c ?? '').replace(/"/g, '""') + '"').join(',')).join('\r\n');
+    const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' });
+    const l = document.createElement('a'); l.href = URL.createObjectURL(blob); l.download = name; l.click();
+  }
+  function deviceInfo() {
+    const ua = navigator.userAgent;
+    const br = /Edg\//.test(ua) ? 'Edge' : /OPR\//.test(ua) ? 'Opera' : /Firefox\//.test(ua) ? 'Firefox' : /Chrome\//.test(ua) ? 'Chrome' : /Safari\//.test(ua) ? 'Safari' : 'Lainnya';
+    const touch = matchMedia('(pointer: coarse)').matches;
+    const dev = /iPad|Tablet/i.test(ua) || (touch && Math.min(screen.width, screen.height) >= 600) ? 'Tablet' : touch ? 'Ponsel' : 'Komputer';
+    return { dev, br, w: innerWidth };
+  }
+  const DEV = deviceInfo();
+
+  // ---------- kode responden (dipakai bersama oleh Kuis dan Tugas) ----------
+  const getCode = () => (store.get('qtl-resp', '') || '').trim();
+  const setCode = (v) => store.set('qtl-resp', v.trim());
+
+  // ================= KUIS =================
+  // Opsi pertama selalu kunci; urutan opsi dan soal diacak saat ditampilkan.
+  const QUIZ = [
+    { q: 'Menurut mekanika klasik, apa yang terjadi pada partikel dengan E < V₀ yang menumbuk penghalang?', o: ['Selalu terpantul (T = 0)', 'Sebagian kecil dapat menembus bila penghalangnya tipis', 'Menembus dengan energi yang berkurang', 'Berhenti di dalam penghalang'], e: 'Secara klasik energi kinetik di dalam penghalang akan negatif, jadi partikel pasti terpantul: T = 0, berapa pun lebarnya.' },
+    { q: 'Untuk E < V₀, bagaimana bentuk fungsi gelombang di dalam penghalang?', o: ['Kombinasi e^(κx) dan e^(−κx): meluruh, tetapi tidak nol', 'Berosilasi dengan panjang gelombang lebih panjang', 'Nol, karena partikel tidak boleh berada di sana', 'Berosilasi dengan amplitudo lebih kecil karena partikel kehilangan energi'], e: 'k′ menjadi imajiner (k′ = iκ), sehingga ψ = Ce^(κx) + De^(−κx). Amplitudonya meluruh tetapi tidak nol.' },
+    { q: 'Sebuah elektron berenergi 3 eV berhasil menembus penghalang 5 eV. Berapa energinya setelah keluar dari penghalang?', o: ['Tetap 3 eV', 'Kurang dari 3 eV karena sebagian energi terpakai di penghalang', '5 eV, sama dengan tinggi penghalang', 'Nol, karena hanya peluangnya yang menembus'], e: 'Penghalang statis tidak menyerap energi; yang berkurang adalah amplitudo (peluang), bukan energi. Panjang gelombang di kiri dan kanan penghalang sama.' },
+    { q: 'Untuk penghalang tebal (κa ≫ 1), jika lebar a dijadikan dua kali semula, T akan…', o: ['Turun sangat drastis, kira-kira sebanding e^(−2κa)', 'Menjadi setengahnya', 'Tidak berubah karena energi partikel tetap', 'Naik karena partikel punya waktu lebih lama untuk menembus'], e: 'Pendekatan penghalang tebal: T ≈ 16(E/V₀)(1−E/V₀)e^(−2κa). Menggandakan a mengkuadratkan faktor eksponensialnya.' },
+    { q: 'Untuk E > V₀, apa prediksi mekanika kuantum?', o: ['Umumnya ada pantulan (T < 1); T = 1 hanya pada energi resonansi', 'Seluruh partikel lolos, sama seperti klasik', 'Seluruh partikel terpantul', 'T selalu 50 % karena dua sisi penghalang'], e: 'Perubahan bilangan gelombang di tepi penghalang menimbulkan pantulan. T = 1 hanya saat k′a = nπ.' },
+    { q: 'Pada E < V₀ dan penghalang yang sama, apa pengaruh massa partikel yang lebih besar terhadap T?', o: ['T berkurang karena κ ∝ √m', 'T bertambah karena momentum lebih besar menembus lebih kuat', 'T tidak bergantung pada massa', 'T berosilasi naik-turun tanpa pola'], e: 'κ = √(2m(V₀−E))/ħ bertambah dengan massa, sehingga e^(−2κa) mengecil. Inilah mengapa benda makroskopis berperilaku klasik.' },
+    { q: 'Syarat apa yang dipakai untuk menyambungkan solusi pada tiga daerah?', o: ['ψ dan dψ/dx kontinu di x = 0 dan x = a', 'ψ = 0 di kedua tepi penghalang', 'Energi kinetik sama di ketiga daerah', 'Hanya ψ yang kontinu; turunannya boleh melompat'], e: 'Karena potensial berhingga, ψ dan turunannya harus kontinu. Keempat syarat ini menentukan r, C, D, dan t.' },
+    { q: 'Hubungan apa yang selalu berlaku antara koefisien transmisi T dan refleksi R?', o: ['T + R = 1', 'T = R', 'T × R = 1', 'T + R < 1 karena sebagian partikel tertahan di dalam penghalang'], e: 'Kekekalan peluang (arus): setiap partikel datang pasti diteruskan atau dipantulkan; tidak ada yang tertahan secara permanen.' },
+    { q: 'Elektron dengan E = 3 eV menumbuk penghalang V₀ = 5 eV selebar 0,4 nm. Nilai T paling dekat dengan…', o: ['1,2 %', '0 %', '60 %', '100 %'], e: 'κ = √((V₀−E)/0,0381) ≈ 7,25 nm⁻¹, jadi κa ≈ 2,90 dan T ≈ 1,16 %. Periksa di halaman Simulasi.' },
+    { q: 'Kapan T = 1 (resonansi) terjadi pada penghalang persegi?', o: ['Saat E > V₀ dan k′a = nπ (n = 1, 2, 3, …)', 'Saat E = V₀', 'Saat E < V₀ dan κa = nπ', 'Hanya bila lebar penghalang nol'], e: 'Bila k′a = nπ, sin(k′a) = 0 sehingga pers. (3) memberi T = 1: pantulan dari kedua tepi saling meniadakan.' },
+    { q: 'Pada E < V₀ dan lebar tetap, apa yang terjadi pada T jika V₀ dinaikkan?', o: ['T berkurang karena κ bertambah', 'T bertambah karena penghalang lebih kuat memantulkan gelombang balik', 'T tidak berubah karena hanya lebar yang berpengaruh', 'T menjadi nol tepat saat V₀ = 2E'], e: 'κ ∝ √(V₀−E): menaikkan V₀ memperbesar κ dan mengecilkan T secara eksponensial.' },
+    { q: 'Untuk E < V₀, seperti apa |ψ|² di sebelah kanan penghalang (x > a)?', o: ['Konstan dan sebanding dengan T', 'Terus meluruh eksponensial', 'Nol', 'Berosilasi lebih besar daripada gelombang datang'], e: 'Di x > a hanya ada gelombang yang diteruskan, t·e^(ikx), sehingga |ψ|² = |t|² = T, konstan.' },
+  ];
+  let quiz = null;
+  function renderQuizStart() {
+    $('quizBar').style.width = '0%';
+    $('quizProg').textContent = QUIZ.length + ' soal';
+    $('quizBody').innerHTML = `
+      <p class="muted">Pilih mode. <b>Latihan</b> menampilkan pembahasan setiap soal. <b>Pretes</b> dan <b>Postes</b> tidak menampilkan pembahasan sampai selesai dan skornya disimpan bersama kode responden.</p>
+      <div class="resp-row"><label for="quizCode">Kode responden</label><input id="quizCode" class="inp" placeholder="contoh: R07" maxlength="20" autocomplete="off" value="${esc(getCode())}"></div>
+      <div class="mode-row">
+        <button class="btn" data-mode="Latihan">Latihan</button>
+        <button class="btn primary" data-mode="Pretes">Mulai Pretes</button>
+        <button class="btn primary" data-mode="Postes">Mulai Postes</button>
+      </div>
+      <p class="muted small" id="quizWarn" aria-live="polite"></p>`;
+    $('quizBody').querySelectorAll('[data-mode]').forEach((b) => b.addEventListener('click', () => {
+      const code = $('quizCode').value.trim(); setCode(code); syncCode();
+      if (b.dataset.mode !== 'Latihan' && !code) { $('quizWarn').textContent = 'Isi kode responden terlebih dahulu untuk pretes atau postes.'; $('quizCode').focus(); return; }
+      startQuiz(b.dataset.mode, code);
+    }));
+  }
+  function startQuiz(mode, code) {
+    quiz = {
+      mode, code, i: 0, score: 0, t0: Date.now(), answers: [],
+      items: shuffle(QUIZ.map((q, idx) => ({ ...q, id: idx + 1, opts: shuffle(q.o.map((t, k) => ({ t, ok: k === 0 }))) }))),
+    };
+    renderQ();
+  }
+  function renderQ() {
+    const Z = quiz, N = Z.items.length, body = $('quizBody');
+    $('quizBar').style.width = (Z.i / N) * 100 + '%';
+    if (Z.i >= N) return finishQuiz();
+    const Q = Z.items[Z.i]; let done = false;
+    $('quizProg').textContent = `${Z.mode} · Soal ${Z.i + 1} / ${N}` + (Z.mode === 'Latihan' ? ` · Skor ${Z.score}` : '');
+    body.innerHTML = `<div class="qtext">${esc(Q.q)}</div><div class="opts" role="group">${Q.opts.map((o, k) => `<button class="opt" data-k="${k}">${'ABCD'[k]}. ${esc(o.t)}</button>`).join('')}</div><div id="qExp" aria-live="polite"></div><div class="quiz-nav"><button class="btn primary hidden" id="qNext">${Z.i + 1 < N ? 'Lanjut →' : 'Selesai'}</button></div>`;
+    body.querySelectorAll('.opt').forEach((b) => b.addEventListener('click', () => {
+      if (done) return; done = true;
+      const k = +b.dataset.k, ok = Q.opts[k].ok;
+      if (ok) Z.score++;
+      Z.answers.push({ id: Q.id, pick: Q.opts[k].t, ok });
+      body.querySelectorAll('.opt').forEach((x) => { x.disabled = true; });
+      if (Z.mode === 'Latihan') {
+        body.querySelectorAll('.opt').forEach((x) => { if (Q.opts[+x.dataset.k].ok) x.classList.add('right'); });
+        if (!ok) b.classList.add('wrong');
+        $('qExp').innerHTML = `<div class="explain"><b>${ok ? 'Benar.' : 'Kurang tepat.'}</b> ${esc(Q.e)}</div>`;
+      } else b.classList.add('picked');
+      $('qNext').classList.remove('hidden'); $('qNext').focus();
+      $('qNext').onclick = () => { Z.i++; renderQ(); };
+    }));
+  }
+  function finishQuiz() {
+    const Z = quiz, N = Z.items.length, pct = Math.round((Z.score / N) * 100), dur = Math.round((Date.now() - Z.t0) / 1000);
+    $('quizBar').style.width = '100%'; $('quizProg').textContent = Z.mode + ' · selesai';
+    if (Z.mode !== 'Latihan') {
+      const hist = store.get('qtl-quiz', []);
+      hist.push({ time: new Date().toISOString(), code: Z.code, mode: Z.mode, score: Z.score, total: N, dur, device: DEV.dev, browser: DEV.br, answers: Z.answers.map((a) => `S${a.id}:${a.ok ? 1 : 0}`).join(' ') });
+      store.set('qtl-quiz', hist); renderHist();
+    }
+    const review = Z.items.map((Q, n) => {
+      const a = Z.answers[n];
+      return `<li class="${a.ok ? 'ok' : 'no'}"><b>${a.ok ? '✓' : '✗'} ${esc(Q.q)}</b><br><span class="muted small">Kunci: ${esc(Q.o[0])}</span><br><span class="small">${esc(Q.e)}</span></li>`;
+    }).join('');
+    $('quizBody').innerHTML = `<div class="score"><div class="big">${pct}</div><p>Benar ${Z.score} dari ${N} soal · ${Math.floor(dur / 60)} menit ${dur % 60} detik.${Z.mode !== 'Latihan' ? ' Skor tersimpan untuk kode <b>' + esc(Z.code) + '</b>.' : ''}</p><button class="btn primary" id="qRestart">Kembali ke pilihan mode</button></div><details class="review"><summary>Lihat pembahasan semua soal</summary><ol>${review}</ol></details>`;
+    $('qRestart').onclick = renderQuizStart;
+  }
+  function renderHist() {
+    const tb = $('quizHist').querySelector('tbody'), hist = store.get('qtl-quiz', []);
+    tb.innerHTML = hist.length ? hist.slice().reverse().map((h) => `<tr><td>${new Date(h.time).toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' })}</td><td>${esc(h.code)}</td><td>${h.mode}</td><td>${h.score}/${h.total}</td><td>${Math.round(h.dur / 60)} mnt</td></tr>`).join('') : '<tr><td colspan="5" class="muted">Belum ada pretes atau postes yang tersimpan.</td></tr>';
+  }
+  $('btnQuizCSV').addEventListener('click', () => {
+    const hist = store.get('qtl-quiz', []);
+    download('qtunnel_kuis.csv', [['waktu', 'kode_responden', 'mode', 'skor', 'jumlah_soal', 'persen', 'durasi_detik', 'perangkat', 'peramban', 'jawaban_per_soal(1=benar)']]
+      .concat(hist.map((h) => [h.time, h.code, h.mode, h.score, h.total, Math.round(h.score / h.total * 100), h.dur, h.device, h.browser, h.answers])));
+  });
+
+  // ================= TUGAS TERSTRUKTUR =================
+  const TASKS = [
+    { id: 'TG1', title: 'Menentukan koefisien transmisi', prompt: 'Atur elektron dengan E = 3 eV, V₀ = 5 eV, dan a = 0,4 nm di halaman Simulasi. Berapa nilai T kuantum (dalam persen)?', type: 'num', unit: '%', check: (v) => Math.abs(v - 1.16) <= 0.05, key: '≈ 1,16 %' },
+    { id: 'TG2', title: 'Menemukan energi resonansi pertama', prompt: 'Untuk elektron dengan V₀ = 5 eV dan a = 0,4 nm, tentukan energi E > V₀ terkecil yang memberi T = 100 %. Gunakan grafik T(E) di halaman Analisis atau slider energi.', type: 'num', unit: 'eV', check: (v) => Math.abs(v - 7.35) <= 0.1, key: '≈ 7,35 eV (k′a = π)' },
+    { id: 'TG3', title: 'Membandingkan elektron dan proton', prompt: 'Dengan E = 3 eV, V₀ = 5 eV, dan a = 0,4 nm, bandingkan T untuk elektron dan proton. Pernyataan mana yang benar?', type: 'choice',
+      opts: ['T elektron jauh lebih besar daripada T proton', 'T proton lebih besar karena momentumnya lebih besar', 'Keduanya sama karena energinya sama', 'Keduanya tepat nol, sama seperti prediksi klasik'], key: 'T elektron ≈ 1,2 %, T proton ≈ 5×10⁻¹⁰⁶ %' },
+  ];
+  const taskState = {}; // id -> {t0, tries}
+  function syncCode() { const c = getCode(); if ($('respCode') && $('respCode').value !== c) $('respCode').value = c; const qc = $('quizCode'); if (qc && qc.value !== c) qc.value = c; }
+  function renderTasks() {
+    const res = store.get('qtl-task', []), code = getCode();
+    const doneIds = new Set(res.filter((r) => r.code === code).map((r) => r.task));
+    $('taskProg').textContent = `${[...doneIds].length} / ${TASKS.length} selesai`;
+    $('taskList').innerHTML = TASKS.map((t, n) => {
+      const mine = res.filter((r) => r.code === code && r.task === t.id).pop();
+      const opts = t.type === 'choice' ? shuffle(t.opts.map((o, k) => ({ o, k }))) : null;
+      return `<div class="task ${mine ? 'done' : ''}" data-id="${t.id}">
+        <div class="task-head"><span class="tnum">${n + 1}</span><h4>${t.title}</h4>${mine ? `<span class="chip">${mine.correct ? '✓ benar' : '✗ belum tepat'} · ${mine.seconds} detik</span>` : ''}</div>
+        <p>${t.prompt}</p>
+        <div class="task-body" ${taskState[t.id] ? '' : 'hidden'}>
+          ${t.type === 'num' ? `<div class="resp-row"><input class="inp" inputmode="decimal" placeholder="jawaban" aria-label="Jawaban ${t.title}"> <span>${t.unit}</span></div>`
+            : `<div class="opts">${opts.map((x) => `<label class="opt-radio"><input type="radio" name="r${t.id}" value="${x.k}"> ${esc(x.o)}</label>`).join('')}</div>`}
+          <button class="btn primary sm send">Kirim jawaban</button>
+          <span class="tfeed small" aria-live="polite"></span>
+        </div>
+        <button class="btn sm start" ${taskState[t.id] ? 'hidden' : ''}>${mine ? 'Kerjakan ulang' : 'Mulai'}</button>
+      </div>`;
+    }).join('');
+    $('taskList').querySelectorAll('.task').forEach((el) => {
+      const t = TASKS.find((x) => x.id === el.dataset.id);
+      el.querySelector('.start').addEventListener('click', () => {
+        if (!getCode()) { alert('Isi kode responden terlebih dahulu.'); $('respCode').focus(); return; }
+        taskState[t.id] = { t0: Date.now(), tries: 0 }; renderTasks();
+        const inp = $('taskList').querySelector(`[data-id="${t.id}"] .inp, [data-id="${t.id}"] input[type=radio]`); if (inp) inp.focus();
+      });
+      const send = el.querySelector('.send');
+      if (send) send.addEventListener('click', () => {
+        const st = taskState[t.id]; st.tries++;
+        let ans, ok;
+        if (t.type === 'num') {
+          const raw = el.querySelector('.inp').value.replace(',', '.').replace(/[^\d.\-eE]/g, '');
+          const v = parseFloat(raw);
+          if (!isFinite(v)) { el.querySelector('.tfeed').textContent = 'Masukkan angka.'; return; }
+          ans = v; ok = t.check(v);
+        } else {
+          const r = el.querySelector('input[type=radio]:checked');
+          if (!r) { el.querySelector('.tfeed').textContent = 'Pilih salah satu jawaban.'; return; }
+          ans = t.opts[+r.value]; ok = +r.value === 0;
+        }
+        const seconds = Math.round((Date.now() - st.t0) / 1000);
+        const res = store.get('qtl-task', []);
+        res.push({ time: new Date().toISOString(), code: getCode(), task: t.id, answer: ans, correct: ok, seconds, tries: st.tries, device: DEV.dev, browser: DEV.br, width: DEV.w });
+        store.set('qtl-task', res);
+        delete taskState[t.id];
+        renderTasks();
+        const fb = $('taskList').querySelector(`[data-id="${t.id}"]`);
+        fb.insertAdjacentHTML('beforeend', `<div class="explain">${ok ? '<b>Tepat.</b>' : '<b>Belum tepat.</b>'} Jawaban acuan: ${t.key}.</div>`);
+      });
+    });
+  }
+  $('respCode').addEventListener('input', (e) => { setCode(e.target.value); renderTasks(); });
+  $('deviceInfo').textContent = `Perangkat: ${DEV.dev} · ${DEV.br} · lebar layar ${DEV.w} px`;
+  $('btnTaskCSV').addEventListener('click', () => {
+    const res = store.get('qtl-task', []);
+    download('qtunnel_tugas.csv', [['waktu', 'kode_responden', 'tugas', 'jawaban', 'benar(1/0)', 'waktu_detik', 'jumlah_kirim', 'perangkat', 'peramban', 'lebar_layar_px']]
+      .concat(res.map((r) => [r.time, r.code, r.task, r.answer, r.correct ? 1 : 0, r.seconds, r.tries, r.device, r.browser, r.width])));
+  });
+  $('btnTaskClear').addEventListener('click', () => {
+    if (!confirm('Hapus semua hasil tugas dan kuis yang tersimpan di peramban ini? Unduh CSV terlebih dahulu bila diperlukan.')) return;
+    store.set('qtl-task', []); store.set('qtl-quiz', []); renderTasks(); renderHist();
+  });
+
+  // ================= CATATAN PEMBARUAN =================
+  const dlg = $('changelog');
+  const openCL = () => { if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', ''); store.set('qtl-seen-ver', VERSION); $('toast').hidden = true; };
+  $('verBtn').addEventListener('click', openCL);
+  $('toastOpen').addEventListener('click', openCL);
+  $('clClose').addEventListener('click', () => dlg.close ? dlg.close() : dlg.removeAttribute('open'));
+  dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+  $('toastClose').addEventListener('click', () => { $('toast').hidden = true; store.set('qtl-seen-ver', VERSION); });
+  if (store.get('qtl-seen-ver', '') !== VERSION) setTimeout(() => { $('toast').hidden = false; }, 1200);
+
+  // init
+  syncCode(); renderQuizStart(); renderHist(); renderTasks();
 })();
 
 </script>

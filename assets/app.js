@@ -24,7 +24,15 @@
     if (p < 0.01) return p.toExponential(2) + ' %';
     return p.toFixed(p < 10 ? 3 : 2) + ' %';
   };
-  const fmt = (v, d = 3) => (Math.abs(v) < 1e-3 && v !== 0 ? v.toExponential(2) : v.toFixed(d));
+  const SUP = { '-': '⁻', 0: '⁰', 1: '¹', 2: '²', 3: '³', 4: '⁴', 5: '⁵', 6: '⁶', 7: '⁷', 8: '⁸', 9: '⁹' };
+  const sup = (n) => String(n).split('').map((c) => SUP[c] ?? c).join('');
+  /** T dalam persen; bila T terlalu kecil untuk angka biasa, tampilkan sebagai pangkat sepuluh dari log10 T. */
+  function fmtT(T, lg) {
+    if (T > 1e-300 || !isFinite(lg)) return fmtPct(T);
+    const e = lg + 2; // persen
+    const ex = Math.floor(e), mant = Math.pow(10, e - ex);
+    return '≈ ' + mant.toFixed(2) + '×10' + sup(ex) + ' %';
+  }
 
   function setupCanvas(cv) {
     const dpr = window.devicePixelRatio || 1;
@@ -42,11 +50,23 @@
     document.querySelectorAll('#tabs button').forEach((b) => b.classList.toggle('active', b.dataset.tab === tab));
     document.querySelectorAll('.page').forEach((p) => p.classList.toggle('active', p.id === 'page-' + tab));
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    document.body.classList.remove('menu-open'); $('menuBtn').setAttribute('aria-expanded', 'false');
+    if (tab === 'verify' && !verifiedOnce) { verifiedOnce = true; setTimeout(verifyJS, 30); }
     requestAnimationFrame(() => { drawAll(); if (tab === 'analysis') drawAnalysis(); });
     try { localStorage.setItem('qtl-tab', tab); } catch (e) {}
   }
   document.querySelectorAll('#tabs button').forEach((b) => b.addEventListener('click', () => go(b.dataset.tab)));
   document.querySelectorAll('[data-goto]').forEach((b) => b.addEventListener('click', () => go(b.dataset.goto)));
+  let verifiedOnce = false;
+  $('menuBtn').addEventListener('click', () => {
+    const open = document.body.classList.toggle('menu-open');
+    $('menuBtn').setAttribute('aria-expanded', String(open));
+  });
+  document.querySelectorAll('[data-preset]').forEach((b) => b.addEventListener('click', () => {
+    setParams(JSON.parse(b.dataset.preset)); clearScenario();
+    $('scenarioNote').innerHTML = 'Parameter diatur dari contoh penerapan: <b>' + b.closest('.app').querySelector('h4').textContent + '</b>. Amati nilai T dan κa, lalu ubah lebar a sedikit.';
+    resetStream(); go('sim');
+  }));
 
   // ================= kontrol =================
   const sE = $('sE'), sV = $('sV'), sA = $('sA'), sM = $('sM'), selM = $('selM');
@@ -74,7 +94,7 @@
   const resonanceE = (V0, a, m, n = 1) => V0 + H2Mn(n, a) / m;
   function H2Mn(n, a) { return P.H2M * Math.pow(n * Math.PI / a, 2); }
   const SCEN = [
-    { id: 'tun', name: 'E < V₀ · Tunneling', p: { E: 3, V0: 5, a: 0.4, m: 1 }, note: 'Kasus acuan proposal. Klasik: partikel <b>selalu memantul</b> (T = 0). Kuantum: fungsi gelombang meluruh eksponensial di dalam penghalang namun tidak nol, sehingga <b>T ≈ 1,16 %</b>. Perhatikan aliran partikel di bawah.' },
+    { id: 'tun', name: 'E < V₀ · Penerowongan', p: { E: 3, V0: 5, a: 0.4, m: 1 }, note: 'Kasus acuan. Klasik: partikel <b>selalu memantul</b> (T = 0). Kuantum: fungsi gelombang meluruh eksponensial di dalam penghalang namun tidak nol, sehingga <b>T ≈ 1,16 %</b>. Perhatikan aliran partikel di bawah.' },
     { id: 'eq', name: 'E = V₀ · Batas', p: { E: 5, V0: 5, a: 0.4, m: 1 }, note: 'Kasus batas: di dalam penghalang ψ berubah linier. T mengikuti pers. (4) dan bersambung mulus dengan pers. (2) dan (3).' },
     { id: 'above', name: 'E > V₀ · Refleksi', p: { E: 7, V0: 5, a: 0.4, m: 1 }, note: 'Klasik memprediksi <b>transmisi penuh</b> (T = 1). Kuantum: sebagian gelombang <b>tetap terpantul</b> karena perubahan bilangan gelombang di tepi penghalang.' },
     { id: 'res', name: 'Resonansi T = 1', p: null, note: 'Energi dipilih sehingga <b>k′a = π</b>. Gelombang di dalam penghalang membentuk gelombang berdiri, interferensi pantulan saling meniadakan → <b>T = 1</b> secara kuantum.' },
@@ -104,13 +124,20 @@
   function update() {
     const { E, V0, a, m } = state;
     const T = P.transmission(E, V0, a, m), Tc = P.classicalT(E, V0);
-    cache = { T, Tc, psi: P.psiFactory(E, V0, a, m), amp: P.amplitudes(E, V0, a, m) };
+    const lgT = P.log10T(E, V0, a, m);
+    cache = { T, Tc, lgT, psi: P.psiFactory(E, V0, a, m), amp: P.amplitudes(E, V0, a, m) };
+    const tn = $('tinyNote');
+    if (T < 1e-12 && isFinite(lgT)) {
+      tn.hidden = false;
+      tn.innerHTML = `T sangat kecil tetapi <b>bukan nol</b>: T ≈ 10<sup>${lgT.toFixed(1)}</sup>. ` +
+        (T <= 1e-300 ? 'Nilai ini di bawah batas angka komputer (~10⁻³⁰⁸), sehingga dihitung dalam bentuk logaritma dengan pendekatan pers. (5), yang sangat teliti untuk κa besar. Pada skala ini, prediksi kuantum praktis sama dengan klasik.' : 'Pada skala ini, prediksi kuantum praktis sama dengan klasik (limit klasik).');
+    } else tn.hidden = true;
     $('oE').textContent = E.toFixed(2) + ' eV';
     $('oV').textContent = V0.toFixed(2) + ' eV';
     $('oA').textContent = a.toFixed(3) + ' nm';
     $('oM').textContent = m.toFixed(m < 10 ? 2 : 0) + ' mₑ';
     $('rRegime').textContent = P.regime(E, V0);
-    $('rTq').textContent = fmtPct(T);
+    $('rTq').textContent = fmtT(T, lgT); $('rTq').classList.toggle('long', $('rTq').textContent.length > 11);
     $('rRq').textContent = fmtPct(1 - T);
     $('rTc').textContent = Tc === 0.5 ? 'ambang' : fmtPct(Tc);
     const dT = T - (Tc === 0.5 ? T : Tc);
@@ -118,7 +145,7 @@
     if (E < V0) { $('rKlabel').textContent = 'κa'; $('rKa').textContent = (Math.sqrt(m * (V0 - E) / P.H2M) * a).toFixed(3); }
     else { $('rKlabel').textContent = "k′a / π"; $('rKa').textContent = (Math.sqrt(m * Math.max(E - V0, 0) / P.H2M) * a / Math.PI).toFixed(3); }
     $('clsText').textContent = E < V0 ? 'E < V₀ → partikel terpantul seluruhnya' : E > V0 ? 'E > V₀ → partikel lolos seluruhnya' : 'E = V₀ → tepat di ambang';
-    $('bTv').textContent = fmtPct(T); $('bT').style.width = (T * 100) + '%';
+    $('bTv').textContent = T < 1e-4 ? '≈ 0 %' : fmtPct(T); $('bT').style.width = (T * 100) + '%';
     $('paramChip').textContent = `E=${E.toFixed(2)} eV · V₀=${V0.toFixed(2)} eV · a=${a.toFixed(3)} nm · m=${m.toFixed(m < 10 ? 2 : 0)} mₑ`;
     if (document.querySelector('#page-analysis.active')) drawAnalysis();
     if (!state.playing) drawAll();
@@ -188,7 +215,7 @@
     if (showProb) { ctx.fillStyle = COL.vlabel; ctx.fillRect(lx, ly + 8, 14, 3); ctx.fillStyle = COL.text; ctx.fillText('|ψ(x)|²', lx + 20, ly + 13); }
     if (!opts.hero) {
       ctx.font = '600 12px JetBrains Mono'; ctx.fillStyle = COL.q;
-      ctx.fillText('T = ' + fmtPct(cache.T), Math.min(X(state.a) + 10, w - 120), h - padB - 30);
+      ctx.fillText('T = ' + fmtT(cache.T, cache.lgT),Math.min(X(state.a) + 10, w - 120), h - padB - 30);
       ctx.fillStyle = COL.r; ctx.fillText('R = ' + fmtPct(1 - cache.T), 10, h - padB - 30);
     }
   }
@@ -413,8 +440,9 @@
     if (E < V0) {
       const ka = Math.sqrt(m * (V0 - E) / P.H2M) * a;
       const approx = 16 * (E / V0) * (1 - E / V0) * Math.exp(-2 * ka);
-      txt = `Rezim <b>penerowongan</b>: κa = ${ka.toFixed(3)}. Teori kuantum memberi T = <b>${fmtPct(T)}</b>, sedangkan klasik T = 0. ` +
-        (ka > 1 ? `Karena κa &gt; 1, pendekatan pers. (5) memberi ${fmtPct(approx)} (galat ${(Math.abs(approx - T) / T * 100).toFixed(1)} %).` : 'κa &lt; 1 sehingga pendekatan penghalang tebal belum berlaku.');
+      txt = `Rezim <b>penerowongan</b>: κa = ${ka.toFixed(3)}. Teori kuantum memberi T = <b>${fmtT(T, cache.lgT)}</b>, sedangkan klasik T = 0. ` +
+        (T <= 1e-300 ? 'T berada di bawah batas angka komputer; nilainya dihitung dengan pendekatan pers. (5) dalam bentuk logaritma.'
+          : ka > 1 ? `Karena κa &gt; 1, pendekatan pers. (5) memberi ${fmtPct(approx)} (galat ${(Math.abs(approx - T) / T * 100).toFixed(2)} %).` : 'κa &lt; 1 sehingga pendekatan penghalang tebal belum berlaku.');
     } else {
       txt = `Rezim <b>di atas penghalang</b>: k′a/π = ${(kpa / Math.PI).toFixed(3)}. Klasik memprediksi T = 100 %, kuantum memberi T = <b>${fmtPct(T)}</b> — refleksi ${fmtPct(1 - T)} murni efek gelombang. ` +
         `Resonansi T = 1 terdekat ada pada E = ${(V0 + H2Mn(Math.max(1, Math.round(kpa / Math.PI)), a) / m).toFixed(3)} eV.`;
@@ -456,6 +484,7 @@
     const Eres = V0 + H2Mn(1, a) / m, Tres = P.transmission(Eres, V0, a, m);
     const Tp = P.transmission(0.6 * V0, V0, a, 1836.15), Te = P.transmission(0.6 * V0, V0, a, 1);
     const ref = P.transmission(3, 5, 0.4, 1);
+    const lgx = P.log10T(0.05, 12, 2, 3162);
     const checks = [
       { name: 'Kekekalan probabilitas T + R = 1', pass: maxCons < 1e-6, detail: 'max |T+R−1| = ' + maxCons.toExponential(2) },
       { name: 'Kesesuaian analitik–numerik (< 10⁻⁶)', pass: maxErr < 1e-6, detail: 'galat relatif maks = ' + maxErr.toExponential(2) },
@@ -464,72 +493,84 @@
       { name: 'Penghalang tebal sesuai pers. (5)', pass: Math.abs(Tap - Tex) / Tex < 1e-3, detail: `κa = 8 → eksak ${Tex.toExponential(4)} · aproks ${Tap.toExponential(4)}` },
       { name: 'Resonansi T = 1 pada k′a = π', pass: Math.abs(Tres - 1) < 1e-9, detail: `E = ${Eres.toFixed(4)} eV → T = ${Tres.toFixed(12)}` },
       { name: 'Massa besar → mendekati klasik', pass: Tp < Te && Tp < 1e-10, detail: `elektron T=${Te.toExponential(2)} · proton T=${Tp.toExponential(2)}` },
-      { name: 'Contoh proposal (e⁻, V₀=5, a=0,4, E=3) ≈ 1,16 %', pass: Math.abs(ref * 100 - 1.16) < 0.01, detail: 'T = ' + (ref * 100).toFixed(4) + ' %' },
+      { name: 'Contoh acuan (e⁻, V₀=5, a=0,4, E=3) ≈ 1,16 %', pass: Math.abs(ref * 100 - 1.16) < 0.01, detail: 'T = ' + (ref * 100).toFixed(4) + ' %' },
+      { name: 'T sangat kecil tidak dibulatkan ke nol', pass: isFinite(lgx) && lgx < -300, detail: `m=3162 mₑ, V₀=12 eV, a=2 nm, E=0,05 eV → T ≈ 10^${lgx.toFixed(1)} (bukan 0)` },
     ];
     renderVerify({ checks, table }, `Sumber: mesin JavaScript (RK4, N = 4000 langkah) · V₀=${V0} eV, a=${a} nm, m=${m.toFixed(2)} mₑ`);
   }
   $('btnVerifyJS').addEventListener('click', verifyJS);
-  $('btnVerifyPy').addEventListener('click', async () => {
-    const b = $('btnVerifyPy'); b.disabled = true; b.textContent = 'Menghitung…';
+
+  // ================= mesin Python =================
+  // 1) server Flask lokal (bila dijalankan),  2) Pyodide: Python + NumPy + Matplotlib langsung di browser.
+  const badge = (cls, txt) => { const el = $('engineBadge'); el.className = 'engine ' + cls; el.querySelector('.txt').textContent = txt; };
+  let flaskOK = false, pyodide = null, pyLoading = null;
+  async function pingFlask() {
+    if (!isLocal) return;
     try {
-      const { V0, a, m } = state;
+      const r = await fetch(API + '/api/health', { cache: 'no-store' });
+      const j = await r.json(); flaskOK = true; badge('on', 'Python · server lokal');
+    } catch (e) { flaskOK = false; if (!pyodide) badge('idle', 'Python · siap dimuat'); }
+  }
+  async function pySource() {
+    const tag = $('pySrc');
+    if (tag.textContent.trim()) return tag.textContent;
+    const r = await fetch(tag.dataset.src); if (!r.ok) throw new Error('physics.py tidak ditemukan'); return r.text();
+  }
+  function loadScript(src) {
+    return new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = () => rej(new Error('Gagal memuat ' + src)); document.head.appendChild(s); });
+  }
+  async function getPyodide() {
+    if (pyodide) return pyodide;
+    if (!pyLoading) pyLoading = (async () => {
+      badge('busy', 'Python · memuat…');
+      await loadScript('https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js');
+      const py = await loadPyodide();
+      badge('busy', 'Python · memuat NumPy…');
+      await py.loadPackage(['numpy', 'matplotlib']);
+      const src = await pySource();
+      py.FS.writeFile('/home/pyodide/physics.py', src);
+      await py.runPythonAsync('import sys, json; sys.path.insert(0, "/home/pyodide"); import numpy as np, physics as ph');
+      pyodide = py;
+      badge('on', 'Python · aktif (NumPy ' + py.runPython('np.__version__') + ')');
+      return py;
+    })().catch((e) => { pyLoading = null; badge('off', 'Python · gagal dimuat'); throw e; });
+    return pyLoading;
+  }
+  async function verifyPython(V0, a, m) {
+    if (flaskOK) {
       const r = await fetch(`${API}/api/verify?V0=${V0}&a=${a}&m=${m}`);
-      if (!r.ok) throw new Error(r.status);
+      if (!r.ok) throw new Error('HTTP ' + r.status);
       const j = await r.json();
-      renderVerify(j, `Sumber: mesin Python (NumPy ${j.numpy || ''}, ${j.method}) · V₀=${V0} eV, a=${a} nm, m=${m.toFixed(2)} mₑ`);
+      return { ...j, src: `Sumber: Python di server lokal (NumPy ${j.numpy}, ${j.method})` };
+    }
+    const py = await getPyodide();
+    py.globals.set('V0_', V0); py.globals.set('a_', a); py.globals.set('m_', m);
+    const out = await py.runPythonAsync(`
+res = ph.verify(V0_, a_, m_)
+for c in res["checks"]:
+    c["pass"] = c.pop("pass_")
+try:
+    res["plot"] = ph.verification_plot(V0_, a_, m_)
+except Exception as e:
+    res["plot_error"] = str(e)
+json.dumps(res, default=float)`);
+    const j = JSON.parse(out);
+    return { ...j, src: `Sumber: Python di browser (Pyodide, NumPy ${py.runPython('np.__version__')}, RK4 N=4000 + matriks transfer)` };
+  }
+  $('btnVerifyPy').addEventListener('click', async () => {
+    const b = $('btnVerifyPy'); b.disabled = true; b.textContent = 'Menyiapkan Python…';
+    const { V0, a, m } = state;
+    try {
+      const t0 = performance.now();
+      const j = await verifyPython(V0, a, m);
+      renderVerify(j, `${j.src} · V₀=${V0} eV, a=${a} nm, m=${m.toFixed(2)} mₑ · ${((performance.now() - t0) / 1000).toFixed(1)} s`);
       if (j.plot) { $('pyPlot').src = 'data:image/png;base64,' + j.plot; $('pyPlotCard').hidden = false; }
     } catch (e) {
-      verifyJS();
-      $('verifySrc').textContent += ' — Server Python tidak aktif. Jalankan: python server/app.py';
+      $('verifySrc').textContent = 'Python belum dapat dijalankan (periksa koneksi internet untuk memuat Pyodide). Hasil di atas berasal dari mesin JavaScript.';
+      console.error(e);
     }
     b.disabled = false; b.textContent = 'Jalankan (Python)';
   });
-
-  // status mesin Python
-  async function ping() {
-    const el = $('engineBadge');
-    try {
-      const r = await fetch(API + '/api/health', { cache: 'no-store' });
-      const j = await r.json();
-      el.className = 'engine on'; el.querySelector('.txt').textContent = 'Python: online · ' + j.engine;
-    } catch (e) { el.className = 'engine off'; el.querySelector('.txt').textContent = 'Python: offline · mode JS'; }
-  }
-
-  // ================= kuis =================
-  const QUIZ = [
-    { q: 'Menurut mekanika klasik, berapa peluang partikel dengan E < V₀ melewati penghalang?', o: ['0', 'Antara 0 dan 1', '1', 'Bergantung pada lebar penghalang'], a: 0, e: 'Secara klasik energi kinetik di dalam penghalang akan negatif, sehingga partikel pasti terpantul: T = 0.' },
-    { q: 'Di dalam penghalang (E < V₀), bentuk fungsi gelombang adalah…', o: ['Sinusoidal dengan amplitudo tetap', 'Meluruh/tumbuh eksponensial', 'Nol', 'Linier'], a: 1, e: 'Solusinya kombinasi e^{κx} dan e^{−κx}, dengan κ = √(2m(V₀−E))/ħ.' },
-    { q: 'Jika lebar penghalang a diperbesar (κa ≫ 1), maka T…', o: ['Naik linier', 'Tetap', 'Turun kira-kira ∝ e^(−2κa)', 'Berosilasi menuju 1'], a: 2, e: 'Pendekatan penghalang tebal: T ≈ 16(E/V₀)(1−E/V₀)e^(−2κa).' },
-    { q: 'Untuk E > V₀, mekanika kuantum memprediksi…', o: ['T = 1 selalu', 'T < 1 umumnya, dengan resonansi T = 1', 'T = 0', 'R = 1'], a: 1, e: 'Masih ada refleksi akibat sifat gelombang; T = 1 hanya pada resonansi k′a = nπ.' },
-    { q: 'Mengapa proton jauh lebih sulit menerowong dibanding elektron pada penghalang sama?', o: ['Muatan proton positif', 'Massa besar membuat κ besar', 'Proton tidak memiliki fungsi gelombang', 'Proton bergerak lebih cepat'], a: 1, e: 'κ ∝ √m, sehingga e^(−2κa) menjadi sangat kecil — mendekati limit klasik.' },
-    { q: 'Syarat apa yang dipakai untuk menghubungkan solusi di tiga daerah?', o: ['Kekekalan momentum', 'Kontinuitas ψ dan dψ/dx', 'ψ = 0 di tepi penghalang', 'E = V₀'], a: 1, e: 'Karena potensial berhingga, ψ dan turunannya harus kontinu di x = 0 dan x = a.' },
-    { q: 'Hubungan yang selalu berlaku antara T dan R adalah…', o: ['T = R', 'T · R = 1', 'T + R = 1', 'T − R = 1'], a: 2, e: 'Kekekalan probabilitas (arus): seluruh partikel datang pasti diteruskan atau dipantulkan.' },
-    { q: 'Elektron, V₀ = 5 eV, a = 0,4 nm, E = 3 eV. Nilai T kira-kira…', o: ['0 %', '1,16 %', '40 %', '100 %'], a: 1, e: 'κa ≈ 2,90 → T ≈ 1,16 % (contoh acuan pada proposal). Coba di halaman Simulasi!' },
-  ];
-  let qi = 0, score = 0, answered = false;
-  function renderQuiz() {
-    const body = $('quizBody');
-    $('quizBar').style.width = (qi / QUIZ.length) * 100 + '%';
-    if (qi >= QUIZ.length) {
-      $('quizProg').textContent = 'Selesai';
-      const pct = Math.round((score / QUIZ.length) * 100);
-      body.innerHTML = `<div class="score"><div class="big">${pct}</div><p>Benar ${score} dari ${QUIZ.length} soal. ${pct >= 75 ? 'Pemahaman sangat baik!' : 'Coba eksplorasi skenario di halaman Simulasi lalu ulangi.'}</p><button class="btn primary" id="qRestart">Ulangi Kuis</button></div>`;
-      $('qRestart').onclick = () => { qi = 0; score = 0; renderQuiz(); };
-      return;
-    }
-    const Q = QUIZ[qi]; answered = false;
-    $('quizProg').textContent = `Soal ${qi + 1} / ${QUIZ.length} · Skor ${score}`;
-    body.innerHTML = `<div class="qtext">${Q.q}</div><div class="opts">${Q.o.map((o, i) => `<button class="opt" data-i="${i}">${String.fromCharCode(65 + i)}. ${o}</button>`).join('')}</div><div id="qExp"></div><div class="quiz-nav"><button class="btn primary hidden" id="qNext">Lanjut →</button></div>`;
-    body.querySelectorAll('.opt').forEach((b) => b.addEventListener('click', () => {
-      if (answered) return; answered = true;
-      const i = +b.dataset.i;
-      body.querySelectorAll('.opt').forEach((x) => { x.disabled = true; if (+x.dataset.i === Q.a) x.classList.add('right'); });
-      if (i === Q.a) score++; else b.classList.add('wrong');
-      $('qExp').innerHTML = `<div class="explain"><b>${i === Q.a ? 'Benar.' : 'Kurang tepat.'}</b> ${Q.e}</div>`;
-      $('qNext').classList.remove('hidden');
-      $('qNext').onclick = () => { qi++; renderQuiz(); };
-    }));
-  }
 
   // ================= init =================
   window.addEventListener('resize', () => { drawAll(); if (document.querySelector('#page-analysis.active')) drawAnalysis(); });
@@ -540,10 +581,9 @@
   document.documentElement.dataset.theme = th; loadColors();
   document.querySelectorAll('#themeSwitch button').forEach((b) => b.classList.toggle('on', b.dataset.theme === th));
   readControls();
-  renderQuiz();
-  ping(); setInterval(ping, 15000);
+  pingFlask();
   let startTab = 'home'; try { startTab = localStorage.getItem('qtl-tab') || 'home'; } catch (e) {}
   go(startTab);
   requestAnimationFrame(loop);
-  window.QTL = { state, setParams };
+  window.QTL = { state, setParams, go, fmtT, update: () => update() };
 })();

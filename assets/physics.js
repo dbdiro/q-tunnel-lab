@@ -33,6 +33,17 @@ const Physics = (() => {
     return 1 / (1 + (V0 * V0 * s * s) / (4 * E * (E - V0)));
   }
 
+  /** log10 T — tetap akurat walau T di bawah batas angka komputer (~1e-308).
+   *  Untuk κa besar: T ≈ 16 E(V0−E)/V0² · e^(−2κa)  (galat relatif ~ e^(−2κa)). */
+  function log10T(E, V0, a, m = 1) {
+    if (E <= 0) return -Infinity;
+    if (E < V0 && Math.abs(E - V0) / V0 >= 1e-9) {
+      const ka = Math.sqrt(m * (V0 - E) / H2M) * a;
+      if (ka > 20) return Math.log10(16 * E * (V0 - E) / (V0 * V0)) - 2 * ka / Math.LN10;
+    }
+    return Math.log10(transmission(E, V0, a, m));
+  }
+
   const classicalT = (E, V0) => (E > V0 ? 1 : E < V0 ? 0 : 0.5);
 
   function regime(E, V0) {
@@ -64,8 +75,19 @@ const Physics = (() => {
 
   /** Fungsi gelombang ψ(x) (kompleks) */
   function psiFactory(E, V0, a, m = 1) {
-    const A = amplitudes(E, V0, a, m);
     const I = C(0, 1);
+    if (E < V0 && Math.sqrt(m * (V0 - E) / H2M) * a > 200) {
+      // κa sangat besar: e^{κa} meluap. Gunakan solusi tangga potensial tebal:
+      // r = (k − iκ)/(k + iκ), di dalam ψ ≈ (1+r) e^{−κx}, di kanan ψ ≈ 0 (T < 10⁻¹⁷⁰).
+      const k = wavenumber(E, m), kap = Math.sqrt(m * (V0 - E) / H2M);
+      const r = div(C(k, -kap), C(k, kap)), onePr = add(C(1), r);
+      return (x) => {
+        if (x < 0) return add(cexp(C(0, k * x)), mul(r, cexp(C(0, -k * x))));
+        if (x <= a) return scale(onePr, Math.exp(-kap * x));
+        return C(0, 0);
+      };
+    }
+    const A = amplitudes(E, V0, a, m);
     return (x) => {
       if (x < 0) return add(cexp(C(0, A.k * x)), mul(A.r, cexp(C(0, -A.k * x))));
       if (x <= a) return add(mul(A.C, cexp(mul(I, scale(A.q, x)))), mul(A.D, cexp(mul(I, scale(A.q, -x)))));
@@ -99,5 +121,5 @@ const Physics = (() => {
     return { T, R };
   }
 
-  return { H2M, transmission, classicalT, regime, amplitudes, psiFactory, numericalT, wavenumber, abs2 };
+  return { H2M, transmission, log10T, classicalT, regime, amplitudes, psiFactory, numericalT, wavenumber, abs2 };
 })();
